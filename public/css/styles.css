@@ -1,4 +1,4 @@
-/* Groningen Flag Colors */
+/* Updated font variables for better readability */
 :root {
     --groningen-red: #DA121A;
     --groningen-blue: #0F47AF;
@@ -7,6 +7,8 @@
     --dark-gray: #333333;
     --light-gray: #f8f9fa;
     --medium-gray: #666666;
+    --heading-font: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    --body-font: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 }
 
 * {
@@ -16,9 +18,15 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: var(--body-font);
     line-height: 1.6;
     color: var(--dark-gray);
+}
+
+/* Headers with clean, readable fonts */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--heading-font);
+    font-weight: 600;
 }
 
 .container {
@@ -47,10 +55,25 @@ body {
     height: 70px;
 }
 
+/* Logo Section */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-image {
+    height: 50px;
+    width: auto;
+    border-radius: 8px;
+}
+
 .logo h1 {
     color: var(--groningen-green);
     font-size: 1.8rem;
-    font-weight: bold;
+    font-family: var(--heading-font);
+    font-weight: 700;
+    margin: 0;
 }
 
 .nav-menu {
@@ -119,9 +142,11 @@ body {
 }
 
 .hero h1 {
+    font-family: var(--heading-font);
     font-size: 3.5rem;
     margin-bottom: 20px;
-    font-weight: bold;
+    font-weight: 700;
+    letter-spacing: -0.02em;
 }
 
 .hero p {
@@ -138,12 +163,15 @@ body {
 }
 
 .btn {
+    font-family: var(--body-font);
     padding: 15px 30px;
     text-decoration: none;
     border-radius: 5px;
-    font-weight: bold;
+    font-weight: 600;
     transition: all 0.3s ease;
     display: inline-block;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn-primary {
@@ -331,7 +359,7 @@ body {
     color: var(--groningen-white);
 }
 
-/* Sponsors Section */
+/* Sponsors Carousel Section - FIXED */
 .sponsors {
     padding: 80px 0;
     background: var(--light-gray);
@@ -344,18 +372,45 @@ body {
     color: var(--groningen-green);
 }
 
-.sponsors-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 30px;
+.carousel-container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.carousel-wrapper {
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transform: translateZ(0);
+    width: 100%;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    will-change: transform;
+    width: 100%;
+}
+
+.sponsor-slide {
+    min-width: 100%;
+    max-width: 100%;
+    flex-shrink: 0;
+    box-sizing: border-box;
 }
 
 .sponsor-card {
     background: var(--groningen-white);
-    border-radius: 10px;
+    border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin: 0;
     transition: transform 0.3s ease;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .sponsor-card:hover {
@@ -365,28 +420,123 @@ body {
 .sponsor-logo {
     background: var(--groningen-green);
     color: var(--groningen-white);
-    padding: 30px;
+    padding: 40px;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .sponsor-logo h3 {
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     font-weight: bold;
+    margin: 0;
 }
 
 .sponsor-content {
     padding: 30px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .sponsor-content h4 {
     color: var(--groningen-blue);
     margin-bottom: 15px;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
 }
 
 .sponsor-content p {
     line-height: 1.6;
     color: var(--medium-gray);
+    flex-grow: 1;
+}
+
+/* Carousel Navigation */
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.carousel-btn {
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--groningen-green);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    pointer-events: all;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    backdrop-filter: blur(10px);
+}
+
+.carousel-btn:hover {
+    background: var(--groningen-green);
+    color: var(--groningen-white);
+    transform: scale(1.1);
+}
+
+.carousel-btn:active {
+    transform: scale(0.95);
+}
+
+.carousel-btn.prev {
+    margin-left: -25px;
+}
+
+.carousel-btn.next {
+    margin-right: -25px;
+}
+
+/* Carousel Indicators */
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ccc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.indicator::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    background: transparent;
+    transition: background 0.3s ease;
+}
+
+.indicator:hover::after {
+    background: rgba(15, 71, 175, 0.2);
+}
+
+.indicator.active {
+    background: var(--groningen-green);
+    transform: scale(1.2);
+}
+
+.indicator:hover {
+    background: var(--groningen-blue);
 }
 
 /* Contact Section */
@@ -527,11 +677,45 @@ body {
     color: var(--groningen-blue);
 }
 
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.footer-logo-image {
+    height: 40px;
+    width: auto;
+    border-radius: 6px;
+}
+
+.footer-logo h3 {
+    margin: 0;
+}
+
 .footer-bottom {
     border-top: 1px solid #555;
     padding-top: 20px;
     text-align: center;
     color: #ccc;
+}
+
+/* Ripple Effect for Buttons */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
 }
 
 /* Responsive Design */
@@ -611,8 +795,51 @@ body {
         gap: 30px;
     }
 
-    .sponsors-grid {
-        grid-template-columns: 1fr;
+    .carousel-container {
+        margin: 0 20px;
+    }
+
+    .sponsor-card {
+        height: auto;
+        min-height: 350px;
+    }
+
+    .sponsor-logo {
+        padding: 30px 20px;
+    }
+
+    .sponsor-logo h3 {
+        font-size: 1.8rem;
+    }
+
+    .sponsor-content {
+        padding: 20px;
+    }
+
+    .carousel-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    .carousel-btn.prev {
+        margin-left: -20px;
+    }
+
+    .carousel-btn.next {
+        margin-right: -20px;
+    }
+
+    .logo {
+        gap: 10px;
+    }
+
+    .logo-image {
+        height: 40px;
+    }
+
+    .logo h1 {
+        font-size: 1.5rem;
     }
 }
 
@@ -639,43 +866,17 @@ body {
     .stat-card {
         margin: 0;
     }
-}
-/* Logo Section - Add this to your existing CSS */
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
 
-.logo-image {
-    height: 50px;
-    width: auto;
-    border-radius: 8px;
-}
-
-.logo h1 {
-    color: var(--groningen-green);
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin: 0;
-}
-
-/* Responsive adjustments for mobile */
-@media (max-width: 768px) {
-    .logo {
-        gap: 10px;
+    .carousel-container {
+        margin: 0 10px;
     }
 
-    .logo-image {
-        height: 40px;
+    .carousel-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
     }
 
-    .logo h1 {
-        font-size: 1.5rem;
-    }
-}
-
-@media (max-width: 480px) {
     .logo {
         gap: 8px;
     }
@@ -687,21 +888,4 @@ body {
     .logo h1 {
         font-size: 1.3rem;
     }
-}
-
-.footer-logo {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-.footer-logo-image {
-    height: 40px;
-    width: auto;
-    border-radius: 6px;
-}
-
-.footer-logo h3 {
-    margin: 0;
 }
