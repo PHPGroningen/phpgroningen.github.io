@@ -124,25 +124,49 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, var(--groningen-blue) 0%, var(--groningen-green) 100%);
-    color: var(--groningen-white);
-    min-height: 100vh;
+    color: var(--groningen-green);
+    min-height: 75vh;
     display: flex;
     align-items: center;
     position: relative;
     overflow: hidden;
 }
 
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/images/phpgroningen-hero2.png') top center/cover no-repeat;
+    filter: brightness(60%) contrast(100%) grayscale(20%);
+    pointer-events: none; /* Allows clicks through to buttons/links */
+    z-index: 1; /* Should be under .hero-content */
+}
+
 .hero-content {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    color: var(--groningen-green);
+    text-shadow: 0 0.1rem 0.2rem rgba(0,0,0,0.8);
+    display: inline-block;
+    position: relative;
+    z-index: 2; /* Ensures content stays above the background */
     max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+    margin: 40px auto;
+    padding: 20px 20px;
     text-align: center;
     z-index: 2;
 }
 
+.hero-content-text {
+    opacity: 1;
+}
+
 .hero h1 {
     font-family: var(--heading-font);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
     font-size: 3.5rem;
     margin-bottom: 20px;
     font-weight: 700;
@@ -156,6 +180,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hero-buttons {
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
     display: flex;
     gap: 20px;
     justify-content: center;
@@ -174,6 +199,11 @@ h1, h2, h3, h4, h5, h6 {
     overflow: hidden;
 }
 
+.btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(70%) contrast(120%);
+}
+
 .btn-primary {
     background: var(--groningen-red);
     color: var(--groningen-white);
@@ -185,25 +215,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-secondary {
-    background: transparent;
-    color: var(--groningen-white);
-    border: 2px solid var(--groningen-white);
+    background: var(--groningen-white);
+    color: var(--groningen-blue);
+    border: 2px solid var(--groningen-blue);
 }
 
 .btn-secondary:hover {
     background: var(--groningen-white);
     color: var(--groningen-blue);
+    transform: translateY(-2px);
 }
 
-.hero-pattern {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-    opacity: 0.3;
-}
 
 /* About Section */
 .about {
@@ -294,11 +316,26 @@ h1, h2, h3, h4, h5, h6 {
 
 .event-card {
     background: var(--light-gray);
+    /* Your existing card styles */
+    cursor: pointer;
+    transition: box-shadow 0.2s;
     padding: 30px;
     border-radius: 10px;
     display: flex;
     gap: 20px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.event-card-link {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    text-decoration: none;
+    color: inherit; /* Ensures normal text color */
+}
+
+.event-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
 }
 
 .event-date {
@@ -751,6 +788,11 @@ h1, h2, h3, h4, h5, h6 {
 
     .hamburger.active span:nth-child(3) {
         transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .hero {
+        height: 50vh;
+        max-height: 50vh;
     }
 
     .hero h1 {

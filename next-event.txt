@@ -1,0 +1,10 @@
+# Date:
+August 21, 2025
+# Title
+PHP Meetup, Sharpen hacking skills with real Capture The Flag (CTF) challenges
+# Description
+Passionate about security? This meetup is for you! Beginner to advanced. Don't forget your laptop.
+# Location
+Youwe groningen
+# Link
+https://www.meetup.com/groningenphp/events/309310509/
