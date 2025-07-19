@@ -328,3 +328,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// === Event Card Autofill ===
+fetch('next-event.txt')
+    .then(response => response.text())
+    .then(text => {
+        // Extract fields using regex
+        const date = text.match(/# Date:\s*([\s\S]*?)# Title/)?.[1]?.trim() || '';
+        const title = text.match(/# Title\s*([\s\S]*?)# Description/)?.[1]?.trim() || '';
+        const desc = text.match(/# Description\s*([\s\S]*?)# Location/)?.[1]?.trim() || '';
+        const loc = text.match(/# Location\s*([\s\S]*?)# Link/)?.[1]?.trim() || '';
+        const link = text.match(/# Link\s*([\s\S]*)/)?.[1]?.trim() || '#';
+
+        // Parse date (expects e.g. 'August 21, 2025')
+        let month = '', day = '';
+        if (date) {
+            // Robust date parsing
+            const dateObj = new Date(date);
+            if (!isNaN(dateObj.getTime())) {
+                // Use toLocaleString for abbreviation
+                month = dateObj.toLocaleString('en-US', { month: 'short' });
+                day = dateObj.getDate().toString();
+            } else {
+                // Fallback: manually split
+                const match = date.match(/([A-Za-z]+)\s+(\d{1,2}),/);
+                month = match ? match[1].slice(0,3) : '';
+                day = match ? match[2] : '';
+            }
+        }
+
+        // Fill card fields (assumes these IDs are present!)
+        document.getElementById('eventMonth').textContent = month;
+        document.getElementById('eventDay').textContent = day;
+        document.getElementById('eventTitle').textContent = title;
+        document.getElementById('eventLocation').textContent = loc;
+        document.getElementById('eventDesc').textContent = desc;
+
+        // Make entire card clickable
+        const eventLink = document.getElementById('eventLink');
+        if (eventLink) eventLink.href = link;
+    })
+    .catch(err => {
+        console.error('Error loading event:', err);
+    });

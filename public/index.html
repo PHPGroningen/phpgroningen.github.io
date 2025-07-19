@@ -6,6 +6,7 @@
     <title>GroningenPHP - PHP User Group</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon" sizes="any"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="shortcut icon" href="favicon.ico"/>
 </head>
 <body>
@@ -46,9 +47,13 @@
 
 <!-- Hero Section -->
 <section id="home" class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
     <div class="hero-content">
-        <h1>Welcome to GroningenPHP</h1>
-        <p>Where PHP developers meet, share knowledge, and have fun!</p>
+        <div class="hero-content-text">
+            <h1>Welcome to GroningenPHP</h1>
+            <p>Where PHP developers meet, share knowledge, and have fun!</p>
+        </div>
         <div class="hero-buttons">
             <a href="https://www.meetup.com/groningenphp/" class="btn btn-primary" target="_blank">
                 Join Our Meetup
@@ -65,17 +70,29 @@
         <h2>About GroningenPHP</h2>
         <div class="about-grid">
             <div class="about-text">
-                <p>GroningenPHP is a vibrant PHP user group located in Groningen where PHP developers – both new and experienced – meet, share knowledge, and have fun!</p>
+                <p>
+                    GroningenPHP is a lively community for PHP developers of all levels in the North of the Netherlands.
+                    We meet on the first Thursday of each month at top tech companies in Groningen to learn, share ideas,
+                    and connect. Join us to stay up to date with the latest PHP trends, exchange experiences,
+                    and grow your network in a welcoming and inspiring environment!
+                </p>
 
                 <h3>Our History</h3>
-                <p>Our community has been bringing together PHP enthusiasts in the northern Netherlands, hosting regular meetups every first Thursday of the month at various IT companies throughout Groningen. We've grown into a welcoming space where developers can learn about the latest PHP trends, share experiences, and network with like-minded professionals.</p>
+                <p>
+                    The story of GroningenPHP began on August 7, 2013, with our very first meetup at Launch Cafe in the
+                    heart of Groningen, started by Michelle Sanver. Michelle’s vision for a collaborative and supportive PHP community
+                    quickly took root. When she moved to Switzerland in 2014, she left us with a motivating presentation on
+                    contributing to open source, passing the organizational torch to Henk, Aukje, and Remko. Over the years,
+                    wonderful co-organizers like Mark, Phillip, and Yannick joined the effort, helping our group flourish.
+                    Since 2020, Remko and Aukje have been steering GroningenPHP, ensuring we remain a thriving hub for learning and innovation.
+                </p>
 
                 <h3>What We Do</h3>
                 <ul>
                     <li>Monthly meetups featuring expert speakers on PHP, Laravel, and related technologies</li>
                     <li>Hands-on workshops and interactive programming sessions</li>
                     <li>Networking opportunities with local tech professionals</li>
-                    <li>Knowledge sharing on topics ranging from AI integration to deployment strategies</li>
+                    <li>Knowledge sharing on topics ranging from AI integration to deployment strategies and secure programming</li>
                 </ul>
             </div>
             <div class="about-stats">
@@ -101,18 +118,22 @@
     <div class="container">
         <h2>Events</h2>
         <div class="events-grid">
-            <div class="event-card">
-                <div class="event-date">
-                    <span class="month">JUL</span>
-                    <span class="day">03</span>
+            <a href="https://www.meetup.com/groningenphp/" class="event-card-link" id="eventLink" target="_blank" rel="noopener">
+                <div class="event-card">
+                    <div class="event-date">
+                        <span class="month" id="eventMonth"></span>
+                        <span class="day" id="eventDay"></span>
+                    </div>
+                    <div class="event-content">
+                        <h3><span class="event-title" id="eventTitle"></span></h3>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span class="event-location" id="eventLocation">Youwe Groningen</span>
+                        </p>
+                        <p><i class="fas fa-clock"></i> 19:30 - 22:00</p>
+                        <p class="event-desc" id="eventDesc"></p>
+                    </div>
                 </div>
-                <div class="event-content">
-                    <h3>PHP Meetup: Projects and Security Discussion</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> Youwe Groningen</p>
-                    <p><i class="fas fa-clock"></i> 19:30 - 22:00</p>
-                    <p>Discussion of projects to become a medior PHP developer and security threat analysis.</p>
-                </div>
-            </div>
+            </a>
             <div class="event-info">
                 <h3>Regular Schedule</h3>
                 <p><strong>When:</strong> Every first Thursday of the month</p>
@@ -138,7 +159,10 @@
                             </div>
                             <div class="sponsor-content">
                                 <h4>Digital Transformation Experts</h4>
-                                <p>Youwe is a full-service digital agency specializing in data, e-commerce, AI, and marketing solutions that accelerate business growth. With over 300 developers, consultants, and designers across nine global offices, they're a leading technology partner supporting ambitious businesses.</p>
+                                <p>Youwe is a full-service digital agency specializing in data, e-commerce,
+                                    AI, and marketing solutions that accelerate business growth.
+                                    With over 300 developers, consultants, and designers across nine global offices,
+                                    they're a leading technology partner supporting ambitious businesses.</p>
                             </div>
                         </div>
                     </div>
@@ -150,7 +174,9 @@
                             </div>
                             <div class="sponsor-content">
                                 <h4>Mobile & Telecom Solutions</h4>
-                                <p>Founded in 2007 by two Groningen students, Belsimpel has become one of the Netherlands' fastest-growing telecom companies. They specialize in making mobile phone and subscription selection simple through their innovative "Belsimpel Method".</p>
+                                <p>Founded in 2007 by two Groningen students, Belsimpel has become one of the Netherlands'
+                                    fastest-growing telecom companies. They specialize in making mobile phone and
+                                    subscription selection simple through their innovative "Belsimpel Method".</p>
                             </div>
                         </div>
                     </div>
@@ -162,7 +188,9 @@
                             </div>
                             <div class="sponsor-content">
                                 <h4>Cloud Computing Made Effortless</h4>
-                                <p>Tilaa is a Dutch cloud provider that has been the preferred choice for developers and businesses since 2008. They guarantee maximum uptime, supreme speed, high reliability, and premium cloud computing services.</p>
+                                <p>Tilaa is a Dutch cloud provider that has been the preferred choice for developers
+                                    and businesses since 2008. They guarantee maximum uptime, supreme speed,
+                                    high reliability, and premium cloud computing services.</p>
                             </div>
                         </div>
                     </div>
