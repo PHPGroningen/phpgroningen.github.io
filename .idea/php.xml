@@ -145,7 +145,7 @@
   </component>
   <component name="PhpInterpreters">
     <interpreters>
-      <interpreter id="e85f3d0c-85f9-4c5f-a8ba-8e7de2b9a373" name="phpgroningen-website" home="docker-compose://DATA" auto="false" debugger_id="php.debugger.XDebug">
+      <interpreter id="080874d1-2c17-4062-bde6-33ee549eaea2" name="phpgroningen-website" home="docker-compose://DATA" auto="false" debugger_id="php.debugger.XDebug">
         <remote_data INTERPRETER_PATH="php8.3" HELPERS_PATH="/opt/.phpstorm_helpers" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" DOCKER_ACCOUNT_NAME="Docker" DOCKER_COMPOSE_SERVICE_NAME="web" DOCKER_REMOTE_PROJECT_PATH="/opt/project">
           <PathMappingSettings>
             <option name="pathMappings">

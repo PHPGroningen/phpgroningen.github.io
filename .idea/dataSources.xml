@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="DDEV" uuid="1b7dc3a4-5a1f-46e9-8b71-04d45f4c8dda">
+    <data-source source="LOCAL" name="DDEV" uuid="722f2ae2-4f3e-4a09-9de9-497f94cdb0a6">
       <driver-ref>mariadb</driver-ref>
       <synchronize>true</synchronize>
       <remarks>DDEV generated data source</remarks>
