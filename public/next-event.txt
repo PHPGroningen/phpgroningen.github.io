@@ -1,10 +1,10 @@
 # Date:
-September 4, 2025
+October 2, 2025
 # Title
-PHP Meetup, TwigQI: static code analysis for Twig templates by Jeroen Versteeg
+PHP Meetup, Evolution of deployments by Berry Langerak
 # Description
-The speaker, Jeroen Versteeg, created a tool that statically analyses Twig templates to prevent bugs. It's similar to PHPStan, but for templates.
+Writing software is just one part of the delivery. In this talk Berry Langerak will take you through the years and the various deployment strategies that have existed over time, highlighting their benefits and drawbacks.
 # Location
 Youwe groningen
 # Link
-https://www.meetup.com/groningenphp/events/307961454/
+https://www.meetup.com/groningenphp/events/307443507/
