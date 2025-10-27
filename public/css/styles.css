@@ -454,9 +454,18 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateY(-5px);
 }
 
+.sponsor-card .sponsor-belsimpel {
+    background: url('/images/belsimpel-banner-2025.png') top center/cover no-repeat;
+}
+
+.sponsor-card .sponsor-youwe {
+    background: url('/images/youwe-sponsor-banner.jpeg') top center/cover no-repeat;
+}
+
 .sponsor-logo {
     background: var(--groningen-green);
     color: var(--groningen-white);
+    height: 170px;
     padding: 40px;
     text-align: center;
     flex-shrink: 0;
