@@ -1,10 +1,10 @@
 # Date:
-November 6, 2025
+December 11, 2025
 # Title
-PHP Meetup, PHP and AI
+PHP Meetup, Are you prepared to survive 2026?
 # Description
-It’s spooky season… and AI is taking over! Join us for a Halloween-themed evening full of code, curiosity, and conversation about Artificial Intelligence.
+Welcome In-person visitors in Groningen. Are you prepared to survive 2026?
 # Location
 Youwe groningen
 # Link
-https://www.meetup.com/groningenphp/events/310907510/
+https://www.meetup.com/groningenphp/events/311394697/
