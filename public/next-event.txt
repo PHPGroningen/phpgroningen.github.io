@@ -1,10 +1,10 @@
 # Date:
-December 11, 2025
+January 15, 2026
 # Title
-PHP Meetup, Are you prepared to survive 2026?
+PHP Meetup, AI-Powered Developer Meetup 🤖🌍
 # Description
-Welcome In-person visitors in Groningen. Are you prepared to survive 2026?
+Calling all software developers! Join us for an interactive meetup, where we build software with the help of AI.
 # Location
 Youwe groningen
 # Link
-https://www.meetup.com/groningenphp/events/311394697/
+https://www.meetup.com/groningenphp/events/312077117/
