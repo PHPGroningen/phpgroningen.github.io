@@ -83,6 +83,9 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.transform = 'scale(1)';
         });
     });
+
+    // Update current year in footer
+    document.getElementById('current-year').innerText = new Date().getFullYear();
 });
 
 // Fixed Infinite Scroll Sponsor Carousel Functionality
