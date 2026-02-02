@@ -1,10 +1,14 @@
 # Date:
-January 15, 2026
+February 5, 2026
 # Title
-PHP Meetup, AI-Powered Developer Meetup 🤖🌍
+PHP Meetup, PHPStan beyond errors: What static analysis can really do
 # Description
-Calling all software developers! Join us for an interactive meetup, where we build software with the help of AI.
+🚀 PHP Meetup Invitation! 🖥️🎉
+
+Welcome at Belsimpel canteen (Grote Markt 21, Groningen).
+
+PHPStan beyond errors: What static analysis can really do...
 # Location
-Youwe groningen
+Grote Markt 21
 # Link
-https://www.meetup.com/groningenphp/events/312077117/
+https://www.meetup.com/groningenphp/events/312471161/
