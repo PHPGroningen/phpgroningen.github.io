@@ -1,12 +1,14 @@
 # Date:
 March 5, 2026
 # Title
-PHP Meetup, ??? Talk or Workshop...........
+PHP Meetup, PHPStan beyond errors: What static analysis can really do
 # Description
-👋 Welcome to our monthly PHP & Software Development Meetup!
-We meet on the first Thursday of every month.
-This meetup is about — sharing knowledge, e...
+🚀 PHP Meetup Invitation! 🖥️🎉
+Welcome at Belsimpel canteen (Grote Markt 21, Groningen).
+Don't forget to bring your laptop! 💻✨
+..
+PHPStan beyond err...
 # Location
-Youwe Groningen
+Grote Markt 21
 # Link
 https://www.meetup.com/groningenphp/events/312947948/
