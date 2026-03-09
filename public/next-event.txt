@@ -1,14 +1,11 @@
 # Date:
-March 5, 2026
+April 2, 2026
 # Title
-PHP Meetup, PHPStan beyond errors: What static analysis can really do
+PHP Meetup, Workshop Security last chance to survive......
 # Description
-🚀 PHP Meetup Invitation! 🖥️🎉
-Welcome at Belsimpel canteen (Grote Markt 21, Groningen).
-Don't forget to bring your laptop! 💻✨
-..
-PHPStan beyond err...
+👋 Welcome to our monthly Software Development Meetup!
+We meet .... knowledge, exchanging ideas, and getting to know other developers in a relaxed, fr...
 # Location
-Grote Markt 21
+Youwe Groningen
 # Link
-https://www.meetup.com/groningenphp/events/312947948/
+https://www.meetup.com/groningenphp/events/313691733/
