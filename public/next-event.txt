@@ -1,17 +1,11 @@
 # Date:
-April 1, 2026
+May 7, 2026
 # Title
-PHP Meetup on Wednesday, Workshop Security last chance to survive......
+PHP Meetup, Workshop or talk.....
 # Description
 👋 Welcome to our monthly Software Development Meetup!
-Hands-on, we work on our laptop
-
-💡 Topics we care about
-
-* 🔐 Security
-
-🔐 Web Security Captur...
+We meet .... knowledge, exchanging ideas, and getting to know other developers in a relaxed, fr...
 # Location
 Youwe Groningen
 # Link
-https://www.meetup.com/groningenphp/events/313691733/
+https://www.meetup.com/groningenphp/events/mhlmwtyjchbkb/
