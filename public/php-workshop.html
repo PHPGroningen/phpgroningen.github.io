@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroningenPHP - PHP 8.4 &amp; 8.5 Workshop</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/ai-powered.css">
+    <link rel="stylesheet" href="css/php-workshop.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon" sizes="any"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="shortcut icon" href="favicon.ico"/>
+</head>
+<body>
+<header class="header">
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="images/GroningenPHP-LOGO.png" alt="GroningenPHP Logo" class="logo-image">
+                <h1>GroningenPHP</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/index.html#home">Home</a></li>
+                <li><a href="/index.html#about">About</a></li>
+                <li><a href="/index.html#events">Events</a></li>
+                <li><a href="/index.html#sponsors">Sponsors</a></li>
+                <li><a href="/index.html#contact">Contact</a></li>
+            </ul>
+            <div class="social-links">
+                <a href="https://www.youtube.com/@GroningenPHP/videos" target="_blank" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://x.com/groningenphp/" target="_blank" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/groups/13836983/" target="_blank" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+    <section class="intro-section">
+        <h2>PHP 8.4 &amp; 8.5 — Hands-on Workshop</h2>
+        <div class="instruction-box">
+            <p class="lead">Welcome! Tonight we're going to play with four of the tastiest new features from PHP 8.4 and 8.5, split across two exercises.</p>
+            <p>Structure: short intro → you try it → we move on. No prior 8.4/8.5 knowledge required — if you've written a class in PHP, you're ready.</p>
+
+            <div class="rules-box">
+                <strong>The deal:</strong> pair up if you like, break things on purpose, ask weird questions. The person next to you probably has the answer.
+            </div>
+        </div>
+    </section>
+
+    <section class="intro-section">
+        <h2>🚀 Get your environment ready (pick one)</h2>
+        <p class="subtext" style="text-align:left;margin-bottom:1rem;">You need a way to run <strong>PHP 8.5</strong>. Easiest options first.</p>
+
+        <div class="setup-grid">
+            <div class="setup-card recommended">
+                <div class="setup-badge">⭐ Easiest</div>
+                <h3>1. 3v4l.org (browser, zero install)</h3>
+                <p>Open <a href="https://3v4l.org" target="_blank">3v4l.org</a>, paste your code, hit <em>Eval</em>. It runs against every PHP version at once — scroll to the <strong>PHP 8.5.x</strong> line to see the output.</p>
+                <p><strong>Tip:</strong> add <code>&lt;?php</code> at the top, otherwise 3v4l assumes HTML.</p>
+            </div>
+
+            <div class="setup-card">
+                <h3>2. Docker one-liner</h3>
+                <p>One terminal, no install polluting your system:</p>
+                <pre><code>docker run --rm -it -v "$PWD":/app -w /app \
+  php:8.5-cli php hero.php</code></pre>
+                <p>Or an interactive REPL:</p>
+                <pre><code>docker run --rm -it php:8.5-cli php -a</code></pre>
+            </div>
+
+            <div class="setup-card">
+                <h3>3. DDEV (if you already use it)</h3>
+                <p>Edit <code>.ddev/config.yaml</code>:</p>
+                <pre><code>php_version: "8.5"</code></pre>
+                <p>Then <code>ddev restart</code> and <code>ddev php hero.php</code>.</p>
+            </div>
+
+            <div class="setup-card">
+                <h3>4. Local install</h3>
+                <p><strong>macOS:</strong> <code>brew install php@8.5</code><br>
+                <strong>Linux (Ubuntu):</strong> <code>sudo add-apt-repository ppa:ondrej/php</code> then <code>sudo apt install php8.5-cli</code><br>
+                <strong>Windows:</strong> WSL + the Docker option, or grab the binary from <a href="https://windows.php.net/download/" target="_blank">windows.php.net</a>.</p>
+            </div>
+        </div>
+
+        <div class="rules-box" style="margin-top:1.5rem;">
+            <strong>Sanity check:</strong> run <code>php -v</code> and make sure you see <code>PHP 8.5.x</code>. If you see 8.4, most of exercise 1 will work but exercise 2 will not.
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- EXERCISE 1 -->
+    <section class="exercise-section">
+        <div class="exercise-header">
+            <span class="version-badge v84">PHP 8.4</span>
+            <h2>🗡️ Exercise 1 — Forge Your Hero</h2>
+            <p class="subtext" style="text-align:left;">Features: <span class="feature-pill">Property Hooks</span> <span class="feature-pill">Asymmetric Visibility</span></p>
+        </div>
+
+        <div class="exercise-body">
+            <h3>📖 The setup</h3>
+            <p>You're building a character sheet for a tabletop RPG. The rules are strict: HP can never drop below 0 or exceed <code>maxHp</code>, your <code>fullName</code> should update when you change your first or last name, and nobody should be able to cheat XP into your character — only the class itself hands out XP.</p>
+            <p>Below is the <em>old-school</em> version. Your job is to modernise it with PHP 8.4.</p>
+
+            <h3>🧱 Starter code</h3>
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>hero.php — starter</h3>
+                    <button class="copy-btn" aria-label="Copy code"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <pre class="code-block"><code>&lt;?php
+
+final class Character
+{
+    public int $hp;
+    public int $maxHp = 10;
+    public int $xp = 0;
+
+    public function __construct(
+        public string $firstName,
+        public string $lastName,
+        public int $level = 1,
+    ) {
+        $this-&gt;hp = $this-&gt;maxHp;
+    }
+
+    public function takeDamage(int $dmg): void
+    {
+        $this-&gt;hp = max(0, $this-&gt;hp - $dmg);
+    }
+
+    public function heal(int $amount): void
+    {
+        $this-&gt;hp = min($this-&gt;maxHp, $this-&gt;hp + $amount);
+    }
+
+    public function gainXp(int $amount): void
+    {
+        $this-&gt;xp += $amount;
+        while ($this-&gt;xp &gt;= 100) {
+            $this-&gt;xp -= 100;
+            $this-&gt;level++;
+            $this-&gt;maxHp += 5;
+        }
+    }
+}
+
+$hero = new Character('Aria', 'Stormblade');
+echo $hero-&gt;firstName . ' ' . $hero-&gt;lastName . PHP_EOL; // "Aria Stormblade"
+
+$hero-&gt;takeDamage(4);
+echo "HP: {$hero-&gt;hp}/{$hero-&gt;maxHp}" . PHP_EOL;      // 6/10
+
+$hero-&gt;hp = 9999;     // 😱 we can just... cheat?
+echo "HP: {$hero-&gt;hp}" . PHP_EOL;                    // 9999 (bug!)
+
+$hero-&gt;xp = 999_999;  // 😱 and cheat XP too?
+echo "Level: {$hero-&gt;level}, XP: {$hero-&gt;xp}" . PHP_EOL;
+</code></pre>
+            </div>
+
+            <h3>🎯 Your challenges</h3>
+            <ol class="challenges">
+                <li><strong>Virtual property.</strong> Add a <code>fullName</code> property with a <strong>get hook</strong> that returns <code>"$firstName $lastName"</code>. It should always reflect the current first and last name.</li>
+                <li><strong>Validated setter.</strong> Give <code>hp</code> a <strong>set hook</strong> that clamps any assignment into the range <code>[0, maxHp]</code>. Once this works, <code>takeDamage()</code> and <code>heal()</code> become one-liners (or delete them — who needs them).</li>
+                <li><strong>Asymmetric visibility.</strong> Make <code>xp</code> <code>public private(set)</code> so it's readable from anywhere but only the class can change it. The final line of the starter should fail with a visibility error.</li>
+                <li><strong>🎁 Bonus.</strong> Add an <code>isAlive</code> virtual property (get-only hook) that returns <code>true</code> when <code>hp &gt; 0</code>.</li>
+                <li><strong>🎁 Bonus bonus.</strong> Add a <code>level</code> with a set hook that also bumps <code>maxHp</code> by 5 per level gained (clean up <code>gainXp()</code> afterwards).</li>
+            </ol>
+
+            <details class="hint">
+                <summary>💡 Hint — property hook syntax</summary>
+                <pre class="code-block"><code>class Foo
+{
+    // virtual get-only property
+    public string $fullName {
+        get =&gt; "$this-&gt;firstName $this-&gt;lastName";
+    }
+
+    // set hook with validation
+    public int $hp {
+        set(int $value) =&gt; max(0, min($this-&gt;maxHp, $value));
+    }
+
+    // asymmetric visibility
+    public private(set) int $xp = 0;
+}</code></pre>
+            </details>
+
+            <details class="solution">
+                <summary>✅ Show one possible solution</summary>
+                <pre class="code-block"><code>&lt;?php
+
+final class Character
+{
+    public string $fullName {
+        get =&gt; "$this-&gt;firstName $this-&gt;lastName";
+    }
+
+    public int $hp {
+        set(int $value) =&gt; max(0, min($this-&gt;maxHp, $value));
+    }
+
+    public bool $isAlive {
+        get =&gt; $this-&gt;hp &gt; 0;
+    }
+
+    public private(set) int $xp = 0;
+    public private(set) int $maxHp = 10;
+
+    public function __construct(
+        public string $firstName,
+        public string $lastName,
+        public int $level = 1,
+    ) {
+        $this-&gt;hp = $this-&gt;maxHp;
+    }
+
+    public function gainXp(int $amount): void
+    {
+        $this-&gt;xp += $amount;
+        while ($this-&gt;xp &gt;= 100) {
+            $this-&gt;xp -= 100;
+            $this-&gt;level++;
+            $this-&gt;maxHp += 5;
+        }
+    }
+}</code></pre>
+            </details>
+
+            <div class="rules-box" style="margin-top:1rem;">
+                <strong>🧪 Try to break it:</strong> can you still overflow HP? What happens with negative damage? What if <code>maxHp</code> changes while HP is above the new max?
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- EXERCISE 2 -->
+    <section class="exercise-section">
+        <div class="exercise-header">
+            <span class="version-badge v85">PHP 8.5</span>
+            <h2>🥞 Exercise 2 — De Pannenkoek Builder</h2>
+            <p class="subtext" style="text-align:left;">Features: <span class="feature-pill">Pipe Operator <code>|&gt;</code></span> <span class="feature-pill">Clone With</span></p>
+        </div>
+
+        <div class="exercise-body">
+            <h3>📖 The setup</h3>
+            <p>You run a small pancake house. Every order is an <em>immutable</em> <code>Pannenkoek</code> — once placed, you can't mutate it; you clone a new one with the change. Customers build their order step by step: add a topping, size it up, bake it, calculate the bill.</p>
+            <p>You'll use <strong>clone with</strong> to return new instances without a constructor-spaghetti, and the <strong>pipe operator</strong> to compose it all into one readable pipeline.</p>
+
+            <h3>🧱 Starter code</h3>
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>pannenkoek.php — starter</h3>
+                    <button class="copy-btn" aria-label="Copy code"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <pre class="code-block"><code>&lt;?php
+
+final class Pannenkoek
+{
+    public function __construct(
+        public readonly string $base = 'naturel',
+        public readonly array $toppings = [],
+        public readonly string $size = 'medium',
+        public readonly bool $isBaked = false,
+    ) {}
+
+    public function describe(): string
+    {
+        $t = $this-&gt;toppings ? implode(' + ', $this-&gt;toppings) : 'geen toppings';
+        $state = $this-&gt;isBaked ? '🔥 gebakken' : '🧊 rauw beslag';
+        return "{$this-&gt;size} {$this-&gt;base} [{$t}] — {$state}";
+    }
+}
+
+// Today's mission:
+//   Build a large 'appel' pannenkoek with 'stroop', 'kaneel' and 'spek',
+//   bake it, print the description, then print the price.
+//   Do it all with |&gt; and `clone with`. No intermediate variables!
+</code></pre>
+            </div>
+
+            <h3>🎯 Your challenges</h3>
+            <ol class="challenges">
+                <li><strong>Immutable modifiers.</strong> Add three methods using <code>clone with</code>:
+                    <ul>
+                        <li><code>withTopping(string $t): self</code> — returns a new pannenkoek with <code>$t</code> appended to <code>toppings</code>.</li>
+                        <li><code>withSize(string $s): self</code> — returns a new pannenkoek at that size.</li>
+                        <li><code>bake(): self</code> — returns a baked pannenkoek.</li>
+                    </ul>
+                </li>
+                <li><strong>Compose with pipes.</strong> Using only the pipe operator <code>|&gt;</code> and your new methods, build today's mission order. No temporary variables. End the chain with <code>-&gt;describe()</code> and <code>echo</code> the result.</li>
+                <li><strong>Add a bill.</strong> Add a <code>priceEuros(): int</code> method. Rules: base <strong>€6</strong>, <strong>+€1</strong> per topping, <strong>+€3</strong> for <code>large</code>, <strong>+€2</strong> if baked (it's real cooking!). Extend your pipeline to also print the price on a new line.</li>
+                <li><strong>🎁 Bonus — first-class callables.</strong> Use the first-class callable syntax <code>Pannenkoek::describe(...)</code> somewhere in your pipe. Hint: not every step needs an arrow function.</li>
+                <li><strong>🎁 Group ordering.</strong> Make an array of three pannenkoeken and use <code>array_map()</code> inside a pipe to print the full menu in one expression.</li>
+            </ol>
+
+            <details class="hint">
+                <summary>💡 Hint — clone with &amp; pipe syntax</summary>
+                <pre class="code-block"><code>// clone with: named args pick which readonly props to change
+public function withTopping(string $t): self
+{
+    return clone($this) with {
+        toppings: [...$this-&gt;toppings, $t],
+    };
+}
+
+// pipe operator: right side is a callable, receives left side as arg
+$shout = 'hello' |&gt; strtoupper(...) |&gt; str_repeat(...); // (ok bad example!)
+
+// realistic pipe
+$result = new Pannenkoek('appel')
+    |&gt; fn(Pannenkoek $p) =&gt; $p-&gt;withTopping('stroop')
+    |&gt; fn(Pannenkoek $p) =&gt; $p-&gt;bake();</code></pre>
+            </details>
+
+            <details class="solution">
+                <summary>✅ Show one possible solution</summary>
+                <pre class="code-block"><code>&lt;?php
+
+final class Pannenkoek
+{
+    public function __construct(
+        public readonly string $base = 'naturel',
+        public readonly array $toppings = [],
+        public readonly string $size = 'medium',
+        public readonly bool $isBaked = false,
+    ) {}
+
+    public function withTopping(string $t): self
+    {
+        return clone($this) with { toppings: [...$this-&gt;toppings, $t] };
+    }
+
+    public function withSize(string $s): self
+    {
+        return clone($this) with { size: $s };
+    }
+
+    public function bake(): self
+    {
+        return clone($this) with { isBaked: true };
+    }
+
+    public function priceEuros(): int
+    {
+        return 6
+            + count($this-&gt;toppings)
+            + ($this-&gt;size === 'large' ? 3 : 0)
+            + ($this-&gt;isBaked ? 2 : 0);
+    }
+
+    public function describe(): string
+    {
+        $t = $this-&gt;toppings ? implode(' + ', $this-&gt;toppings) : 'geen toppings';
+        $state = $this-&gt;isBaked ? '🔥 gebakken' : '🧊 rauw beslag';
+        return "{$this-&gt;size} {$this-&gt;base} [{$t}] — {$state}";
+    }
+}
+
+$order = new Pannenkoek('appel')
+    |&gt; fn(Pannenkoek $p) =&gt; $p-&gt;withTopping('stroop')
+    |&gt; fn(Pannenkoek $p) =&gt; $p-&gt;withTopping('kaneel')
+    |&gt; fn(Pannenkoek $p) =&gt; $p-&gt;withTopping('spek')
+    |&gt; fn(Pannenkoek $p) =&gt; $p-&gt;withSize('large')
+    |&gt; fn(Pannenkoek $p) =&gt; $p-&gt;bake();
+
+echo ($order |&gt; Pannenkoek::describe(...)) . PHP_EOL;
+echo '€' . $order-&gt;priceEuros() . PHP_EOL;</code></pre>
+            </details>
+
+            <div class="rules-box" style="margin-top:1rem;">
+                <strong>🧪 Think about it:</strong> the original object is never mutated. Does <code>clone with</code> still trigger constructor logic? What happens if a readonly property references another object — is the clone deep or shallow?
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <section class="intro-section">
+        <h2>📚 Going further</h2>
+        <div class="links-box">
+            <div class="link-column">
+                <h3>Official release notes</h3>
+                <ul>
+                    <li><a href="https://www.php.net/releases/8.4/en.php" target="_blank">PHP 8.4 release page</a></li>
+                    <li><a href="https://www.php.net/releases/8.5/en.php" target="_blank">PHP 8.5 release page</a></li>
+                    <li><a href="https://wiki.php.net/rfc" target="_blank">All PHP RFCs</a></li>
+                </ul>
+            </div>
+            <div class="link-column">
+                <h3>Specific RFCs we used</h3>
+                <ul>
+                    <li><a href="https://wiki.php.net/rfc/property-hooks" target="_blank">Property Hooks (8.4)</a></li>
+                    <li><a href="https://wiki.php.net/rfc/asymmetric-visibility-v2" target="_blank">Asymmetric Visibility (8.4)</a></li>
+                    <li><a href="https://wiki.php.net/rfc/pipe-operator-v3" target="_blank">Pipe Operator (8.5)</a></li>
+                    <li><a href="https://wiki.php.net/rfc/clone_with_v2" target="_blank">Clone With (8.5)</a></li>
+                </ul>
+            </div>
+            <div class="link-column">
+                <h3>Playground</h3>
+                <ul>
+                    <li><a href="https://3v4l.org" target="_blank">3v4l.org</a> — run code against every PHP version</li>
+                    <li><a href="https://onlinephp.io/" target="_blank">onlinephp.io</a> — another browser sandbox</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div id="toast" class="toast">Copied to clipboard!</div>
+
+<script src="js/script.js"></script>
+<script src="js/php-workshop.js"></script>
+</body>
+</html>
