@@ -253,27 +253,27 @@ final class Character
     <section class="exercise-section">
         <div class="exercise-header">
             <span class="version-badge v85">PHP 8.5</span>
-            <h2>🥞 Exercise 2 — De Pannenkoek Builder</h2>
+            <h2>🥞 Exercise 2 — The Pancake Builder</h2>
             <p class="subtext" style="text-align:left;">Features: <span class="feature-pill">Pipe Operator <code>|&gt;</code></span> <span class="feature-pill">Clone With</span></p>
         </div>
 
         <div class="exercise-body">
             <h3>📖 The setup</h3>
-            <p>You run a small pancake house. Every order is an <em>immutable</em> <code>Pannenkoek</code> — once placed, you can't mutate it; you clone a new one with the change. Customers build their order step by step: add a topping, size it up, bake it, calculate the bill.</p>
+            <p>You run a small pancake house. Every order is an <em>immutable</em> <code>Pancake</code> — once placed, you can't mutate it; you clone a new one with the change. Customers build their order step by step: add a topping, size it up, bake it, calculate the bill.</p>
             <p>You'll use <strong>clone with</strong> to return new instances without a constructor-spaghetti, and the <strong>pipe operator</strong> to compose it all into one readable pipeline.</p>
 
             <h3>🧱 Starter code</h3>
             <div class="prompt-card">
                 <div class="prompt-header">
-                    <h3>pannenkoek.php — starter</h3>
+                    <h3>pancake.php — starter</h3>
                     <button class="copy-btn" aria-label="Copy code"><i class="fas fa-copy"></i> Copy</button>
                 </div>
                 <pre class="code-block"><code>&lt;?php
 
-final class Pannenkoek
+final class Pancake
 {
     public function __construct(
-        public readonly string $base = 'naturel',
+        public readonly string $base = 'plain',
         public readonly array $toppings = [],
         public readonly string $size = 'medium',
         public readonly bool $isBaked = false,
@@ -281,14 +281,14 @@ final class Pannenkoek
 
     public function describe(): string
     {
-        $t = $this-&gt;toppings ? implode(' + ', $this-&gt;toppings) : 'geen toppings';
-        $state = $this-&gt;isBaked ? '🔥 gebakken' : '🧊 rauw beslag';
+        $t = $this-&gt;toppings ? implode(' + ', $this-&gt;toppings) : 'no toppings';
+        $state = $this-&gt;isBaked ? '🔥 cooked' : '🧊 raw batter';
         return "{$this-&gt;size} {$this-&gt;base} [{$t}] — {$state}";
     }
 }
 
 // Today's mission:
-//   Build a large 'appel' pannenkoek with 'stroop', 'kaneel' and 'spek',
+//   Build a large 'apple' pancake with 'syrup', 'cinnamon' and 'bacon',
 //   bake it, print the description, then print the price.
 //   Do it all with |&gt; and `clone with`. No intermediate variables!
 </code></pre>
@@ -298,44 +298,44 @@ final class Pannenkoek
             <ol class="challenges">
                 <li><strong>Immutable modifiers.</strong> Add three methods using <code>clone with</code>:
                     <ul>
-                        <li><code>withTopping(string $t): self</code> — returns a new pannenkoek with <code>$t</code> appended to <code>toppings</code>.</li>
-                        <li><code>withSize(string $s): self</code> — returns a new pannenkoek at that size.</li>
-                        <li><code>bake(): self</code> — returns a baked pannenkoek.</li>
+                        <li><code>withTopping(string $t): self</code> — returns a new pancake with <code>$t</code> appended to <code>toppings</code>.</li>
+                        <li><code>withSize(string $s): self</code> — returns a new pancake at that size.</li>
+                        <li><code>bake(): self</code> — returns a baked pancake.</li>
                     </ul>
                 </li>
                 <li><strong>Compose with pipes.</strong> Using only the pipe operator <code>|&gt;</code> and your new methods, build today's mission order. No temporary variables. End the chain with <code>-&gt;describe()</code> and <code>echo</code> the result.</li>
                 <li><strong>Add a bill.</strong> Add a <code>priceEuros(): int</code> method. Rules: base <strong>€6</strong>, <strong>+€1</strong> per topping, <strong>+€3</strong> for <code>large</code>, <strong>+€2</strong> if baked (it's real cooking!). Extend your pipeline to also print the price on a new line.</li>
-                <li><strong>🎁 Bonus — first-class callables.</strong> Use the first-class callable syntax <code>Pannenkoek::describe(...)</code> somewhere in your pipe. Hint: not every step needs an arrow function.</li>
-                <li><strong>🎁 Group ordering.</strong> Make an array of three pannenkoeken and use <code>array_map()</code> inside a pipe to print the full menu in one expression.</li>
+                <li><strong>🎁 Bonus — first-class callables.</strong> Use the first-class callable syntax (e.g. <code>strtoupper(...)</code>) somewhere in your pipe to transform the description. Hint: not every step needs an arrow function.</li>
+                <li><strong>🎁 Group ordering.</strong> Make an array of three pancakeen and use <code>array_map()</code> inside a pipe to print the full menu in one expression.</li>
             </ol>
 
             <details class="hint">
                 <summary>💡 Hint — clone with &amp; pipe syntax</summary>
-                <pre class="code-block"><code>// clone with: named args pick which readonly props to change
+                <pre class="code-block"><code>// clone with: pass an array of overrides as clone's second argument
 public function withTopping(string $t): self
 {
-    return clone($this) with {
-        toppings: [...$this-&gt;toppings, $t],
-    };
+    return clone($this, [
+        'toppings' =&gt; [...$this-&gt;toppings, $t],
+    ]);
 }
 
 // pipe operator: right side is a callable, receives left side as arg
-$shout = 'hello' |&gt; strtoupper(...) |&gt; str_repeat(...); // (ok bad example!)
+$shout = 'hello' |&gt; strtoupper(...); // SHOUT becomes 'HELLO'
 
-// realistic pipe
-$result = new Pannenkoek('appel')
-    |&gt; fn(Pannenkoek $p) =&gt; $p-&gt;withTopping('stroop')
-    |&gt; fn(Pannenkoek $p) =&gt; $p-&gt;bake();</code></pre>
+// realistic pipe — note the parens around each fn(...)
+$result = new Pancake('apple')
+    |&gt; (fn(Pancake $p) =&gt; $p-&gt;withTopping('syrup'))
+    |&gt; (fn(Pancake $p) =&gt; $p-&gt;bake());</code></pre>
             </details>
 
             <details class="solution">
                 <summary>✅ Show one possible solution</summary>
                 <pre class="code-block"><code>&lt;?php
 
-final class Pannenkoek
+final class Pancake
 {
     public function __construct(
-        public readonly string $base = 'naturel',
+        public readonly string $base = 'plain',
         public readonly array $toppings = [],
         public readonly string $size = 'medium',
         public readonly bool $isBaked = false,
@@ -343,17 +343,17 @@ final class Pannenkoek
 
     public function withTopping(string $t): self
     {
-        return clone($this) with { toppings: [...$this-&gt;toppings, $t] };
+        return clone($this, ['toppings' =&gt; [...$this-&gt;toppings, $t]]);
     }
 
     public function withSize(string $s): self
     {
-        return clone($this) with { size: $s };
+        return clone($this, ['size' =&gt; $s]);
     }
 
     public function bake(): self
     {
-        return clone($this) with { isBaked: true };
+        return clone($this, ['isBaked' =&gt; true]);
     }
 
     public function priceEuros(): int
@@ -366,20 +366,21 @@ final class Pannenkoek
 
     public function describe(): string
     {
-        $t = $this-&gt;toppings ? implode(' + ', $this-&gt;toppings) : 'geen toppings';
-        $state = $this-&gt;isBaked ? '🔥 gebakken' : '🧊 rauw beslag';
+        $t = $this-&gt;toppings ? implode(' + ', $this-&gt;toppings) : 'no toppings';
+        $state = $this-&gt;isBaked ? '🔥 cooked' : '🧊 raw batter';
         return "{$this-&gt;size} {$this-&gt;base} [{$t}] — {$state}";
     }
 }
 
-$order = new Pannenkoek('appel')
-    |&gt; fn(Pannenkoek $p) =&gt; $p-&gt;withTopping('stroop')
-    |&gt; fn(Pannenkoek $p) =&gt; $p-&gt;withTopping('kaneel')
-    |&gt; fn(Pannenkoek $p) =&gt; $p-&gt;withTopping('spek')
-    |&gt; fn(Pannenkoek $p) =&gt; $p-&gt;withSize('large')
-    |&gt; fn(Pannenkoek $p) =&gt; $p-&gt;bake();
+$order = new Pancake('apple')
+    |&gt; (fn(Pancake $p) =&gt; $p-&gt;withTopping('syrup'))
+    |&gt; (fn(Pancake $p) =&gt; $p-&gt;withTopping('cinnamon'))
+    |&gt; (fn(Pancake $p) =&gt; $p-&gt;withTopping('bacon'))
+    |&gt; (fn(Pancake $p) =&gt; $p-&gt;withSize('large'))
+    |&gt; (fn(Pancake $p) =&gt; $p-&gt;bake());
 
-echo ($order |&gt; Pannenkoek::describe(...)) . PHP_EOL;
+// bonus: first-class callable on a built-in fits naturally on the right of |&gt;
+echo ($order-&gt;describe() |&gt; strtoupper(...)) . PHP_EOL;
 echo '€' . $order-&gt;priceEuros() . PHP_EOL;</code></pre>
             </details>
 
