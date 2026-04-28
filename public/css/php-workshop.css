@@ -108,14 +108,14 @@
 .feature-pill {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 7px;
     background: #e8f5e9;
     color: #1b8e2d;
-    padding: 3px 10px;
+    padding: 6px 14px;
     border-radius: 999px;
-    font-size: 0.82rem;
-    font-weight: 500;
-    margin-right: 4px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-right: 6px;
     border: 1px solid #c8e6c9;
     vertical-align: middle;
     line-height: 1;
@@ -124,7 +124,7 @@
 .feature-pill a {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 7px;
     color: inherit;
     text-decoration: none;
 }
@@ -134,8 +134,8 @@
 }
 
 .pill-icon {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     flex-shrink: 0;
 }
 
