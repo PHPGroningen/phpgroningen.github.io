@@ -507,7 +507,57 @@ details .code-block {
     color: #1b8e2d;
 }
 
-/* Active nav link (Workshops page) */
+.workshop-card__prev-editions {
+    font-size: 0.82rem;
+    color: #718096;
+    margin: 0;
+}
+
+.workshop-card__lan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffc107;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    margin-left: 4px;
+    white-space: nowrap;
+}
+
+/* LAN-only card gets an amber accent instead of green */
+.workshop-card--lan {
+    border-color: #ffc107;
+}
+
+.workshop-card--lan:hover {
+    border-color: #e0a800;
+    box-shadow: 0 4px 20px rgba(255, 193, 7, 0.2);
+}
+
+.workshop-card--lan .workshop-card__date {
+    background: #856404;
+}
+
+.workshop-card--lan .workshop-card__cta {
+    color: #856404;
+}
+
+/* Security-themed feature pills (CTF) */
+.feature-pill--security {
+    background: #fef9e7;
+    color: #7d6608;
+    border-color: #f9e79f;
+    gap: 6px;
+}
+
+.feature-pill--security i {
+    font-size: 0.75em;
+    opacity: 0.8;
+}
 .nav-menu a.active {
     color: #1b8e2d;
     font-weight: 700;
