@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroningenPHP - Exercise 2: The Pancake Builder</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/ai-powered.css">
+    <link rel="stylesheet" href="../../css/php-workshop.css">
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon" sizes="any"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="shortcut icon" href="../../favicon.ico"/>
+</head>
+<body>
+<header class="header">
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="../../images/GroningenPHP-LOGO.png" alt="GroningenPHP Logo" class="logo-image">
+                <h1>GroningenPHP</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/index.html#home">Home</a></li>
+                <li><a href="/index.html#about">About</a></li>
+                <li><a href="/index.html#events">Events</a></li>
+                <li><a href="/workshops/" class="active">Workshops</a></li>
+                <li><a href="/index.html#sponsors">Sponsors</a></li>
+                <li><a href="/index.html#contact">Contact</a></li>
+            </ul>
+            <div class="social-links">
+                <a href="https://www.youtube.com/@GroningenPHP/videos" target="_blank" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://x.com/groningenphp/" target="_blank" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/groups/13836983/" target="_blank" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+
+    <nav class="exercise-nav">
+        <a href="exercise-1.html" class="exercise-nav-link"><i class="fas fa-arrow-left"></i> Exercise 1</a>
+        <span class="exercise-nav-position">Exercise 2 of 3</span>
+        <a href="exercise-3.html" class="exercise-nav-link">Exercise 3 <i class="fas fa-arrow-right"></i></a>
+    </nav>
+
+    <!-- EXERCISE 2 -->
+    <section class="exercise-section">
+        <div class="exercise-header">
+            <span class="version-badge v85">PHP 8.5</span>
+            <h2>🥞 Exercise 2 — The Pancake Builder</h2>
+            <p class="subtext" style="text-align:left;">Features: <span class="feature-pill"><a href="https://www.php.net/manual/en/language.operators.functional.php"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />Pipe Operator <code>|&gt;</code></a></span> <span class="feature-pill"><a href="https://www.php.net/manual/en/migration85.new-features.php#migration85.new-features.core.clone-function"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />Clone With</a></span></p>
+        </div>
+
+        <div class="exercise-body">
+            <h3>📖 The setup</h3>
+            <p>You run a small pancake house. Every order is an <em>immutable</em> <code>Pancake</code> — once placed, you can't mutate it; you clone a new one with the change. Customers build their order step by step: add a topping, size it up, bake it, calculate the bill.</p>
+            <p>You'll use <strong>clone with</strong> to return new instances without a constructor-spaghetti, and the <strong>pipe operator</strong> to compose it all into one readable pipeline.</p>
+
+            <h3>🧱 Starter code</h3>
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>pancake.php — starter</h3>
+                    <button class="copy-btn" aria-label="Copy code"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <pre class="code-block"><code>&lt;?php
+
+final class Pancake
+{
+    public function __construct(
+        public readonly string $base = 'plain',
+        public readonly array $toppings = [],
+        public readonly string $size = 'medium',
+        public readonly bool $isBaked = false,
+    ) {}
+
+    public function describe(): string
+    {
+        $t = $this-&gt;toppings ? implode(' + ', $this-&gt;toppings) : 'no toppings';
+        $state = $this-&gt;isBaked ? '🔥 cooked' : '🧊 raw batter';
+        return "{$this-&gt;size} {$this-&gt;base} [{$t}] — {$state}";
+    }
+}
+
+// Today's mission:
+//   Build a large 'apple' pancake with 'syrup', 'cinnamon' and 'bacon',
+//   bake it, print the description, then print the price.
+//   Do it all with |&gt; and `clone with`. No intermediate variables!
+</code></pre>
+            </div>
+
+            <h3>🎯 Your challenges</h3>
+            <ol class="challenges">
+                <li><strong>Immutable modifiers.</strong> Add three methods using <code>clone with</code>:
+                    <ul>
+                        <li><code>withTopping(string $t): self</code> — returns a new pancake with <code>$t</code> appended to <code>toppings</code>.</li>
+                        <li><code>withSize(string $s): self</code> — returns a new pancake at that size.</li>
+                        <li><code>bake(): self</code> — returns a baked pancake.</li>
+                    </ul>
+                </li>
+                <li><strong>Compose with pipes.</strong> Using only the pipe operator <code>|&gt;</code> and your new methods, build today's mission order. No temporary variables. End the chain with <code>-&gt;describe()</code> and <code>echo</code> the result.</li>
+                <li><strong>Add a bill.</strong> Add a <code>priceEuros(): int</code> method. Rules: base <strong>€6</strong>, <strong>+€1</strong> per topping, <strong>+€3</strong> for <code>large</code>, <strong>+€2</strong> if baked (it's real cooking!). Extend your pipeline to also print the price on a new line.</li>
+                <li><strong>🎁 Bonus — first-class callables.</strong> Use the first-class callable syntax (e.g. <code>strtoupper(...)</code>) somewhere in your pipe to transform the description. Hint: not every step needs an arrow function.</li>
+                <li><strong>🎁 Group ordering.</strong> Make an array of three pancakes and use <code>array_map()</code> inside a pipe to print the full menu in one expression.</li>
+            </ol>
+
+            <details class="hint">
+                <summary>💡 Hint — clone with &amp; pipe syntax</summary>
+                <pre class="code-block"><code>// clone with: pass an array of overrides as clone's second argument
+public function withTopping(string $t): self
+{
+    return clone($this, [
+        'toppings' =&gt; [...$this-&gt;toppings, $t],
+    ]);
+}
+
+// pipe operator: right side is a callable, receives left side as arg
+$shout = 'hello' |&gt; strtoupper(...); // SHOUT becomes 'HELLO'
+
+// realistic pipe — note the parens around each fn(...)
+$result = new Pancake('apple')
+    |&gt; (fn(Pancake $p) =&gt; $p-&gt;withTopping('syrup'))
+    |&gt; (fn(Pancake $p) =&gt; $p-&gt;bake());</code></pre>
+            </details>
+
+            <details class="solution">
+                <summary>✅ Show one possible solution</summary>
+                <div class="solution-quiz" data-quiz="2">
+                    <p class="quiz-intro">Answer both questions correctly to unlock the solution.</p>
+
+                    <div class="quiz-question">
+                        <p><strong>1.</strong> Given <code>$result = 'hello' |&gt; strtoupper(...);</code> — what value does <code>$result</code> hold?</p>
+                        <label><input type="radio" name="q2_1" value="a"> It throws a parse error — <code>|&gt;</code> is not valid PHP syntax.</label>
+                        <label><input type="radio" name="q2_1" value="b"> <code>'hello'</code>, because <code>strtoupper</code> is called with no arguments.</label>
+                        <label><input type="radio" name="q2_1" value="c"> <code>'HELLO'</code>, because <code>|&gt;</code> passes the left side as the argument to the right-hand callable.</label>
+                        <label><input type="radio" name="q2_1" value="d"> <code>true</code>, because the pipe returns a boolean success value.</label>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>2.</strong> You write <code>return clone($this, ['isBaked' => true]);</code> inside a readonly class. What happens?</p>
+                        <label><input type="radio" name="q2_2" value="a"> PHP throws an error because readonly properties cannot be overridden even in a clone.</label>
+                        <label><input type="radio" name="q2_2" value="b"> A new instance is returned with <code>isBaked</code> set to <code>true</code> and all other properties copied — <code>__construct</code> is <em>not</em> called.</label>
+                        <label><input type="radio" name="q2_2" value="c"> A new instance is returned and <code>__construct</code> is called with the overridden values.</label>
+                        <label><input type="radio" name="q2_2" value="d"> <code>$this</code> is mutated in place; no new object is created.</label>
+                    </div>
+
+                    <button class="quiz-check-btn" data-answers="c,b">Check answers</button>
+                    <p class="quiz-feedback" aria-live="polite"></p>
+                </div>
+                <div class="solution-code" hidden>
+                <pre class="code-block"><code>&lt;?php
+
+final class Pancake
+{
+    public function __construct(
+        public readonly string $base = 'plain',
+        public readonly array $toppings = [],
+        public readonly string $size = 'medium',
+        public readonly bool $isBaked = false,
+    ) {}
+
+    public function withTopping(string $t): self
+    {
+        return clone($this, ['toppings' =&gt; [...$this-&gt;toppings, $t]]);
+    }
+
+    public function withSize(string $s): self
+    {
+        return clone($this, ['size' =&gt; $s]);
+    }
+
+    public function bake(): self
+    {
+        return clone($this, ['isBaked' =&gt; true]);
+    }
+
+    public function priceEuros(): int
+    {
+        return 6
+            + count($this-&gt;toppings)
+            + ($this-&gt;size === 'large' ? 3 : 0)
+            + ($this-&gt;isBaked ? 2 : 0);
+    }
+
+    public function describe(): string
+    {
+        $t = $this-&gt;toppings ? implode(' + ', $this-&gt;toppings) : 'no toppings';
+        $state = $this-&gt;isBaked ? '🔥 cooked' : '🧊 raw batter';
+        return "{$this-&gt;size} {$this-&gt;base} [{$t}] — {$state}";
+    }
+}
+
+$order = new Pancake('apple')
+    |&gt; (fn(Pancake $p) =&gt; $p-&gt;withTopping('syrup'))
+    |&gt; (fn(Pancake $p) =&gt; $p-&gt;withTopping('cinnamon'))
+    |&gt; (fn(Pancake $p) =&gt; $p-&gt;withTopping('bacon'))
+    |&gt; (fn(Pancake $p) =&gt; $p-&gt;withSize('large'))
+    |&gt; (fn(Pancake $p) =&gt; $p-&gt;bake());
+
+// bonus: first-class callable on a built-in fits naturally on the right of |&gt;
+echo ($order-&gt;describe() |&gt; strtoupper(...)) . PHP_EOL;
+echo '€' . $order-&gt;priceEuros() . PHP_EOL;</code></pre>
+                </div><!-- /.solution-code -->
+            </details>
+
+            <div class="rules-box" style="margin-top:1rem;">
+                <strong>🧪 Think about it:</strong> the original object is never mutated. Does <code>clone with</code> still trigger constructor logic? What happens if a readonly property references another object — is the clone deep or shallow?
+            </div>
+        </div>
+    </section>
+
+    <nav class="exercise-nav exercise-nav--bottom">
+        <a href="exercise-1.html" class="exercise-nav-link"><i class="fas fa-arrow-left"></i> Exercise 1 — Forge Your Hero</a>
+        <a href="exercise-3.html" class="exercise-nav-link exercise-nav-link--next">Exercise 3 — Festival Lineup <i class="fas fa-arrow-right"></i></a>
+    </nav>
+
+</main>
+
+<div id="toast" class="toast">Copied to clipboard!</div>
+
+<script src="../../js/script.js"></script>
+<script src="../../js/php-workshop.js"></script>
+</body>
+</html>

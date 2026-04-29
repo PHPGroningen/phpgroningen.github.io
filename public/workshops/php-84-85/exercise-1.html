@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroningenPHP - Exercise 1: Forge Your Hero</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/ai-powered.css">
+    <link rel="stylesheet" href="../../css/php-workshop.css">
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon" sizes="any"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="shortcut icon" href="../../favicon.ico"/>
+</head>
+<body>
+<header class="header">
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="../../images/GroningenPHP-LOGO.png" alt="GroningenPHP Logo" class="logo-image">
+                <h1>GroningenPHP</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/index.html#home">Home</a></li>
+                <li><a href="/index.html#about">About</a></li>
+                <li><a href="/index.html#events">Events</a></li>
+                <li><a href="/workshops/" class="active">Workshops</a></li>
+                <li><a href="/index.html#sponsors">Sponsors</a></li>
+                <li><a href="/index.html#contact">Contact</a></li>
+            </ul>
+            <div class="social-links">
+                <a href="https://www.youtube.com/@GroningenPHP/videos" target="_blank" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://x.com/groningenphp/" target="_blank" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/groups/13836983/" target="_blank" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+
+    <nav class="exercise-nav">
+        <a href="./" class="exercise-nav-link"><i class="fas fa-arrow-left"></i> Back to overview</a>
+        <span class="exercise-nav-position">Exercise 1 of 3</span>
+        <a href="exercise-2.html" class="exercise-nav-link">Exercise 2 <i class="fas fa-arrow-right"></i></a>
+    </nav>
+
+    <!-- EXERCISE 1 -->
+    <section class="exercise-section">
+        <div class="exercise-header">
+            <span class="version-badge v84">PHP 8.4</span>
+            <h2>🗡️ Exercise 1 — Forge Your Hero</h2>
+            <p class="subtext" style="text-align:left;">Features: <span class="feature-pill"><a href="https://www.php.net/manual/en/language.oop5.property-hooks.php"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />Property Hooks</a></span> <span class="feature-pill"><a href="https://www.php.net/manual/en/language.oop5.visibility.php#language.oop5.visibility-members-aviz"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />Asymmetric Visibility</a></span></p>
+        </div>
+
+        <div class="exercise-body">
+            <h3>📖 The setup</h3>
+            <p>You're building a character sheet for a tabletop RPG. The rules are strict: HP can never drop below 0 or exceed <code>maxHp</code>, your <code>fullName</code> should update when you change your first or last name, and nobody should be able to cheat XP into your character — only the class itself hands out XP.</p>
+            <p>Below is the <em>old-school</em> version. Your job is to modernise it with PHP 8.4.</p>
+
+            <h3>🧱 Starter code</h3>
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>hero.php — starter</h3>
+                    <button class="copy-btn" aria-label="Copy code"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <pre class="code-block"><code>&lt;?php
+
+final class Character
+{
+    public int $hp;
+    public int $maxHp = 10;
+    public int $xp = 0;
+
+    public function __construct(
+        public string $firstName,
+        public string $lastName,
+        public int $level = 1,
+    ) {
+        $this-&gt;hp = $this-&gt;maxHp;
+    }
+
+    public function takeDamage(int $dmg): void
+    {
+        $this-&gt;hp = max(0, $this-&gt;hp - $dmg);
+    }
+
+    public function heal(int $amount): void
+    {
+        $this-&gt;hp = min($this-&gt;maxHp, $this-&gt;hp + $amount);
+    }
+
+    public function gainXp(int $amount): void
+    {
+        $this-&gt;xp += $amount;
+        while ($this-&gt;xp &gt;= 100) {
+            $this-&gt;xp -= 100;
+            $this-&gt;level++;
+            $this-&gt;maxHp += 5;
+        }
+    }
+}
+
+$hero = new Character('Aria', 'Stormblade');
+echo $hero-&gt;firstName . ' ' . $hero-&gt;lastName . PHP_EOL; // "Aria Stormblade"
+
+$hero-&gt;takeDamage(4);
+echo "HP: {$hero-&gt;hp}/{$hero-&gt;maxHp}" . PHP_EOL;      // 6/10
+
+$hero-&gt;hp = 9999;     // 😱 we can just... cheat?
+echo "HP: {$hero-&gt;hp}" . PHP_EOL;                    // 9999 (bug!)
+
+$hero-&gt;xp = 999_999;  // 😱 and cheat XP too?
+echo "Level: {$hero-&gt;level}, XP: {$hero-&gt;xp}" . PHP_EOL;
+</code></pre>
+            </div>
+
+            <h3>🎯 Your challenges</h3>
+            <ol class="challenges">
+                <li><strong>Virtual property.</strong> Add a <code>fullName</code> property with a <strong>get hook</strong> that returns <code>"$firstName $lastName"</code>. It should always reflect the current first and last name.</li>
+                <li><strong>Validated setter.</strong> Give <code>hp</code> a <strong>set hook</strong> that clamps any assignment into the range <code>[0, maxHp]</code>. Once this works, <code>takeDamage()</code> and <code>heal()</code> become one-liners (or delete them — who needs them).</li>
+                <li><strong>Asymmetric visibility.</strong> Make <code>xp</code> <code>public private(set)</code> so it's readable from anywhere but only the class can change it. The final line of the starter should fail with a visibility error.</li>
+                <li><strong>🎁 Bonus.</strong> Add an <code>isAlive</code> virtual property (get-only hook) that returns <code>true</code> when <code>hp &gt; 0</code>.</li>
+                <li><strong>🎁 Bonus bonus.</strong> Add a <code>level</code> with a set hook that also bumps <code>maxHp</code> by 5 per level gained (clean up <code>gainXp()</code> afterwards).</li>
+            </ol>
+
+            <details class="hint">
+                <summary>💡 Hint — property hook syntax</summary>
+                <pre class="code-block"><code>class Foo
+{
+    // virtual get-only property
+    public string $fullName {
+        get =&gt; "$this-&gt;firstName $this-&gt;lastName";
+    }
+
+    // set hook with validation
+    public int $hp {
+        set(int $value) =&gt; max(0, min($this-&gt;maxHp, $value));
+    }
+
+    // asymmetric visibility
+    public private(set) int $xp = 0;
+}</code></pre>
+            </details>
+
+            <details class="solution">
+                <summary>✅ Show one possible solution</summary>
+                <div class="solution-quiz" data-quiz="1">
+                    <p class="quiz-intro">Answer both questions correctly to unlock the solution.</p>
+
+                    <div class="quiz-question">
+                        <p><strong>1.</strong> Which snippet correctly adds a <code>set</code> hook that clamps <code>hp</code> between <code>0</code> and <code>maxHp</code>?</p>
+                        <label><input type="radio" name="q1_1" value="a"> <code>public int $hp { set => $value; }</code></label>
+                        <label><input type="radio" name="q1_1" value="b"> <code>public int $hp { set(int $value) => max(0, min($this->maxHp, $value)); }</code></label>
+                        <label><input type="radio" name="q1_1" value="c"> <code>public int $hp { get(int $value) => max(0, min($this->maxHp, $value)); }</code></label>
+                        <label><input type="radio" name="q1_1" value="d"> <code>public int $hp = max(0, min($this->maxHp, $value));</code></label>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>2.</strong> You declare <code>public private(set) int $xp = 0;</code>. Which statement is true?</p>
+                        <label><input type="radio" name="q1_2" value="a"> <code>$xp</code> can only be read and written from inside the class.</label>
+                        <label><input type="radio" name="q1_2" value="b"> <code>$xp</code> can be read from anywhere, but only written from inside the class.</label>
+                        <label><input type="radio" name="q1_2" value="c"> <code>$xp</code> can be written from anywhere, but only read from inside the class.</label>
+                        <label><input type="radio" name="q1_2" value="d"> <code>$xp</code> is completely private — no outside access at all.</label>
+                    </div>
+
+                    <button class="quiz-check-btn" data-answers="b,b">Check answers</button>
+                    <p class="quiz-feedback" aria-live="polite"></p>
+                </div>
+                <div class="solution-code" hidden>
+                <pre class="code-block"><code>&lt;?php
+
+final class Character
+{
+    public string $fullName {
+        get =&gt; "$this-&gt;firstName $this-&gt;lastName";
+    }
+
+    public int $hp {
+        set(int $value) =&gt; max(0, min($this-&gt;maxHp, $value));
+    }
+
+    public bool $isAlive {
+        get =&gt; $this-&gt;hp &gt; 0;
+    }
+
+    public private(set) int $xp = 0;
+    public private(set) int $maxHp = 10;
+
+    public function __construct(
+        public string $firstName,
+        public string $lastName,
+        public int $level = 1,
+    ) {
+        $this-&gt;hp = $this-&gt;maxHp;
+    }
+
+    public function gainXp(int $amount): void
+    {
+        $this-&gt;xp += $amount;
+        while ($this-&gt;xp &gt;= 100) {
+            $this-&gt;xp -= 100;
+            $this-&gt;level++;
+            $this-&gt;maxHp += 5;
+        }
+    }
+}</code></pre>
+                </div><!-- /.solution-code -->
+            </details>
+
+            <div class="rules-box" style="margin-top:1rem;">
+                <strong>🧪 Try to break it:</strong> can you still overflow HP? What happens with negative damage? What if <code>maxHp</code> changes while HP is above the new max?
+            </div>
+        </div>
+    </section>
+
+    <nav class="exercise-nav exercise-nav--bottom">
+        <a href="./" class="exercise-nav-link"><i class="fas fa-arrow-left"></i> Back to overview</a>
+        <a href="exercise-2.html" class="exercise-nav-link exercise-nav-link--next">Exercise 2 — The Pancake Builder <i class="fas fa-arrow-right"></i></a>
+    </nav>
+
+</main>
+
+<div id="toast" class="toast">Copied to clipboard!</div>
+
+<script src="../../js/script.js"></script>
+<script src="../../js/php-workshop.js"></script>
+</body>
+</html>
