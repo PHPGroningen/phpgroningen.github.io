@@ -93,25 +93,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
 
     if (sections.length && navLinks.length) {
-        const HEADER_HEIGHT = 80; // fixed header + a small buffer
-
-        function updateScrollSpy() {
-            const scrollPos = window.scrollY + HEADER_HEIGHT;
-            let currentId = sections[0].id; // default to first section
-
-            sections.forEach(section => {
-                if (section.offsetTop <= scrollPos) {
-                    currentId = section.id;
+        const spyObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    const active = document.querySelector(`.nav-menu a[href="#${entry.target.id}"]`);
+                    if (active) active.classList.add('active');
                 }
             });
+        }, {
+            rootMargin: '-60px 0px -40% 0px', // trigger when section is near the top
+            threshold: 0
+        });
 
-            navLinks.forEach(link => {
-                link.classList.toggle('active', link.getAttribute('href') === `#${currentId}`);
-            });
-        }
-
-        window.addEventListener('scroll', updateScrollSpy, { passive: true });
-        updateScrollSpy(); // set correct state on page load
+        sections.forEach(s => spyObserver.observe(s));
     }
 });
 

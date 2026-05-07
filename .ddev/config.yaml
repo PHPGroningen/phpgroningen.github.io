@@ -1,4 +1,4 @@
-name: phpgroningen-website
+name: groningenphp-website
 type: symfony
 docroot: public/
 php_version: "8.3"

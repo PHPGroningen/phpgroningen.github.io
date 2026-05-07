@@ -298,9 +298,13 @@ details .code-block {
 /* Exercise index cards (overview page) */
 .exercise-index {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.25rem;
     margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+    .exercise-index { grid-template-columns: 1fr; }
 }
 
 .exercise-index-card {
