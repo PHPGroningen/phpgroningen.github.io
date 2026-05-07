@@ -85,7 +85,7 @@
         </a>
 
         <!-- === CTF (recurring: Aug 2025 / Dec 2025 / Apr 2026) === -->
-        <a href="http://ctf2025.ctf.groningenphp.nl/" class="workshop-card workshop-card--lan" target="_blank" rel="noopener">
+        <a href="#" class="workshop-card workshop-card--lan" id="ctf-card" rel="nofollow noopener">
             <div class="workshop-card__date">
                 <span class="workshop-card__month">Apr</span>
                 <span class="workshop-card__day">1</span>
@@ -118,9 +118,17 @@
         <!-- Add future workshops above this comment -->
 
     </div>
-
-    </div>
 </main>
+
+<!-- CTF offline overlay -->
+<div id="ctf-offline-overlay" class="ctf-overlay" hidden>
+    <div class="ctf-overlay__box">
+        <i class="fas fa-plug ctf-overlay__icon"></i>
+        <h2>CTF is offline</h2>
+        <p>The Capture The Flag server (<strong>ctf2025.ctf.groningenphp.nl</strong>) is not reachable from your browser.<br>It is only available on the local network during a GroningenPHP meetup.</p>
+        <button class="ctf-overlay__close" id="ctf-overlay-close">Close</button>
+    </div>
+</div>
 
 <footer class="footer">
     <div class="container">
@@ -159,5 +167,40 @@
 </footer>
 
 <script src="../js/script.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const ctfCard = document.getElementById('ctf-card');
+    const overlay = document.getElementById('ctf-offline-overlay');
+    const closeBtn = document.getElementById('ctf-overlay-close');
+    if (!ctfCard || !overlay) return;
+
+    const ctfUrl = 'http://ctf2025.ctf.groningenphp.nl/';
+
+    ctfCard.addEventListener('click', function (e) {
+        e.preventDefault();
+        ctfCard.classList.add('workshop-card--checking');
+
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 4000);
+
+        fetch(ctfUrl, { method: 'HEAD', mode: 'no-cors', signal: controller.signal })
+            .then(() => {
+                clearTimeout(timeout);
+                window.open(ctfUrl, '_blank', 'noopener');
+            })
+            .catch(() => {
+                clearTimeout(timeout);
+                overlay.hidden = false;
+            })
+            .finally(() => {
+                ctfCard.classList.remove('workshop-card--checking');
+            });
+    });
+
+    closeBtn.addEventListener('click', () => { overlay.hidden = true; });
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.hidden = true; });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') overlay.hidden = true; });
+});
+</script>
 </body>
 </html>
