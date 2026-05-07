@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroningenPHP - PHP 8.4 &amp; 8.5 Workshop — May 7, 2026</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/ai-powered.css">
+    <link rel="stylesheet" href="../../css/php-workshop.css">
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon" sizes="any"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="shortcut icon" href="../../favicon.ico"/>
+</head>
+<body>
+<header class="header">
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="../../images/GroningenPHP-LOGO.png" alt="GroningenPHP Logo" class="logo-image">
+                <h1>GroningenPHP</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/index.html#home">Home</a></li>
+                <li><a href="/index.html#about">About</a></li>
+                <li><a href="/index.html#events">Events</a></li>
+                <li><a href="/index.html#sponsors">Sponsors</a></li>
+                <li><a href="/index.html#contact">Contact</a></li>
+                <li><a href="/workshops/" class="active">Workshops</a></li>
+            </ul>
+            <div class="social-links">
+                <a href="https://www.youtube.com/@GroningenPHP/videos" target="_blank" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://x.com/groningenphp/" target="_blank" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/groups/13836983/" target="_blank" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+    <section class="intro-section">
+        <h2>PHP 8.4 &amp; 8.5 — Hands-on Workshop <span class="workshop-date-badge">May 7, 2026</span></h2>
+        <div class="instruction-box">
+            <p class="lead">Welcome! Tonight we're going to play with four of the tastiest new features from PHP 8.4 and 8.5, split across three exercises.</p>
+            <p>Structure: short intro → you try it → we move on. No prior 8.4/8.5 knowledge required — if you've written a class in PHP, you're ready.</p>
+
+            <div class="rules-box">
+                <strong>The deal:</strong> pair up if you like, break things on purpose, ask weird questions. The person next to you probably has the answer.
+            </div>
+        </div>
+    </section>
+
+    <section class="intro-section">
+        <h2>🚀 Get your environment ready (pick one)</h2>
+        <p class="subtext" style="text-align:left;margin-bottom:1rem;">You need a way to run <strong>PHP 8.5</strong>. Easiest options first.</p>
+
+        <div class="setup-grid">
+            <div class="setup-card recommended">
+                <div class="setup-badge">⭐ Easiest</div>
+                <h3>1. 3v4l.org (browser, zero install)</h3>
+                <p>Open <a href="https://3v4l.org/#v8.5.3" target="_blank">3v4l.org</a>, paste your code, hit <em>Eval</em>. It runs against every PHP version at once — scroll to the <strong>PHP 8.5.x</strong> line to see the output.</p>
+                <p><strong>Tip:</strong> add <code>&lt;?php</code> at the top, otherwise 3v4l assumes HTML.</p>
+            </div>
+
+            <div class="setup-card">
+                <h3>2. Docker one-liner</h3>
+                <p>One terminal, no install polluting your system:</p>
+                <pre><code>docker run --rm -it -v "$PWD":/app -w /app \
+  php:8.5-cli php hero.php</code></pre>
+                <p>Or an interactive REPL:</p>
+                <pre><code>docker run --rm -it php:8.5-cli php -a</code></pre>
+            </div>
+
+            <div class="setup-card">
+                <h3>3. DDEV (if you already use it)</h3>
+                <p>Edit <code>.ddev/config.yaml</code>:</p>
+                <pre><code>php_version: "8.5"</code></pre>
+                <p>Then <code>ddev restart</code> and <code>ddev php hero.php</code>.</p>
+            </div>
+
+            <div class="setup-card">
+                <h3>4. Local install</h3>
+                <p><strong>macOS:</strong> <code>brew install php@8.5</code><br>
+                <strong>Linux (Ubuntu):</strong> <code>sudo add-apt-repository ppa:ondrej/php</code> then <code>sudo apt install php8.5-cli</code><br>
+                <strong>Windows:</strong> WSL + the Docker option, or grab the binary from <a href="https://windows.php.net/download/" target="_blank">windows.php.net</a>.</p>
+            </div>
+        </div>
+
+        <div class="rules-box" style="margin-top:1.5rem;">
+            <strong>Sanity check:</strong> run <code>php -v</code> and make sure you see <code>PHP 8.5.x</code>. If you see 8.4, most of exercise 1 will work but exercise 2 and 3 will not.
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <section class="intro-section">
+        <h2>📋 Exercises</h2>
+        <div class="exercise-index">
+            <a href="exercise-1.html" class="exercise-index-card">
+                <div class="exercise-index-card__header">
+                    <span class="version-badge v84">PHP 8.4</span>
+                    <span class="exercise-index-card__number">Exercise 1</span>
+                </div>
+                <h3>🗡️ Forge Your Hero</h3>
+                <p>Modernise a character sheet class using property hooks and asymmetric visibility.</p>
+                <div class="exercise-index-card__pills">
+                    <span class="feature-pill"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />Property Hooks</span>
+                    <span class="feature-pill"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />Asymmetric Visibility</span>
+                </div>
+                <span class="exercise-index-card__cta">Start exercise <i class="fas fa-arrow-right"></i></span>
+            </a>
+
+            <a href="exercise-2.html" class="exercise-index-card">
+                <div class="exercise-index-card__header">
+                    <span class="version-badge v85">PHP 8.5</span>
+                    <span class="exercise-index-card__number">Exercise 2</span>
+                </div>
+                <h3>🥞 The Pancake Builder</h3>
+                <p>Build an immutable pancake order using the pipe operator and clone-with.</p>
+                <div class="exercise-index-card__pills">
+                    <span class="feature-pill"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />Pipe Operator <code>|&gt;</code></span>
+                    <span class="feature-pill"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />Clone With</span>
+                </div>
+                <span class="exercise-index-card__cta">Start exercise <i class="fas fa-arrow-right"></i></span>
+            </a>
+
+            <a href="exercise-3.html" class="exercise-index-card">
+                <div class="exercise-index-card__header">
+                    <div style="display:flex;gap:4px;">
+                        <span class="version-badge v84">PHP 8.4</span>
+                        <span class="version-badge v85">PHP 8.5</span>
+                    </div>
+                    <span class="exercise-index-card__number">Exercise 3</span>
+                </div>
+                <h3>🎵 Festival Lineup</h3>
+                <p>Query a festival lineup using six brand-new array functions across PHP 8.4 and 8.5.</p>
+                <div class="exercise-index-card__pills">
+                    <span class="feature-pill"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />array_find()</span>
+                    <span class="feature-pill"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />array_any()</span>
+                    <span class="feature-pill"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />array_all()</span>
+                    <span class="feature-pill"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />array_first()</span>
+                    <span class="feature-pill"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />array_last()</span>
+                </div>
+                <span class="exercise-index-card__cta">Start exercise <i class="fas fa-arrow-right"></i></span>
+            </a>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <section class="intro-section">
+        <h2>📚 Going further</h2>
+        <div class="links-box">
+            <div class="link-column">
+                <h3>Official release notes</h3>
+                <ul>
+                    <li><a href="https://www.php.net/releases/8.4/en.php" target="_blank">PHP 8.4 release page</a></li>
+                    <li><a href="https://www.php.net/releases/8.5/en.php" target="_blank">PHP 8.5 release page</a></li>
+                    <li><a href="https://wiki.php.net/rfc" target="_blank">All PHP RFCs</a></li>
+                </ul>
+            </div>
+            <div class="link-column">
+                <h3>Specific RFCs we used</h3>
+                <ul>
+                    <li><a href="https://wiki.php.net/rfc/property-hooks" target="_blank">Property Hooks (8.4)</a></li>
+                    <li><a href="https://wiki.php.net/rfc/asymmetric-visibility-v2" target="_blank">Asymmetric Visibility (8.4)</a></li>
+                    <li><a href="https://wiki.php.net/rfc/pipe-operator-v3" target="_blank">Pipe Operator (8.5)</a></li>
+                    <li><a href="https://wiki.php.net/rfc/clone_with_v2" target="_blank">Clone With (8.5)</a></li>
+                    <li><a href="https://wiki.php.net/rfc/array_find" target="_blank">array_find / any / all (8.4)</a></li>
+                    <li><a href="https://wiki.php.net/rfc/array_first_last" target="_blank">array_first / last (8.5)</a></li>
+                </ul>
+            </div>
+            <div class="link-column">
+                <h3>Playground</h3>
+                <ul>
+                    <li><a href="https://3v4l.org" target="_blank">3v4l.org</a> — run code against every PHP version</li>
+                    <li><a href="https://onlinephp.io/" target="_blank">onlinephp.io</a> — another browser sandbox</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div id="toast" class="toast">Copied to clipboard!</div>
+
+<script src="../../js/script.js"></script>
+<script src="../../js/php-workshop.js"></script>
+</body>
+</html>

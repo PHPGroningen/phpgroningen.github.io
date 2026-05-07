@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroningenPHP - Exercise 3: Festival Lineup</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/ai-powered.css">
+    <link rel="stylesheet" href="../../css/php-workshop.css">
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon" sizes="any"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="shortcut icon" href="../../favicon.ico"/>
+</head>
+<body>
+<header class="header">
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="../../images/GroningenPHP-LOGO.png" alt="GroningenPHP Logo" class="logo-image">
+                <h1>GroningenPHP</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/index.html#home">Home</a></li>
+                <li><a href="/index.html#about">About</a></li>
+                <li><a href="/index.html#events">Events</a></li>
+                <li><a href="/index.html#sponsors">Sponsors</a></li>
+                <li><a href="/index.html#contact">Contact</a></li>
+                <li><a href="/workshops/" class="active">Workshops</a></li>
+            </ul>
+            <div class="social-links">
+                <a href="https://www.youtube.com/@GroningenPHP/videos" target="_blank" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://x.com/groningenphp/" target="_blank" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/groups/13836983/" target="_blank" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+
+    <nav class="exercise-nav">
+        <a href="exercise-2.html" class="exercise-nav-link"><i class="fas fa-arrow-left"></i> Exercise 2</a>
+        <span class="exercise-nav-position">Exercise 3 of 3</span>
+        <a href="./" class="exercise-nav-link">Back to overview <i class="fas fa-list"></i></a>
+    </nav>
+
+    <!-- EXERCISE 3 -->
+    <section class="exercise-section">
+        <div class="exercise-header">
+            <span class="version-badge v84">PHP 8.4</span>
+            <span class="version-badge v85" style="margin-left:4px;">PHP 8.5</span>
+            <h2>🎵 Exercise 3 — Festival Lineup</h2>
+            <p class="subtext" style="text-align:left;">Features:
+                <span class="feature-pill"><a href="https://www.php.net/manual/en/function.array-find.php"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />array_find()</a></span>
+                <span class="feature-pill"><a href="https://www.php.net/manual/en/function.array-find-key.php"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />array_find_key()</a></span>
+                <span class="feature-pill"><a href="https://www.php.net/manual/en/function.array-any.php"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />array_any()</a></span>
+                <span class="feature-pill"><a href="https://www.php.net/manual/en/function.array-all.php"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />array_all()</a></span>
+                <span class="feature-pill"><a href="https://www.php.net/manual/en/function.array-first.php"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />array_first()</a></span>
+                <span class="feature-pill"><a href="https://www.php.net/manual/en/function.array-last.php"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />array_last()</a></span>
+            </p>
+        </div>
+
+        <div class="exercise-body">
+            <h3>📖 The setup</h3>
+            <p>You're building a festival planner. You have a lineup of acts across multiple stages, and programme managers keep asking you questions like <em>"is there anyone still unconfirmed?", "who headlines the main stage?", "which act opens the day?"</em>.</p>
+            <p>In the old days you'd loop over everything. PHP 8.4 and 8.5 added six new functions that let you answer these questions in a single expression — no loops, no helper variables.</p>
+
+            <h3>🧱 Starter code</h3>
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>festival.php — starter</h3>
+                    <button class="copy-btn" aria-label="Copy code"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <pre class="code-block"><code>&lt;?php
+
+$lineup = [
+    ['name' =&gt; 'Wet Leg',        'genre' =&gt; 'indie',      'stage' =&gt; 'second', 'hour' =&gt; 17, 'confirmed' =&gt; true],
+    ['name' =&gt; 'Fontaines D.C.', 'genre' =&gt; 'rock',       'stage' =&gt; 'second', 'hour' =&gt; 19, 'confirmed' =&gt; true],
+    ['name' =&gt; 'Four Tet',       'genre' =&gt; 'electronic', 'stage' =&gt; 'tent',   'hour' =&gt; 20, 'confirmed' =&gt; false],
+    ['name' =&gt; 'Bicep',          'genre' =&gt; 'electronic', 'stage' =&gt; 'tent',   'hour' =&gt; 22, 'confirmed' =&gt; true],
+    ['name' =&gt; 'Peggy Gou',      'genre' =&gt; 'electronic', 'stage' =&gt; 'main',   'hour' =&gt; 22, 'confirmed' =&gt; true],
+    ['name' =&gt; 'Arctic Monkeys', 'genre' =&gt; 'rock',       'stage' =&gt; 'main',   'hour' =&gt; 23, 'confirmed' =&gt; true],
+];
+
+// Challenge 1 — find the headliner (main stage, hour 23)
+// Old way:
+$headliner = null;
+foreach ($lineup as $act) {
+    if ($act['stage'] === 'main' &amp;&amp; $act['hour'] === 23) {
+        $headliner = $act;
+        break;
+    }
+}
+echo $headliner['name'] . PHP_EOL; // Arctic Monkeys
+// TODO: replace with array_find()
+
+
+// Challenge 2 — find the index of the unconfirmed act
+// Old way:
+$pendingKey = null;
+foreach ($lineup as $key =&gt; $act) {
+    if (!$act['confirmed']) {
+        $pendingKey = $key;
+        break;
+    }
+}
+echo $pendingKey . PHP_EOL; // 2
+// TODO: replace with array_find_key()
+
+
+// Challenge 3 — does any act play electronic?
+// Old way:
+$hasElectronic = false;
+foreach ($lineup as $act) {
+    if ($act['genre'] === 'electronic') {
+        $hasElectronic = true;
+        break;
+    }
+}
+echo $hasElectronic ? 'yes' : 'no';
+echo PHP_EOL; // yes
+// TODO: replace with array_any()
+
+
+// Challenge 4 — are all acts confirmed?
+// Old way:
+$allConfirmed = true;
+foreach ($lineup as $act) {
+    if (!$act['confirmed']) {
+        $allConfirmed = false;
+        break;
+    }
+}
+echo $allConfirmed ? 'ready to go!' : 'still waiting on acts';
+echo PHP_EOL; // still waiting on acts
+// TODO: replace with array_all()
+
+
+// Challenge 5 — who opens and who closes?
+// Old way:
+$sorted = $lineup;
+usort($sorted, fn($a, $b) =&gt; $a['hour'] &lt;=&gt; $b['hour']);
+$opener = reset($sorted); // first element
+$closer = end($sorted);   // last element
+echo $opener['name'] . ' opens, ' . $closer['name'] . ' closes' . PHP_EOL;
+// Wet Leg opens, Arctic Monkeys closes
+// TODO: replace reset() / end() with array_first() / array_last()
+</code></pre>
+            </div>
+
+            <h3>🎯 Your challenges</h3>
+            <ol class="challenges">
+                <li>
+                    <strong>Find the headliner.</strong> Use <code>array_find()</code> to get the act
+                    on the <code>main</code> stage at hour 23. Print their name.
+                </li>
+                <li>
+                    <strong>Find the problem slot.</strong> Use <code>array_find_key()</code> to find
+                    the array index of the act that is <em>not</em> confirmed yet. Print the index.
+                </li>
+                <li>
+                    <strong>Genre check.</strong> Use <code>array_any()</code> to check whether
+                    <em>any</em> act plays the <code>electronic</code> genre. Print <code>yes</code>
+                    or <code>no</code>.
+                </li>
+                <li>
+                    <strong>Readiness check.</strong> Use <code>array_all()</code> to verify whether
+                    <em>all</em> acts are confirmed. Print <code>ready to go!</code> or
+                    <code>still waiting on acts</code>.
+                </li>
+                <li>
+                    <strong>First and last.</strong> Sort a copy of the lineup by <code>hour</code>
+                    (use <code>usort()</code>), then use <code>array_first()</code> and
+                    <code>array_last()</code> to print who opens and who closes the festival.
+                </li>
+                <li>
+                    <strong>🎁 Bonus.</strong> Confirm Four Tet (set <code>confirmed</code> to
+                    <code>true</code> in the original <code>$lineup</code> entry you found in
+                    challenge 2), then assert that <code>array_all()</code> now returns
+                    <code>true</code>.
+                </li>
+                <li>
+                    <strong>🎁 Bonus bonus.</strong> What does <code>array_find()</code> return when
+                    nothing matches? What about <code>array_all()</code> on an empty array? Write a
+                    small test to find out and explain the result.
+                </li>
+            </ol>
+
+            <details class="hint">
+                <summary>💡 Hint — signatures at a glance</summary>
+                <pre class="code-block"><code>// PHP 8.4
+array_find(array $array, callable $callback): mixed        // first value where callback returns true, or null
+array_find_key(array $array, callable $callback): mixed    // key of that value, or null
+array_any(array $array, callable $callback): bool          // true if ANY element matches
+array_all(array $array, callable $callback): bool          // true if ALL elements match (vacuously true for [])
+
+// PHP 8.5
+array_first(array $array): mixed                           // first value, or null for empty array
+array_last(array $array): mixed                            // last value, or null for empty array
+
+// usage pattern:
+$match = array_find($lineup, fn($act) =&gt; $act['stage'] === 'main');
+$key   = array_find_key($lineup, fn($act) =&gt; $act['hour'] &gt; 22);</code></pre>
+            </details>
+
+            <details class="solution">
+                <summary>✅ Show one possible solution</summary>
+                <div class="solution-quiz" data-quiz="3">
+                    <p class="quiz-intro">Answer both questions correctly to unlock the solution.</p>
+
+                    <div class="quiz-question">
+                        <p><strong>1.</strong> What does <code>array_find()</code> return?</p>
+                        <label><input type="radio" name="q3_1" value="a"> All elements that match the callback, as a new array.</label>
+                        <label><input type="radio" name="q3_1" value="b"> The <em>first</em> value for which the callback returns <code>true</code>, or <code>null</code> if nothing matches.</label>
+                        <label><input type="radio" name="q3_1" value="c"> The <em>last</em> value for which the callback returns <code>true</code>.</label>
+                        <label><input type="radio" name="q3_1" value="d"> A boolean — <code>true</code> if any element matches, <code>false</code> otherwise.</label>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>2.</strong> What is the difference between <code>array_any()</code> and <code>array_all()</code>?</p>
+                        <label><input type="radio" name="q3_2" value="a"> <code>array_any()</code> checks only the first element; <code>array_all()</code> checks every element.</label>
+                        <label><input type="radio" name="q3_2" value="b"> <code>array_any()</code> returns <code>true</code> if <em>at least one</em> element matches; <code>array_all()</code> returns <code>true</code> only if <em>every</em> element matches.</label>
+                        <label><input type="radio" name="q3_2" value="c"> They do the same thing — <code>array_all()</code> is just an alias.</label>
+                        <label><input type="radio" name="q3_2" value="d"> <code>array_any()</code> returns the matching element; <code>array_all()</code> returns a boolean.</label>
+                    </div>
+
+                    <button class="quiz-check-btn" data-answers="b,b">Check answers</button>
+                    <p class="quiz-feedback" aria-live="polite"></p>
+                </div>
+                <div class="solution-code" hidden>
+                <pre class="code-block"><code>&lt;?php
+
+$lineup = [
+    ['name' =&gt; 'Wet Leg',        'genre' =&gt; 'indie',      'stage' =&gt; 'second', 'hour' =&gt; 17, 'confirmed' =&gt; true],
+    ['name' =&gt; 'Fontaines D.C.', 'genre' =&gt; 'rock',       'stage' =&gt; 'second', 'hour' =&gt; 19, 'confirmed' =&gt; true],
+    ['name' =&gt; 'Four Tet',       'genre' =&gt; 'electronic', 'stage' =&gt; 'tent',   'hour' =&gt; 20, 'confirmed' =&gt; false],
+    ['name' =&gt; 'Bicep',          'genre' =&gt; 'electronic', 'stage' =&gt; 'tent',   'hour' =&gt; 22, 'confirmed' =&gt; true],
+    ['name' =&gt; 'Peggy Gou',      'genre' =&gt; 'electronic', 'stage' =&gt; 'main',   'hour' =&gt; 22, 'confirmed' =&gt; true],
+    ['name' =&gt; 'Arctic Monkeys', 'genre' =&gt; 'rock',       'stage' =&gt; 'main',   'hour' =&gt; 23, 'confirmed' =&gt; true],
+];
+
+// 1. Find the headliner (PHP 8.4)
+$headliner = array_find($lineup, fn($act) =&gt; $act['stage'] === 'main' &amp;&amp; $act['hour'] === 23);
+echo $headliner['name'] . PHP_EOL; // Arctic Monkeys
+
+// 2. Find the unconfirmed act's index (PHP 8.4)
+$pendingKey = array_find_key($lineup, fn($act) =&gt; !$act['confirmed']);
+echo $pendingKey . PHP_EOL; // 2
+
+// 3. Any electronic acts? (PHP 8.4)
+$hasElectronic = array_any($lineup, fn($act) =&gt; $act['genre'] === 'electronic');
+echo $hasElectronic ? 'yes' : 'no'; // yes
+echo PHP_EOL;
+
+// 4. All confirmed? (PHP 8.4)
+$allConfirmed = array_all($lineup, fn($act) =&gt; $act['confirmed']);
+echo $allConfirmed ? 'ready to go!' : 'still waiting on acts'; // still waiting on acts
+echo PHP_EOL;
+
+// 5. Opening and closing acts (PHP 8.5)
+$sorted = $lineup;
+usort($sorted, fn($a, $b) =&gt; $a['hour'] &lt;=&gt; $b['hour']);
+$opener = array_first($sorted);
+$closer = array_last($sorted);
+echo $opener['name'] . ' opens, ' . $closer['name'] . ' closes' . PHP_EOL;
+// Wet Leg opens, Arctic Monkeys closes
+
+// Bonus: confirm Four Tet and re-check
+$lineup[$pendingKey]['confirmed'] = true;
+echo array_all($lineup, fn($act) =&gt; $act['confirmed']) ? 'ready to go!' : 'still waiting on acts';
+echo PHP_EOL; // ready to go!</code></pre>
+                </div><!-- /.solution-code -->
+            </details>
+
+            <div class="rules-box" style="margin-top:1rem;">
+                <strong>🧪 Think about it:</strong> <code>array_find()</code> returns <code>null</code> on no match — but what if a valid element <em>in your array</em> is <code>null</code>? How would you tell the difference? Try <code>array_find_key()</code> instead and check for <code>null</code> there.
+            </div>
+        </div>
+    </section>
+
+    <nav class="exercise-nav exercise-nav--bottom">
+        <a href="exercise-2.html" class="exercise-nav-link"><i class="fas fa-arrow-left"></i> Exercise 2 — The Pancake Builder</a>
+        <a href="./" class="exercise-nav-link">Back to overview <i class="fas fa-list"></i></a>
+    </nav>
+
+</main>
+
+<div id="toast" class="toast">Copied to clipboard!</div>
+
+<script src="../../js/script.js"></script>
+<script src="../../js/php-workshop.js"></script>
+</body>
+</html>

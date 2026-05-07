@@ -93,6 +93,11 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--groningen-blue);
 }
 
+.nav-menu a.active {
+    color: var(--groningen-green);
+    font-weight: 700;
+}
+
 .social-links {
     display: flex;
     gap: 15px;

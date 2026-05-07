@@ -1,0 +1,660 @@
+/* Additions on top of ai-powered.css for the PHP 8.4/8.5 workshop page */
+
+/* Setup cards grid (numbered options for getting PHP 8.5 running) */
+.setup-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.setup-card {
+    position: relative;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.setup-card.recommended {
+    border-color: #1b8e2d;
+    box-shadow: 0 0 0 2px rgba(27, 142, 45, 0.15);
+}
+
+.setup-badge {
+    position: absolute;
+    top: -10px;
+    right: 12px;
+    background: #1b8e2d;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+}
+
+.setup-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    color: #2d3748;
+}
+
+.setup-card p {
+    font-size: 0.92rem;
+    color: #4a5568;
+    margin: 0;
+}
+
+.setup-card p a,
+.setup-card > p a {
+    color: #1b8e2d;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.setup-card p a:hover,
+.setup-card > p a:hover {
+    color: #166124;
+}
+
+.setup-card code {
+    background: #f1f5f9;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 0.88em;
+}
+
+.setup-card pre {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 0.75rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 0.82rem;
+    margin: 0.25rem 0;
+}
+
+.setup-card pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+}
+
+/* Exercise section */
+.exercise-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+.exercise-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.exercise-header h2 {
+    color: #1b8e2d;
+    margin: 0.25rem 0;
+}
+
+.exercise-header .subtext {
+    margin-top: 1rem;
+}
+
+.version-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.version-badge.v84 { background: #DA121A; }  /* Groningen red */
+.version-badge.v85 { background: #0F47AF; }  /* Groningen blue */
+
+.feature-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #e8f5e9;
+    color: #1b8e2d;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-right: 6px;
+    border: 1px solid #c8e6c9;
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.feature-pill a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.feature-pill a:hover {
+    text-decoration: underline;
+}
+
+.pill-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.feature-pill code {
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+}
+
+.exercise-body h3 {
+    color: #2d3748;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.exercise-body > h3:first-child {
+    margin-top: 0;
+}
+
+/* Code blocks inside exercises */
+.code-block {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 1.25rem;
+    border-radius: 0;
+    overflow-x: auto;
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    margin: 0;
+}
+
+.code-block code {
+    font-family: inherit;
+    color: inherit;
+    background: transparent;
+    padding: 0;
+}
+
+/* When code-block is inside a prompt-card, strip the prompt-content padding and let the pre fill */
+.prompt-card .code-block {
+    border-radius: 0;
+}
+
+/* Challenges list */
+.challenges {
+    list-style: decimal;
+    padding-left: 1.5rem;
+    margin: 0.5rem 0 1rem;
+}
+
+.challenges > li {
+    margin-bottom: 0.65rem;
+    line-height: 1.6;
+}
+
+.challenges ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin-top: 0.35rem;
+}
+
+.challenges code,
+.exercise-body p code {
+    background: #f1f5f9;
+    color: #be185d;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 0.88em;
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+}
+
+/* Collapsible hint / solution */
+details.hint,
+details.solution {
+    margin: 1rem 0;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+}
+
+details.hint {
+    background: #fffbea;
+    border-color: #fde68a;
+}
+
+details.solution {
+    background: #f1f8e9;
+    border-color: #c8e6c9;
+}
+
+details summary {
+    cursor: pointer;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    user-select: none;
+    list-style: none;
+}
+
+details summary::-webkit-details-marker { display: none; }
+
+details summary::before {
+    content: '▸ ';
+    display: inline-block;
+    transition: transform 0.2s;
+}
+
+details[open] summary::before {
+    transform: rotate(90deg);
+}
+
+details.hint summary { color: #92400e; }
+details.solution summary { color: #1b8e2d; }
+
+details .code-block {
+    border-radius: 0;
+    margin: 0;
+}
+
+/* Exercise index cards (overview page) */
+.exercise-index {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1rem;
+}
+
+.exercise-index-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    background: white;
+    border: 2px solid #c8e6c9;
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+.exercise-index-card:hover {
+    border-color: #1b8e2d;
+    box-shadow: 0 4px 16px rgba(27, 142, 45, 0.15);
+    transform: translateY(-2px);
+}
+
+.exercise-index-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.exercise-index-card__number {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.exercise-index-card h3 {
+    font-size: 1.2rem;
+    color: #1b8e2d;
+    margin: 0;
+}
+
+.exercise-index-card p {
+    font-size: 0.92rem;
+    color: #4a5568;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.exercise-index-card__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.exercise-index-card__cta {
+    margin-top: auto;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1b8e2d;
+}
+
+/* Exercise prev/next navigation */
+.exercise-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.exercise-nav--bottom {
+    margin-top: 1.5rem;
+    margin-bottom: 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eaeaea;
+}
+
+.exercise-nav-position {
+    font-size: 0.85rem;
+    color: #718096;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.exercise-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #1b8e2d;
+    background: #e8f5e9;
+    border: 1px solid #c8e6c9;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+}
+
+.exercise-nav-link:hover {
+    background: #d4edda;
+    border-color: #1b8e2d;
+}
+
+.exercise-nav-link--next {
+    margin-left: auto;
+}
+
+@media (max-width: 600px) {
+    .exercise-nav { flex-wrap: wrap; }
+    .exercise-nav-link--next { margin-left: 0; }
+}
+
+/* ── Workshop index page ─────────────────────────────────────────── */
+
+.workshop-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.workshop-card {
+    display: flex;
+    gap: 1.5rem;
+    background: white;
+    border: 2px solid #c8e6c9;
+    border-radius: 12px;
+    padding: 1.75rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    align-items: flex-start;
+}
+
+.workshop-card:hover {
+    border-color: #1b8e2d;
+    box-shadow: 0 4px 20px rgba(27, 142, 45, 0.15);
+    transform: translateY(-2px);
+}
+
+.workshop-card__date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #1b8e2d;
+    color: white;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    min-width: 72px;
+    text-align: center;
+    flex-shrink: 0;
+    line-height: 1.1;
+}
+
+.workshop-card__month {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.9;
+}
+
+.workshop-card__day {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin: 2px 0;
+}
+
+.workshop-card__year {
+    font-size: 0.7rem;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.workshop-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.workshop-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.workshop-card__exercises {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 4px;
+}
+
+.workshop-card h3 {
+    font-size: 1.3rem;
+    color: #1a202c;
+    margin: 0;
+}
+
+.workshop-card p {
+    font-size: 0.95rem;
+    color: #4a5568;
+    margin: 0;
+    line-height: 1.55;
+}
+
+.workshop-card__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.workshop-card__cta {
+    margin-top: 0.25rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #1b8e2d;
+}
+
+.workshop-card__prev-editions {
+    font-size: 0.82rem;
+    color: #718096;
+    margin: 0;
+}
+
+.workshop-card__lan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffc107;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    margin-left: 4px;
+    white-space: nowrap;
+}
+
+/* LAN-only card gets an amber accent instead of green */
+.workshop-card--lan {
+    border-color: #ffc107;
+}
+
+.workshop-card--lan:hover {
+    border-color: #e0a800;
+    box-shadow: 0 4px 20px rgba(255, 193, 7, 0.2);
+}
+
+.workshop-card--lan .workshop-card__date {
+    background: #856404;
+}
+
+.workshop-card--lan .workshop-card__cta {
+    color: #856404;
+}
+
+/* Security-themed feature pills (CTF) */
+.feature-pill--security {
+    background: #fef9e7;
+    color: #7d6608;
+    border-color: #f9e79f;
+    gap: 6px;
+}
+
+.feature-pill--security i {
+    font-size: 0.75em;
+    opacity: 0.8;
+}
+.nav-menu a.active {
+    color: #1b8e2d;
+    font-weight: 700;
+}
+
+/* Workshop date badge (shown next to the h2 on the overview page) */
+.workshop-date-badge {
+    display: inline-block;
+    background: #e8f5e9;
+    color: #1b8e2d;
+    border: 1px solid #c8e6c9;
+    border-radius: 999px;
+    font-size: 0.7em;
+    font-weight: 600;
+    padding: 2px 12px;
+    vertical-align: middle;
+    margin-left: 0.5rem;
+    letter-spacing: 0.3px;
+}
+
+/* Mobile tweaks */
+@media (max-width: 768px) {
+    .setup-grid { grid-template-columns: 1fr; }
+    .exercise-section { padding: 1.25rem; }
+    .code-block { font-size: 0.8rem; padding: 0.9rem; }
+    .workshop-card { flex-direction: column; gap: 1rem; }
+    .workshop-card__date { flex-direction: row; gap: 0.5rem; align-items: baseline; min-width: unset; width: fit-content; padding: 0.5rem 0.9rem; }
+    .workshop-card__day { font-size: 1.4rem; }
+}
+
+/* Solution quiz gate */
+.solution-quiz {
+    padding: 1rem 1.25rem 0.75rem;
+    background: #f1f8e9;
+    border-bottom: 1px solid #c8e6c9;
+}
+
+.quiz-intro {
+    font-size: 0.9rem;
+    color: #4a5568;
+    margin: 0 0 1rem;
+}
+
+.quiz-question {
+    margin-bottom: 1rem;
+}
+
+.quiz-question p {
+    margin: 0 0 0.5rem;
+    font-size: 0.92rem;
+    color: #2d3748;
+}
+
+.quiz-question label {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 5px 8px;
+    border-radius: 5px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    color: #2d3748;
+    transition: background 0.15s;
+}
+
+.quiz-question label:hover {
+    background: #e8f5e9;
+}
+
+.quiz-question input[type="radio"] {
+    flex-shrink: 0;
+    margin-top: 2px;
+    accent-color: #1b8e2d;
+}
+
+.quiz-check-btn {
+    margin-top: 0.25rem;
+    padding: 7px 18px;
+    background: #1b8e2d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.quiz-check-btn:hover { background: #166124; }
+.quiz-check-btn:disabled { background: #a0aec0; cursor: default; }
+
+.quiz-feedback {
+    margin: 0.6rem 0 0.25rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    min-height: 1.2em;
+}
+
+.quiz-feedback.correct { color: #1b8e2d; }
+.quiz-feedback.wrong   { color: #c0392b; }

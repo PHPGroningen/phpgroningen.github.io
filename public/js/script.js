@@ -85,7 +85,34 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Update current year in footer
-    document.getElementById('current-year').innerText = new Date().getFullYear();
+    const yearEl = document.getElementById('current-year');
+    if (yearEl) yearEl.innerText = new Date().getFullYear();
+
+    // Scroll spy — highlight the nav item for the section currently in view
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+
+    if (sections.length && navLinks.length) {
+        const HEADER_HEIGHT = 80; // fixed header + a small buffer
+
+        function updateScrollSpy() {
+            const scrollPos = window.scrollY + HEADER_HEIGHT;
+            let currentId = sections[0].id; // default to first section
+
+            sections.forEach(section => {
+                if (section.offsetTop <= scrollPos) {
+                    currentId = section.id;
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === `#${currentId}`);
+            });
+        }
+
+        window.addEventListener('scroll', updateScrollSpy, { passive: true });
+        updateScrollSpy(); // set correct state on page load
+    }
 });
 
 // Fixed Infinite Scroll Sponsor Carousel Functionality

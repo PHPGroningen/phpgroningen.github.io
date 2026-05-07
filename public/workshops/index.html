@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroningenPHP - Workshops</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/ai-powered.css">
+    <link rel="stylesheet" href="../css/php-workshop.css">
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" sizes="any"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="shortcut icon" href="../favicon.ico"/>
+</head>
+<body>
+<header class="header">
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="../images/GroningenPHP-LOGO.png" alt="GroningenPHP Logo" class="logo-image">
+                <h1>GroningenPHP</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/index.html#home">Home</a></li>
+                <li><a href="/index.html#about">About</a></li>
+                <li><a href="/index.html#events">Events</a></li>
+                <li><a href="/index.html#sponsors">Sponsors</a></li>
+                <li><a href="/index.html#contact">Contact</a></li>
+                <li><a href="/workshops/" class="active">Workshops</a></li>
+            </ul>
+            <div class="social-links">
+                <a href="https://www.youtube.com/@GroningenPHP/videos" target="_blank" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://x.com/groningenphp/" target="_blank" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/groups/13836983/" target="_blank" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+    <section class="intro-section">
+        <h2>🛠️ Workshops</h2>
+        <div class="instruction-box">
+            <p class="lead">Hands-on coding sessions hosted at GroningenPHP meetups. Each workshop is self-contained — all you need is a browser or a local PHP install.</p>
+            <p>Pick an edition below and work through the exercises at your own pace. Solutions are gated behind short quiz questions so you can check your understanding first.</p>
+        </div>
+    </section>
+
+    <div class="workshop-list">
+
+        <!-- === May 2026 === -->
+        <a href="php-84-85/" class="workshop-card">
+            <div class="workshop-card__date">
+                <span class="workshop-card__month">May</span>
+                <span class="workshop-card__day">7</span>
+                <span class="workshop-card__year">2026</span>
+            </div>
+            <div class="workshop-card__body">
+                <div class="workshop-card__meta">
+                    <span class="version-badge v84">PHP 8.4</span>
+                    <span class="version-badge v85">PHP 8.5</span>
+                    <span class="workshop-card__exercises">3 exercises</span>
+                </div>
+                <h3>PHP 8.4 &amp; 8.5 — New Features Workshop</h3>
+                <p>Explore property hooks, asymmetric visibility, the pipe operator, clone-with, and six brand-new array functions — through three focused, hands-on exercises.</p>
+                <div class="workshop-card__pills">
+                    <span class="feature-pill"><img src="../images/php-favicon.png" class="pill-icon" alt="PHP" />Property Hooks</span>
+                    <span class="feature-pill"><img src="../images/php-favicon.png" class="pill-icon" alt="PHP" />Asymmetric Visibility</span>
+                    <span class="feature-pill"><img src="../images/php-favicon.png" class="pill-icon" alt="PHP" />Pipe Operator <code>|&gt;</code></span>
+                    <span class="feature-pill"><img src="../images/php-favicon.png" class="pill-icon" alt="PHP" />Clone With</span>
+                    <span class="feature-pill"><img src="../images/php-favicon.png" class="pill-icon" alt="PHP" />array_find() &amp; friends</span>
+                </div>
+                <span class="workshop-card__cta">View exercises <i class="fas fa-arrow-right"></i></span>
+            </div>
+        </a>
+
+        <!-- === CTF (recurring: Aug 2025 / Dec 2025 / Apr 2026) === -->
+        <a href="http://ctf2025.ctf.groningenphp.nl/" class="workshop-card workshop-card--lan" target="_blank" rel="noopener">
+            <div class="workshop-card__date">
+                <span class="workshop-card__month">Apr</span>
+                <span class="workshop-card__day">1</span>
+                <span class="workshop-card__year">2026</span>
+            </div>
+            <div class="workshop-card__body">
+                <div class="workshop-card__meta">
+                    <span class="version-badge" style="background:#c0392b;">Security</span>
+                    <span class="workshop-card__exercises">9 challenges</span>
+                    <span class="workshop-card__lan-badge"><i class="fas fa-network-wired"></i> LAN only</span>
+                </div>
+                <h3>PHP Security — Capture The Flag</h3>
+                <p>Nine hands-on security challenges covering classic web attack vectors. Work through each level to steal the flag. Available on the local network at <strong>ctf2025.ctf.groningenphp.nl</strong>.</p>
+                <p class="workshop-card__prev-editions"><i class="fas fa-history"></i> Previous editions: Aug 21, 2025 &nbsp;·&nbsp; Dec 11, 2025</p>
+                <div class="workshop-card__pills">
+                    <span class="feature-pill feature-pill--security"><i class="fas fa-lock"></i> Credentials</span>
+                    <span class="feature-pill feature-pill--security"><i class="fas fa-lock"></i> Broken Access Control</span>
+                    <span class="feature-pill feature-pill--security"><i class="fas fa-lock"></i> SQL Injection</span>
+                    <span class="feature-pill feature-pill--security"><i class="fas fa-lock"></i> Local File Inclusion</span>
+                    <span class="feature-pill feature-pill--security"><i class="fas fa-lock"></i> Hash Juggling</span>
+                    <span class="feature-pill feature-pill--security"><i class="fas fa-lock"></i> Stored XSS</span>
+                    <span class="feature-pill feature-pill--security"><i class="fas fa-lock"></i> Dangerous Uploads</span>
+                    <span class="feature-pill feature-pill--security"><i class="fas fa-lock"></i> Insecure Design</span>
+                    <span class="feature-pill feature-pill--security"><i class="fas fa-lock"></i> Supply Chain</span>
+                </div>
+                <span class="workshop-card__cta">Open CTF <i class="fas fa-external-link-alt"></i></span>
+            </div>
+        </a>
+
+        <!-- Add future workshops above this comment -->
+
+    </div>
+
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-logo">
+                    <img src="../images/GroningenPHP-LOGO.png" alt="GroningenPHP Logo" class="footer-logo-image">
+                    <h3>GroningenPHP</h3>
+                </div>
+                <p>PHP developers in Groningen meeting, sharing knowledge, and having fun!</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/index.html#about">About</a></li>
+                    <li><a href="/index.html#events">Events</a></li>
+                    <li><a href="/workshops/">Workshops</a></li>
+                    <li><a href="/index.html#sponsors">Sponsors</a></li>
+                    <li><a href="/index.html#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Connect</h4>
+                <div class="footer-social">
+                    <a href="https://www.meetup.com/groningenphp/" target="_blank"><i class="fas fa-calendar"></i></a>
+                    <a href="https://www.youtube.com/@GroningenPHP/videos" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="https://x.com/groningenphp/" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.linkedin.com/groups/13836983/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="current-year">2026</span> GroningenPHP. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="../js/script.js"></script>
+</body>
+</html>
