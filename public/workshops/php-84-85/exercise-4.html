@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroningenPHP - Exercise 4: PHP Attributes</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/ai-powered.css">
+    <link rel="stylesheet" href="../../css/php-workshop.css">
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon" sizes="any"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="shortcut icon" href="../../favicon.ico"/>
+</head>
+<body>
+<header class="header">
+    <nav class="nav">
+        <div class="nav-container">
+            <a class="logo" href="/index.html">
+                <img src="../../images/GroningenPHP-LOGO.png" alt="GroningenPHP Logo" class="logo-image">
+                <h1>GroningenPHP</h1>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="/index.html#home">Home</a></li>
+                <li><a href="/index.html#about">About</a></li>
+                <li><a href="/index.html#events">Events</a></li>
+                <li><a href="/index.html#sponsors">Sponsors</a></li>
+                <li><a href="/index.html#contact">Contact</a></li>
+                <li><a href="/workshops/" class="active">Workshops</a></li>
+            </ul>
+            <div class="social-links">
+                <a href="https://www.youtube.com/@GroningenPHP/videos" target="_blank" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://x.com/groningenphp/" target="_blank" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/groups/13836983/" target="_blank" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+
+    <nav class="exercise-nav">
+        <a href="exercise-3.html" class="exercise-nav-link"><i class="fas fa-arrow-left"></i> Exercise 3</a>
+        <span class="exercise-nav-position">Exercise 4 of 4</span>
+        <a href="./" class="exercise-nav-link">Back to overview <i class="fas fa-list"></i></a>
+    </nav>
+
+    <!-- EXERCISE 4 -->
+    <section class="exercise-section">
+        <div class="exercise-header">
+            <span class="version-badge v80">PHP 8.0+</span>
+            <span class="version-badge v84" style="margin-left:4px;">PHP 8.4</span>
+            <span class="version-badge v85" style="margin-left:4px;">PHP 8.5</span>
+            <h2>🏷️ Exercise 4 — PHP Attributes</h2>
+            <div class="features-row">
+                <span class="features-label">Features:</span>
+                <div class="features-pills">
+                    <span class="feature-pill"><a href="https://www.php.net/manual/en/language.attributes.overview.php"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />#[Attribute]</a></span>
+                    <span class="feature-pill"><a href="https://www.php.net/manual/en/class.sensitiveparameter.php"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />#[SensitiveParameter]</a></span>
+                    <span class="feature-pill"><a href="https://www.php.net/manual/en/class.override.php"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />#[Override]</a></span>
+                    <span class="feature-pill"><a href="https://www.php.net/manual/en/class.deprecated.php"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />#[\Deprecated]</a></span>
+                    <span class="feature-pill"><a href="https://www.php.net/manual/en/class.nodiscard.php"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />#[NoDiscard]</a></span>
+                    <span class="feature-pill"><a href="https://www.php.net/manual/en/language.attributes.overview.php"><img src="../../images/php-favicon.png" class="pill-icon" alt="PHP" />DelayedTargetValidation</a></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="exercise-body">
+            <h3>📖 The setup</h3>
+
+            <h3 style="margin-top:1rem;">What is an attribute?</h3>
+            <p>
+                An <strong>attribute</strong> is a label you stick on a piece of code to say something <em>about</em> it —
+                without changing what the code <em>does</em>. Think of it like a sticky note on a file folder:
+                the note doesn't change what's in the folder, but anyone who reads it knows something extra about it.
+            </p>
+            <p>
+                In PHP, attributes use the <code>#[…]</code> syntax and live directly above the thing they describe:
+            </p>
+            <pre class="code-block"><code>#[Route('/users')]          // ← the attribute (a label)
+public function list(): string  // ← the thing being labelled
+{
+    return json_encode(['alice', 'bob', 'charlie']);
+}</code></pre>
+            <p>
+                That's it. The attribute doesn't do anything by itself. It just stores information.
+                Something else — your framework, a library, or your own code — can read that label later
+                and decide what to do with it.
+            </p>
+
+            <h3>Why not just use a comment?</h3>
+            <p>
+                Before PHP 8.0, the common trick was a <strong>docblock annotation</strong>:
+            </p>
+            <pre class="code-block"><code>/** @Route("/users") */       // ← old style: just a comment
+public function list(): string { ... }</code></pre>
+            <p>
+                This works, but PHP has no idea what <code>@Route</code> means. It's just a string inside a comment —
+                the engine ignores it completely. A library like Doctrine or Symfony had to parse those comment strings
+                itself with regex, which is slow, fragile, and gives you zero editor support.
+            </p>
+            <p>
+                <strong>Attributes are real PHP syntax.</strong> The engine knows about them, validates them,
+                and makes them available through the <strong>Reflection API</strong> with zero string parsing.
+                Your IDE understands them too — you get autocomplete, type checking, and rename refactoring for free.
+            </p>
+
+            <h3>How do you create your own attribute?</h3>
+            <p>
+                You write a normal PHP class and put <code>#[Attribute]</code> on it.
+                That's the signal to PHP: <em>"this class can be used as an attribute"</em>.
+            </p>
+            <pre class="code-block"><code>#[Attribute]           // 1. mark it as an attribute
+class Route
+{
+    public function __construct(
+        public readonly string $path,
+        public readonly string $method = 'GET',
+    ) {}
+}
+
+// 2. use it anywhere
+#[Route('/users', method: 'POST')]
+public function create(): string { ... }
+
+// 3. read it with Reflection
+$ref   = new ReflectionClass(UserController::class);
+$attrs = $ref-&gt;getMethod('create')-&gt;getAttributes(Route::class);
+$route = $attrs[0]-&gt;newInstance();   // returns a Route object
+echo $route-&gt;path;   // /users
+echo $route-&gt;method; // POST</code></pre>
+            <p>
+                <code>newInstance()</code> is where the attribute class is actually constructed.
+                Before that call nothing happens — attributes are <strong>lazy</strong>.
+                Scanning an entire file full of attributes costs almost nothing unless you ask for them.
+            </p>
+
+            <h3>Built-in attributes PHP ships with</h3>
+            <p>
+                You don't need to create all attributes yourself. PHP comes with several ready-made ones:
+            </p>
+            <table style="width:100%;border-collapse:collapse;font-size:0.9rem;margin-bottom:0.5rem;">
+                <thead>
+                    <tr style="background:#f1f5f9;text-align:left;">
+                        <th style="padding:8px 12px;border:1px solid #e2e8f0;">Attribute</th>
+                        <th style="padding:8px 12px;border:1px solid #e2e8f0;">Since</th>
+                        <th style="padding:8px 12px;border:1px solid #e2e8f0;">What it does</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;"><code>#[Attribute]</code></td>
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;">8.0</td>
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;">Marks a class so it can be used as a custom attribute</td>
+                    </tr>
+                    <tr style="background:#f8fafc;">
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;"><code>#[SensitiveParameter]</code></td>
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;">8.2</td>
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;">Hides a parameter's value in stack traces — great for passwords</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;"><code>#[Override]</code></td>
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;">8.3</td>
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;">Documents that a method intentionally overrides a parent — PHP throws a compile error if the parent method ever disappears</td>
+                    </tr>
+                    <tr style="background:#f8fafc;">
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;"><code>#[\Deprecated]</code></td>
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;">8.4</td>
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;">Marks a function or method as deprecated — PHP itself will emit a deprecation notice when it's called</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;"><code>#[NoDiscard]</code></td>
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;">8.5</td>
+                        <td style="padding:8px 12px;border:1px solid #e2e8f0;">Warns when a function's return value is silently ignored — useful for functions like <code>getUserById()</code> where ignoring the result is almost certainly a bug</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="rules-box">
+                <strong>New in PHP 8.5 — <code>DELAYED_TARGET_VALIDATION</code>:</strong>
+                Normally PHP checks at compile time whether an attribute is placed on a valid target
+                (e.g. a method-only attribute on a property causes an immediate error).
+                With <code>Attribute::DELAYED_TARGET_VALIDATION</code> that check is postponed until
+                <code>newInstance()</code> is called. This is mainly useful for library authors who want
+                to load files without crashing and only validate attributes when they're actually used.
+            </div>
+
+            <h3>🧱 Starter code</h3>
+            <p>Run this file right now — it already produces output on every section.
+            Your job is to replace each docblock or workaround with the proper PHP attribute and run again to see what changes.</p>
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>attributes.php — starter</h3>
+                    <button class="copy-btn" aria-label="Copy code"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <pre class="code-block"><code>&lt;?php
+
+// ═══════════════════════════════════════════════════════════════════════
+// Run this file as-is first: php attributes.php
+// Then replace each docblock / workaround with the proper PHP attribute.
+// ═══════════════════════════════════════════════════════════════════════
+
+
+// ── Challenge 1: Mark deprecated code ────────────────────────────────
+
+class UserController
+{
+    public function list(): string
+    {
+        return json_encode(['alice', 'bob', 'charlie']);
+    }
+
+    /**
+     * @deprecated since 2.0, use list() instead.
+     */
+    // TODO: replace the docblock above with the built-in #[\Deprecated] attribute,
+    //       set the message to 'Use list() instead' and the since version to '2.0'
+    public function getAll(): string
+    {
+        return $this-&gt;list();
+    }
+}
+
+$ctrl = new UserController();
+echo '1. Users: ' . $ctrl-&gt;getAll() . PHP_EOL;
+echo PHP_EOL;
+
+
+// ── Challenge 2: Protect a sensitive parameter ────────────────────────
+
+function login(string $username, string $password): bool
+{
+    // TODO: add the built-in #[SensitiveParameter] attribute directly before $password above ↑
+    if ($username !== 'admin' || $password !== 'secret') {
+        throw new \InvalidArgumentException("Login failed for: {$username}");
+    }
+    return true;
+}
+
+try {
+    login('alice', 'hunter2');
+} catch (\Throwable $e) {
+    echo '2. Exception thrown. Stack trace:' . PHP_EOL;
+    echo $e . PHP_EOL;
+}
+echo PHP_EOL;
+
+
+// ── Challenge 3: Document an override ────────────────────────────────
+
+class Animal
+{
+    public function speak(): string { return '(silence)'; }
+}
+
+class Dog extends Animal
+{
+    /**
+     * @override
+     */
+    // TODO: replace the docblock above with the built-in #[Override] attribute
+    //       Then rename Animal::speak() to Animal::snore() and see what happens.
+    public function speak(): string { return 'Woof!'; }
+}
+
+echo '3. Dog says: ' . (new Dog())-&gt;speak() . PHP_EOL;
+echo PHP_EOL;
+
+
+// ── Challenge 4: Create a custom attribute + read it ─────────────────
+
+class ApiController
+{
+    /**
+     * @Route("/api/users", method="GET")
+     */
+    // TODO: replace with a #[Route] attribute — path '/api/users', default method
+    public function index(): string { return '[]'; }
+
+    /**
+     * @Route("/api/users/{id}", method="GET")
+     */
+    // TODO: replace with a #[Route] attribute — path '/api/users/{id}', default method
+    public function show(int $id): string { return '{"id":' . $id . '}'; }
+
+    /**
+     * @Route("/api/users", method="POST")
+     */
+    // TODO: replace with a #[Route] attribute — same path as index, but method POST
+    public function store(): string { return '{"created":true}'; }
+}
+
+// TODO: declare a Route attribute class — it needs a $path and an optional $method (default 'GET')
+// TODO: uncomment these lines once you've added the #[Route] attributes:
+// $ref = new ReflectionClass(ApiController::class);
+// foreach ($ref-&gt;getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
+//     foreach ($m-&gt;getAttributes(Route::class) as $attr) {
+//         $r = $attr-&gt;newInstance();
+//         printf("   %-6s %-25s → %s\n", $r-&gt;method, $r-&gt;path, $m-&gt;name);
+//     }
+// }
+echo '4. Routing table:' . PHP_EOL;
+echo '   (no routing table yet — complete challenge 4 to unlock this)' . PHP_EOL;
+echo PHP_EOL;
+
+
+// ── Challenge 5: Guard a return value (PHP 8.5) ──────────────────────
+
+/**
+ * @return array The user data. Do not ignore this return value!
+ */
+// TODO: replace the docblock above with the built-in #[NoDiscard] attribute,
+//       include a short message explaining why the return value matters
+function getUserById(int $id): array
+{
+    return ['id' =&gt; $id, 'name' =&gt; 'Alice'];
+}
+
+getUserById(1);                   // result silently thrown away
+$user = getUserById(2);           // result is used — this one should stay silent
+echo '5. Fetched user: ' . $user['name'] . PHP_EOL;
+echo PHP_EOL;
+</code></pre>
+            </div>
+
+            <h3>🎯 Your challenges</h3>
+            <ol class="challenges">
+                <li>
+                    <strong>Deprecate old code.</strong>
+                    Add <code>#[\Deprecated(message: 'Use list() instead', since: '2.0')]</code>
+                    directly above the <code>getAll()</code> method.
+                    Run the file — PHP will now print a deprecation notice alongside the output.
+                    <em>(Requires PHP 8.4.)</em>
+                </li>
+                <li>
+                    <strong>Protect a sensitive parameter.</strong>
+                    Add <code>#[SensitiveParameter]</code> directly in front of <code>$password</code>
+                    in the <code>login()</code> signature.
+                    Run the file again — the password <code>hunter2</code> in the stack trace
+                    should now read <code>Object(SensitiveParameterValue)</code>.
+                    <em>(PHP 8.2+)</em>
+                </li>
+                <li>
+                    <strong>Document the override.</strong>
+                    Add <code>#[Override]</code> to <code>Dog::speak()</code>.
+                    Then temporarily rename <code>Animal::speak()</code> to <code>Animal::snore()</code>
+                    and run the file — PHP will refuse to compile because the override is now invalid.
+                    Rename it back when done. <em>(PHP 8.3+)</em>
+                </li>
+                <li>
+                    <strong>Create a custom <code>Route</code> attribute.</strong>
+                    Declare a class with <code>#[Attribute]</code>, two constructor properties
+                    (<code>string $path</code> and <code>string $method = 'GET'</code>),
+                    then replace the <code>/** @Route */</code> docblocks on <code>ApiController</code>
+                    with real <code>#[Route(...)]</code> attributes.
+                    Finally, uncomment the Reflection block to print the routing table.
+                </li>
+                <li>
+                    <strong>Guard a return value with <code>#[NoDiscard]</code>. <span class="version-badge v85" style="font-size:0.65rem;padding:2px 8px;">PHP 8.5</span></strong>
+                    Add <code>#[NoDiscard('return value should not be ignored')]</code> above
+                    <code>getUserById()</code>.
+                    Run the file — the call on the first line (result discarded) will emit a notice;
+                    the second call (result assigned to <code>$user</code>) stays silent.
+                </li>
+                <li>
+                    <strong>Delay target validation. <span class="version-badge v85" style="font-size:0.65rem;padding:2px 8px;">PHP 8.5</span></strong>
+                    Update your <code>Route</code> attribute declaration to use
+                    <code>Attribute::TARGET_METHOD | Attribute::DELAYED_TARGET_VALIDATION</code>.
+                    Then add <code>#[Route('/bad')]</code> on a property of <code>ApiController</code>
+                    and verify that the file still <em>loads</em> without error — the violation is only
+                    caught when you call <code>newInstance()</code> on that attribute.
+                </li>
+                <li>
+                    <strong>🎁 Bonus — restrict targets without delay.</strong>
+                    Remove <code>DELAYED_TARGET_VALIDATION</code> again so only
+                    <code>Attribute::TARGET_METHOD</code> remains.
+                    Put <code>#[Route('/bad')]</code> on a property — PHP should now refuse to
+                    compile immediately. Spot the difference in <em>when</em> the error fires.
+                </li>
+            </ol>
+
+            <details class="hint">
+                <summary>💡 Hint — attribute syntax &amp; Reflection</summary>
+                <pre class="code-block"><code>// Declaring a custom attribute
+#[Attribute]                          // marks this class AS an attribute
+class Route
+{
+    public function __construct(
+        public readonly string $path,
+        public readonly string $method = 'GET',
+    ) {}
+}
+
+// Using an attribute (named arguments work great here)
+#[Route('/users', method: 'POST')]
+public function create(): string { ... }
+
+// Multiple attributes on one target — stack them or use a comma
+#[Route('/'), Route('/home')]
+public function home(): string { ... }
+
+// Built-in attributes need no import
+#[SensitiveParameter]          // PHP 8.2 — hides value in stack traces
+#[Override]                    // PHP 8.3 — fatal error if parent method doesn't exist
+#[\Deprecated(message: '...', since: '1.0')]  // PHP 8.4 — emits deprecation notice
+#[NoDiscard('reason')]         // PHP 8.5 — notice when return value is discarded
+
+// DELAYED_TARGET_VALIDATION (PHP 8.5) — defer where-can-this-be-used check
+#[Attribute(Attribute::TARGET_METHOD | Attribute::DELAYED_TARGET_VALIDATION)]
+class Route { ... }
+// Target errors only fire when you call $attr->newInstance(), not on file load.
+
+// Reading attributes at runtime
+$ref = new ReflectionClass(UserController::class);
+
+foreach ($ref-&gt;getMethods() as $method) {
+    $attrs = $method-&gt;getAttributes(Route::class);
+    foreach ($attrs as $attr) {
+        $route = $attr-&gt;newInstance();   // returns a Route object
+        echo "{$route-&gt;method}  {$route-&gt;path}  → {$method-&gt;name}" . PHP_EOL;
+    }
+}</code></pre>
+            </details>
+
+            <details class="solution">
+                <summary>✅ Show one possible solution</summary>
+                <div class="solution-quiz" data-quiz="4">
+                    <p class="quiz-intro">Answer both questions correctly to unlock the solution.</p>
+
+                    <div class="quiz-question">
+                        <p><strong>1.</strong> What is the purpose of placing <code>#[Attribute]</code> on a class?</p>
+                        <label><input type="radio" name="q4_1" value="a"> It makes the class abstract so it can't be instantiated directly.</label>
+                        <label><input type="radio" name="q4_1" value="b"> It tells PHP that this class can be used as an attribute on other code — and enables validation by the engine.</label>
+                        <label><input type="radio" name="q4_1" value="c"> It automatically generates getters and setters for all properties.</label>
+                        <label><input type="radio" name="q4_1" value="d"> It registers the class in a global attribute registry so it's auto-loaded.</label>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>2.</strong> You add <code>#[SensitiveParameter]</code> to a <code>$password</code> parameter. What changes?</p>
+                        <label><input type="radio" name="q4_2" value="a"> PHP encrypts the value automatically before storing it.</label>
+                        <label><input type="radio" name="q4_2" value="b"> The parameter becomes read-only and can't be reassigned inside the function.</label>
+                        <label><input type="radio" name="q4_2" value="c"> PHP hides the value in stack traces and error output, showing <code>Object(SensitiveParameterValue)</code> instead.</label>
+                        <label><input type="radio" name="q4_2" value="d"> The parameter is validated to not be empty before the function body runs.</label>
+                    </div>
+
+                    <button class="quiz-check-btn" data-answers="b,c">Check answers</button>
+                    <p class="quiz-feedback" aria-live="polite"></p>
+                </div>
+                <div class="solution-code" hidden>
+                <pre class="code-block"><code>&lt;?php
+
+// ── Route attribute (challenge 4) ─────────────────────────────────────
+#[Attribute(Attribute::TARGET_METHOD | Attribute::DELAYED_TARGET_VALIDATION)]
+class Route
+{
+    public function __construct(
+        public readonly string $path,
+        public readonly string $method = 'GET',
+    ) {}
+}
+
+
+// ── Challenge 1: Deprecated ───────────────────────────────────────────
+class UserController
+{
+    public function list(): string
+    {
+        return json_encode(['alice', 'bob', 'charlie']);
+    }
+
+    #[\Deprecated(message: 'Use list() instead', since: '2.0')]
+    public function getAll(): string { return $this-&gt;list(); }
+}
+
+$ctrl = new UserController();
+echo '1. Users: ' . $ctrl-&gt;getAll() . PHP_EOL;
+// Output: "1. Users: ["alice","bob","charlie"]"
+// + Deprecated notice: Since 2.0: Use list() instead
+echo PHP_EOL;
+
+
+// ── Challenge 2: SensitiveParameter ──────────────────────────────────
+function login(string $username, #[SensitiveParameter] string $password): bool
+{
+    if ($username !== 'admin' || $password !== 'secret') {
+        throw new \InvalidArgumentException("Login failed for: {$username}");
+    }
+    return true;
+}
+
+try {
+    login('alice', 'hunter2');
+} catch (\Throwable $e) {
+    echo '2. Exception thrown. Stack trace:' . PHP_EOL;
+    echo $e . PHP_EOL;  // "hunter2" is now Object(SensitiveParameterValue)
+}
+echo PHP_EOL;
+
+
+// ── Challenge 3: Override ─────────────────────────────────────────────
+class Animal
+{
+    public function speak(): string { return '(silence)'; }
+}
+
+class Dog extends Animal
+{
+    #[Override]  // PHP won't compile if Animal::speak() ever disappears
+    public function speak(): string { return 'Woof!'; }
+}
+
+echo '3. Dog says: ' . (new Dog())-&gt;speak() . PHP_EOL;
+echo PHP_EOL;
+
+
+// ── Challenge 4: Custom Route attribute + Reflection ──────────────────
+class ApiController
+{
+    #[Route('/api/users')]
+    public function index(): string { return '[]'; }
+
+    #[Route('/api/users/{id}')]
+    public function show(int $id): string { return '{"id":' . $id . '}'; }
+
+    #[Route('/api/users', method: 'POST')]
+    public function store(): string { return '{"created":true}'; }
+}
+
+echo '4. Routing table:' . PHP_EOL;
+$ref = new ReflectionClass(ApiController::class);
+foreach ($ref-&gt;getMethods(ReflectionMethod::IS_PUBLIC) as $m) {
+    foreach ($m-&gt;getAttributes(Route::class) as $attr) {
+        $r = $attr-&gt;newInstance();
+        printf("   %-6s %-25s → %s\n", $r-&gt;method, $r-&gt;path, $m-&gt;name);
+    }
+}
+echo PHP_EOL;
+
+
+// ── Challenge 5: NoDiscard (PHP 8.5) ─────────────────────────────────
+#[NoDiscard('return value should not be ignored')]
+function getUserById(int $id): array
+{
+    return ['id' =&gt; $id, 'name' =&gt; 'Alice'];
+}
+
+getUserById(1);                   // ⚠ notice: return value discarded
+$user = getUserById(2);           // ✅ fine — value is used
+echo '5. Fetched user: ' . $user['name'] . PHP_EOL;
+</code></pre>
+                </div><!-- /.solution-code -->
+            </details>
+
+            <div class="rules-box" style="margin-top:1rem;">
+                <strong>🧪 Think about it:</strong>
+                Attributes are read lazily — <code>getAttributes()</code> returns
+                <code>ReflectionAttribute</code> objects, and the attribute class is only instantiated when
+                you call <code>newInstance()</code>. What does that mean for performance in a large app?
+                How does this compare to parsing docblocks at runtime?
+            </div>
+        </div>
+    </section>
+
+    <nav class="exercise-nav exercise-nav--bottom">
+        <a href="exercise-3.html" class="exercise-nav-link"><i class="fas fa-arrow-left"></i> Exercise 3 — Festival Lineup</a>
+        <a href="./" class="exercise-nav-link">Back to overview <i class="fas fa-list"></i></a>
+    </nav>
+
+</main>
+
+<div id="toast" class="toast">Copied to clipboard!</div>
+
+<script src="../../js/script.js"></script>
+<script src="../../js/php-workshop.js"></script>
+</body>
+</html>
