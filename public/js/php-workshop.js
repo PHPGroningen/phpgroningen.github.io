@@ -69,6 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Open all feature-pill links in a new tab
+    document.querySelectorAll('.feature-pill a[href]').forEach(a => {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener');
+    });
+
     function showToast() {
         if (!toast) return;
         toast.className = 'toast show';

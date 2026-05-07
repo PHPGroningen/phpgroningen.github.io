@@ -108,6 +108,27 @@
     margin-top: 1rem;
 }
 
+.features-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-top: 1rem;
+}
+
+.features-label {
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 0.95rem;
+    color: #4a5568;
+    padding-top: 7px; /* vertically centres with pill height */
+}
+
+.features-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
 .version-badge {
     display: inline-block;
     padding: 4px 12px;
@@ -118,6 +139,7 @@
     letter-spacing: 0.5px;
 }
 
+.version-badge.v80 { background: #5b21b6; }  /* purple — PHP 8.0+ foundation */
 .version-badge.v84 { background: #DA121A; }  /* Groningen red */
 .version-badge.v85 { background: #0F47AF; }  /* Groningen blue */
 
@@ -131,7 +153,8 @@
     border-radius: 999px;
     font-size: 0.95rem;
     font-weight: 600;
-    margin-right: 6px;
+    margin-right: 0;
+    margin-bottom: 0;
     border: 1px solid #c8e6c9;
     vertical-align: middle;
     line-height: 1;
