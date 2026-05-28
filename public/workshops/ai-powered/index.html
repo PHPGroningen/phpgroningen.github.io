@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroningenPHP - AI Coding Challenge</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/ai-powered.css">
+    <link rel="stylesheet" href="../../css/php-workshop.css">
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon" sizes="any"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="shortcut icon" href="../../favicon.ico"/>
+</head>
+<body>
+<header class="header">
+    <nav class="nav">
+        <div class="nav-container">
+            <a class="logo" href="/index.html">
+                <img src="../../images/GroningenPHP-LOGO.png" alt="GroningenPHP Logo" class="logo-image">
+                <h1>GroningenPHP</h1>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="/index.html#home">Home</a></li>
+                <li><a href="/index.html#about">About</a></li>
+                <li><a href="/index.html#events">Events</a></li>
+                <li><a href="/index.html#sponsors">Sponsors</a></li>
+                <li><a href="/index.html#contact">Contact</a></li>
+                <li><a href="/workshops/" class="active">Workshops</a></li>
+            </ul>
+            <div class="social-links">
+                <a href="https://www.youtube.com/@GroningenPHP/videos" target="_blank" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://x.com/groningenphp/" target="_blank" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/groups/13836983/" target="_blank" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+    <nav class="exercise-nav" style="margin-bottom:1.5rem;">
+        <a href="/workshops/" class="exercise-nav-link"><i class="fas fa-arrow-left"></i> All Workshops</a>
+        <span class="exercise-nav-position">AI Coding Challenge — Jan 15, 2026</span>
+    </nav>
+    <section class="intro-section">
+        <h2>AI Coding Challenge Instructions <span class="workshop-date-badge">Jan 15, 2026</span></h2>
+        <div class="instruction-box">
+            <p class="lead">Copy a prompt from below and optionally customize it to your liking. Paste into your favorite LLM provider.</p>
+
+            <p>Some providers provide a "canvas" function allowing you to try the code directly in the same interface. In case they don't: save the code in a <code>.html</code> file and open with your favorite browser.</p>
+
+            <div class="rules-box">
+                <strong>Rule:</strong> Always specify "in a single HTML file with internal CSS and JavaScript."
+            </div>
+
+            <div class="dynamic-instruction-box">
+                <div class="dynamic-row">
+                    <span class="static-text">Instead of "a city", ask for:</span>
+                    <span class="typing-text" id="typewriter-1"></span>
+                </div>
+                <div class="dynamic-row">
+                    <span class="static-text">Instead of "colors", ask for:</span>
+                    <span class="typing-text" id="typewriter-2"></span>
+                </div>
+            </div>
+            <div class="examples-grid">
+                <div class="example bad">
+                    <strong>Bad:</strong> "Make a 3D game." <br>
+                    <small>(AI might try to write a software renderer from scratch, which is slow).</small>
+                </div>
+                <div class="example good">
+                    <strong>Good:</strong> "Use Three.js loaded via CDN."<br>
+                    <strong>Good:</strong> "Use Matter.js for physics."<br>
+                    <strong>Good:</strong> "Use p5.js for rendering."
+                </div>
+            </div>
+
+            <ul class="tips-list">
+                <li>"Allow the user to rotate the camera."</li>
+                <li>"Click to spawn objects."</li>
+                <li>"Use sliders to adjust gravity/viscosity/speed."</li>
+            </ul>
+
+            <p class="troubleshoot">Your prompt doesn't work? Try asking AI to improve it.</p>
+        </div>
+
+        <div class="links-box">
+            <div class="link-column">
+                <h3>Example free LLM providers:</h3>
+                <ul>
+                    <li><a href="https://chat.mistral.ai/chat" target="_blank">Mistral Le chat</a></li>
+                    <li><a href="https://copilot.microsoft.com/" target="_blank">Microsoft Copilot</a></li>
+                    <li><a href="https://duck.ai" target="_blank">duck.ai</a></li>
+                    <li><a href="https://www.kimi.com/en" target="_blank">Kimi K2</a></li>
+                    <li><a href="https://qwen.ai/home" target="_blank">Qwen chat</a></li>
+                </ul>
+            </div>
+            <div class="link-column">
+                <h3>Free but requires login:</h3>
+                <ul>
+                    <li><a href="https://chat.deepseek.com/" target="_blank">Deepseek</a></li>
+                    <li><a href="https://gemini.google.com/" target="_blank">Gemini</a></li>
+                    <li><a href="https://chatgpt.com/" target="_blank">ChatGPT</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <section class="prompts-section">
+        <h2>Prompts Library</h2>
+        <p class="subtext">Browse the prompts below. Click the copy icon to grab the code.</p>
+
+        <div class="prompts-grid" id="prompts-container">
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Reaction-Diffusion (Gray-Scott)</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create a Reaction-Diffusion simulation using the Gray-Scott model in a single HTML file. Use WebGL fragment shaders for performance, as this requires processing every pixel. Implement the feed rate (f) and kill rate (k) variables. Map the concentration of chemical B to a color gradient (black to cyan to white). interaction: Clicking the canvas should seed a bunch of chemical B to disturb the pattern.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Soft-body Physics (p5.js)</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create a soft-body physics simulation using the p5.js library. Create a 'jelly' character that consists of a central particle connected to a ring of outer particles by springs.
+                    Requirements:
+                    1. Spring Physics: Use Hooke's Law (F = -kx) or a library constraint to maintain the shape.
+                    2. Deformation: The character should squash and stretch when it hits the walls of the canvas.
+                    3. Interaction: Allow the user to pick up the jelly character with the mouse and throw it against the walls.
+                    4. Visuals: Fill the shape with a semi-transparent color using beginShape() and curveVertex() in p5.js to make it look organic.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Infinite Vaporwave City</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create an infinite procedural city flyover in Three.js with a Vaporwave/Synthwave aesthetic.
+                    Requirements:
+                    1. Visual Style: Use a black background with exponential fog (THREE.FogExp2) to hide the horizon. The ground should be a grid (THREE.GridHelper) in neon magenta and cyan.
+                    2. Animation: The camera should move forward continuously.
+                    3. Procedural Generation: Generate wireframe buildings (boxes) along the path. Implement an object pooling mechanism: as buildings pass behind the camera, reset their position to the far horizon to create an infinite loop without consuming memory.
+                    4. Lighting: Use a Bloom effect (Post-processing) if possible, or simple additive blending for a glowing look.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Wolfenstein 3D Raycaster</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Implement a Wolfenstein 3D-style raycasting engine in a single HTML file using vanilla JavaScript and the HTML5 Canvas (no WebGL).
+                    Requirements:
+                    1. Map: Use a 2D array (0 for empty, 1 for wall) to represent the level.
+                    2. Raycasting: For every vertical column of the screen, cast a ray from the player's angle. Use the DDA (Digital Differential Analyzer) algorithm for efficient wall detection.
+                    3. Rendering: Draw vertical strips. The height of the strip should be inversely proportional to the distance to the wall ($Height = Constant / Distance$). Implement 'fish-eye' correction.
+                    4. Controls: WASD to move and rotate the camera.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Boids Flocking</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Write a Boids flocking simulation in JavaScript using the HTML5 Canvas.
+                    Requirements:
+                    1. Agents: Create a class Boid with position, velocity, and acceleration vectors.
+                    2. Behaviors: Implement the three core rules:
+                    - Separation: Steer to avoid crowding local flockmates.
+                    - Alignment: Steer towards the average heading of local flockmates.
+                    - Cohesion: Steer to move toward the average position (center of mass) of local flockmates.
+                    3. Environment: The boids should wrap around the screen edges. Add a 'predator' boid controlled by the mouse that the others flee from.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Falling Sand Game</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create a 'Falling Sand' game using HTML5 Canvas. Implement a Cellular Automata grid system.
+                    Requirements:
+                    1. Elements:
+                    - Sand: Falls down. If blocked, moves down-left or down-right (piling).
+                    - Water: Falls down. If blocked, moves sideways (flowing).
+                    - Stone: Static solid.
+                    2. Interaction: A UI to select the element type. Clicking and dragging paints the element onto the canvas.
+                    3. Optimization: Iterate through the grid from bottom to top to handle the falling logic correctly in a single frame.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Chaotic Double Pendulum</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Simulate a Double Pendulum in HTML5 Canvas.
+                    Requirements:
+                    1. Physics: Use the Lagrangian equations of motion to calculate angular acceleration. Do not use simple approximations; solve the differential equations numerically.
+                    2. Visualization: Draw the arms of the pendulum. Crucially, draw the trace path of the second pendulum bob to visualize the chaotic trajectory. The trace should fade out over time.
+                    3. Controls: Add HTML sliders to adjust the lengths ($l_1, l_2$) and masses ($m_1, m_2$) of the pendulum arms in real-time.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Lorenz Attractor</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create a 3D visualization of the Lorenz Attractor using Three.js.
+                    Requirements:
+                    1. Math: Implement the Lorenz equations:
+                    - dx/dt = \sigma(y - x)
+                    - dy/dt = x(\rho - z) - y
+                    - dz/dt = xy - \beta z
+                    - Use constants: \sigma=10, \rho=28, \beta=8/3.
+                    2. Rendering: Instead of drawing points, draw a continuous Line that traces the path of the attractor over time. Gradually add points to the line geometry in the animation loop.
+                    3. Camera: Allow the user to orbit around the attractor using OrbitControls.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>3D Audio Visualizer</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create a 3D Audio Visualizer using Three.js and the Web Audio API.
+                    Requirements:
+                    1. Audio Source: Load a sample MP3 file (provide a URL to a copyright-free file or use a microphone input).
+                    2. Analysis: Use an AnalyserNode with an FFT size of 256. Use getByteFrequencyData to extract frequency data.
+                    3. Visualization: Create a ring of cubes around a central sphere. The scale (height) of each cube should be driven by a specific frequency band from the FFT data. The central sphere should pulse in size based on the average volume (bass).
+                    4. Color: Change the color of the cubes dynamically based on the frequency intensity.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>3D Solar System</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create a 3D solar system simulation using Three.js in a single HTML file. Include the sun and 8 planets orbiting at different speeds. Add a starfield background. Allow the user to zoom and pan with the mouse (`OrbitControls`). Use distinctive colors for each planet. Add 'trail renderers' to show the orbital paths.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Matrix Digital Rain</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create a 'Matrix Digital Rain' effect using HTML5 Canvas in a single file. Green Katakana and Latin characters should fall in columns at different speeds. The characters should randomly change as they fall. The background should be black with a slight fade-out effect on each frame to create trails. Make it full-screen.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Fireworks Simulation</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Build a particle-based fireworks simulation in HTML5 Canvas. When the user clicks anywhere on the screen, launch a rocket from the bottom that travels to that point and explodes into colored particles. The particles should be affected by gravity and drag, and fade out over time. Use additive blending (`globalCompositeOperation = 'lighter'`) for a glowing light effect.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>2D Ragdoll Physics</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create a 2D ragdoll physics simulation using Matter.js in a single HTML file. Create a simple human stick-figure character connected by constraints (joints). Allow the user to drag the ragdoll's limbs with the mouse. Add some static boxes and obstacles for it to collide with. Enable mouse constraints for interaction.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Interactive Smoke (Navier-Stokes)</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create an interactive smoke simulation using a grid-based Navier-Stokes fluid solver in vanilla JavaScript (Single HTML file). Use the mouse to inject density (white smoke) and velocity into the grid. The smoke should diffuse and curl realistically. Render it on a black canvas. Resolution: 128x128.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Sorting Algorithms Visualizer</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create a visualization of sorting algorithms in HTML/JS. Draw an array of 100 integers as vertical bars of different heights. Implement Bubble Sort, Quicksort, and Merge Sort. Add buttons to start each sort. Visualize the sorting process in real-time: highlight bars being compared in red and bars being swapped in green. Add a speed slider.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Recursive Fractal Tree</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create a recursive Fractal Tree generator using p5.js. Start with a single branch (trunk). Recursively spawn two new branches at an angle from the previous one. Add sliders to control the recursion depth, branch angle, and branch length ratio. Animate the tree swaying slightly as if in the wind.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Navier-Stokes (Stable Fluids)</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Write a single-file HTML5 application using vanilla JavaScript (no external libraries) that implements a grid-based 2D Navier-Stokes fluid solver using the Stable Fluids method. The simulation should utilize an HTML5 Canvas for rendering.
+                    Requirements:
+                    1. Visualization: Render the fluid density using a high-contrast, colorful palette (e.g., mapping density to Hue in HSL).
+                    2. Interaction: Implement mouse event listeners. When the user clicks and drags, inject both 'dye' (density) and 'velocity' into the grid at the mouse location. The velocity injected should be proportional to the speed of the mouse movement.
+                    3. Solver: Implement the `diffuse`, `advect`, and `project` steps. Use a Gauss-Seidel relaxation loop for the linear solver.
+                    4. Performance: Use `requestAnimationFrame` for the game loop. Ensure the grid resolution is at least 100x100.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>Tearable Cloth Simulation</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create an interactive 'Tearable Cloth' simulation in a single HTML file. Use a custom Verlet Physics engine.
+                    Requirements:
+                    1. Structure: Generate a grid of particles (point masses) connected by distance constraints (sticks).
+                    2. Physics: Apply gravity to all particles. Pin the top row of particles so the cloth hangs down.
+                    3. Interaction: Allow the user to drag particles with the mouse. Crucially, implement 'tearing': if the user drags the mouse rapidly through the cloth (cutting it), or if a constraint is stretched too far (beyond a breaking threshold), remove that constraint.
+                    4. Rendering: Draw lines between connected particles. Use requestAnimationFrame.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>3D City Destruction</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create a 3D city destruction game using Three.js for rendering and Cannon.js for physics in a single HTML file.
+                    Requirements:
+                    1. Procedural City: Generate a grid of skyscrapers. Each skyscraper should be constructed from multiple stacked cubic blocks (physics bodies), not a single mesh, so they can crumble.
+                    2. Physics: Use Cannon.js to handle gravity and collisions. The ground should be a static plane.
+                    3. Weapon: Implement a camera-based raycaster. When the user clicks, fire a spherical projectile from the camera's position into the scene. The projectile should have high mass and velocity to knock over the buildings.
+                    4. Optimization: Use simple box geometries and colors (no heavy textures) to ensure performance.</div>
+            </div>
+
+            <div class="prompt-card">
+                <div class="prompt-header">
+                    <h3>A* Pathfinding Visualizer</h3>
+                    <button class="copy-btn" aria-label="Copy prompt"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="prompt-content">Create an A (A-Star) pathfinding visualizer on a grid in a single HTML file. Allow the user to: 1) Draw walls/obstacles with the mouse. 2) Place a Start node and an End node. 3) Click 'Start' to animate the algorithm searching for the path. Show the 'Open Set' (green), 'Closed Set' (red), and the final path (blue).</div>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+<div id="toast" class="toast">Copied to clipboard!</div>
+
+<script src="../../js/script.js"></script>
+<script src="../../js/ai-powered.js"></script>
+</body>
+</html>
