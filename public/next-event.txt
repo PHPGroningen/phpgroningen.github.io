@@ -1,14 +1,11 @@
 # Date:
-June 4, 2026
+July 2, 2026
 # Title
-PHP Meetup/ 🎮 Learn, play, and level up!.....Ramon de la Fuente
+PHP Meetup: Suprise from organizers.....
 # Description
-👋 Welcome to our PHP Game Meetup!
-With Ramon de la Fuente: https://delafuente.nl/! 🙌
-
-💡 What to expect:
-🎲 An interactive game instead of a traditi...
+👋 Welcome to our monthly Software Development Meetup!
+We meet .... knowledge, exchanging ideas, and getting to know other developers in a relaxed, fr...
 # Location
 Youwe Groningen
 # Link
-https://www.meetup.com/groningenphp/events/314406658/
+https://www.meetup.com/groningenphp/events/314953128/
