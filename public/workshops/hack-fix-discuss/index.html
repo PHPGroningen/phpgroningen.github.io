@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroningenPHP - Hack, Fix, Discuss!</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/ai-powered.css">
+    <link rel="stylesheet" href="../../css/php-workshop.css">
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon" sizes="any"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="shortcut icon" href="../../favicon.ico"/>
+    <style>
+        .password-section {
+            text-align: center;
+            padding: 3rem;
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        .password-section:hover {
+            border-color: #1b8e2d;
+            background: #f1f9f1;
+        }
+        .btn-unlock {
+            background-color: #1b8e2d;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+        .btn-unlock:hover {
+            background-color: #166124;
+        }
+        #missions-area {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .mission-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        @media (max-width: 768px) {
+            .mission-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .role-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid #ccc;
+            display: flex;
+            flex-direction: column;
+        }
+        .role-card.hack { border-top-color: #e53e3e; }
+        .role-card.fix { border-top-color: #3182ce; }
+        .role-card h3 { 
+            margin-bottom: 1rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            font-size: 1.4rem;
+        }
+        .role-card.hack h3 { color: #e53e3e; }
+        .role-card.fix h3 { color: #3182ce; }
+        
+        .vulnerable-code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 6px;
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            overflow-x: auto;
+            margin-top: 1rem;
+            position: relative;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .copy-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.75rem;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.2s;
+        }
+        .copy-badge:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .mission-objective {
+            background: #fff5f5;
+            border-left: 4px solid #e53e3e;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+        .fix-objective {
+            background: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <nav class="nav">
+        <div class="nav-container">
+            <a class="logo" href="/index.html">
+                <img src="../../images/GroningenPHP-LOGO.png" alt="GroningenPHP Logo" class="logo-image">
+                <h1>GroningenPHP</h1>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="/index.html#home">Home</a></li>
+                <li><a href="/index.html#about">About</a></li>
+                <li><a href="/index.html#events">Events</a></li>
+                <li><a href="/index.html#sponsors">Sponsors</a></li>
+                <li><a href="/index.html#contact">Contact</a></li>
+                <li><a href="/workshops/" class="active">Workshops</a></li>
+            </ul>
+            <div class="social-links">
+                <a href="https://www.youtube.com/@GroningenPHP/videos" target="_blank" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://x.com/groningenphp/" target="_blank" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/groups/13836983/" target="_blank" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+    <nav class="exercise-nav" style="margin-bottom:1.5rem;">
+        <a href="/workshops/" class="exercise-nav-link"><i class="fas fa-arrow-left"></i> All Workshops</a>
+        <span class="exercise-nav-position">Hack, Fix, Discuss! — July 2, 2026</span>
+    </nav>
+
+    <section class="intro-section">
+        <h2>Hack, Fix, Discuss! <span class="workshop-date-badge">Security Edition</span></h2>
+        <div class="instruction-box">
+            <p class="lead">Welcome to the security edition of GroningenPHP workshops! Instead of building new features, we're going to break and fix existing ones.</p>
+            
+            <div class="rules-box">
+                <strong>Workshop Structure:</strong>
+                <ul style="margin-left: 1.5rem; margin-top: 0.5rem; list-style-type: none;">
+                    <li><i class="fas fa-user-secret" style="color:#e53e3e; width: 25px;"></i> <strong>Hack:</strong> Team Red finds and exploits the vulnerability.</li>
+                    <li><i class="fas fa-shield-alt" style="color:#3182ce; width: 25px;"></i> <strong>Fix:</strong> Team Blue refactors the code to be secure.</li>
+                    <li><i class="fas fa-comments" style="color:#1b8e2d; width: 25px;"></i> <strong>Discuss:</strong> We compare notes and discuss the "Best Practice" fix.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="intro-section">
+        <h2>1. Your Sandbox</h2>
+        <p class="subtext">We'll use <strong>3v4l.org</strong> to run our code. It's a free online PHP shell that supports almost every PHP version and includes common extensions like PDO (SQLite).</p>
+        <div class="setup-grid">
+            <div class="setup-card recommended">
+                <div class="setup-badge">⭐ Recommended</div>
+                <h3>3v4l.org</h3>
+                <p>Open <a href="https://3v4l.org" target="_blank">3v4l.org</a>. Copy the snippets below and paste them into the editor. Use the "Input" area at the top of the challenge to simulate different user inputs.</p>
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <section class="prompts-section">
+        <div id="challenge-1-wrapper">
+            <h2>Challenge 1: The Gatekeeper</h2>
+            <p class="subtext" id="mission-subtext-1">This mission is locked. Wait for the organizer to reveal the password.</p>
+            
+            <div id="password-gate-1" class="password-section">
+                <i class="fas fa-lock-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
+                <br>
+                <button id="unlock-btn-1" class="btn-unlock">Reveal Challenge 1</button>
+            </div>
+
+            <div id="mission-1-area" style="display: none; animation: fadeIn 0.5s ease-out;">
+                <div class="mission-grid">
+                    <div class="role-card hack">
+                        <h3><i class="fas fa-user-secret"></i> Team Hack</h3>
+                        <div class="mission-objective">
+                            <strong>Goal:</strong> Extract the <code>admin_password</code> from the <code>system_config</code> table.
+                        </div>
+                        <p>The current query only fetches the username for a given ID. Can you use a <code>UNION</code> attack to pull data from another table?</p>
+                        <div class="vulnerable-code" id="code-1">
+                            <span class="copy-badge" onclick="copyCode('code-1')"><i class="fas fa-copy"></i> Copy</span>
+<pre><code>&lt;?php
+// --- SIMULATED INPUT ---
+$userId = "1"; 
+// -----------------------
+
+$db = new PDO('sqlite::memory:');
+$db->exec("CREATE TABLE users (id INT, username TEXT, role TEXT)");
+$db->exec("CREATE TABLE system_config (config_name TEXT, config_value TEXT)");
+
+$db->exec("INSERT INTO users VALUES (1, 'alice', 'user')");
+$db->exec("INSERT INTO system_config VALUES ('admin_password', 'FLAG{UNION_BASED_PWNAGE}')");
+
+// VULNERABLE CODE: Fetching username by ID
+$query = "SELECT username FROM users WHERE id = " . $userId;
+echo "Executing: $query\n\n";
+
+$result = $db->query($query);
+
+if ($result) {
+    foreach ($result as $row) {
+        echo "Result: " . $row['username'] . "\n";
+    }
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="role-card fix">
+                        <h3><i class="fas fa-shield-alt"></i> Team Fix</h3>
+                        <div class="fix-objective">
+                            <strong>Goal:</strong> Patch the vulnerability using Prepared Statements.
+                        </div>
+                        <p>The <code>$userId</code> should never be concatenated directly into the query string. Use placeholders instead.</p>
+                        <p style="margin-top: auto;"><small><i class="fas fa-lightbulb"></i> Tip: Research <code>$db->prepare()</code> and <code>$stmt->execute(['id' => $userId])</code>.</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <hr class="divider" style="margin: 4rem 0;">
+
+        <div id="challenge-2-wrapper">
+            <h2>Challenge 2: The Calculator</h2>
+            <p class="subtext" id="mission-subtext-2">This mission is locked. Wait for the organizer to reveal the password.</p>
+
+            <div id="password-gate-2" class="password-section">
+                <i class="fas fa-lock-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
+                <br>
+                <button id="unlock-btn-2" class="btn-unlock">Reveal Challenge 2</button>
+            </div>
+
+            <div id="mission-2-area" style="display: none; animation: fadeIn 0.5s ease-out;">
+                <div class="mission-grid">
+                     <div class="role-card hack">
+                        <h3><i class="fas fa-user-secret"></i> Team Hack</h3>
+                        <div class="mission-objective">
+                            <strong>Goal:</strong> Extract the value of the <code>$flag</code> variable.
+                        </div>
+                        <p>The organizer added a filter to block the word "flag". Can you bypass this check using PHP's dynamic features?</p>
+                        <div class="vulnerable-code" id="code-2">
+                            <span class="copy-badge" onclick="copyCode('code-2')"><i class="fas fa-copy"></i> Copy</span>
+<pre><code>&lt;?php
+// --- SIMULATED INPUT ---
+$expression = "1 + 1"; 
+// -----------------------
+
+$flag = "FLAG{BYPASSING_THE_FILTER}";
+
+echo "Result: ";
+
+// NAIVE FILTER: Blocking the word 'flag'
+if (preg_match('/flag/i', $expression)) {
+    die("Hack detected: No flags allowed!");
+}
+
+// DANGEROUS: Evaluating user input
+eval("echo " . $expression . ";");</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="role-card fix">
+                        <h3><i class="fas fa-shield-alt"></i> Team Fix</h3>
+                        <div class="fix-objective">
+                            <strong>Goal:</strong> Prevent any code execution.
+                        </div>
+                        <p>Ensure that the input passed to <code>eval()</code> (or any execution function) is strictly validated or avoid <code>eval()</code> entirely.</p>
+                        <p style="margin-top: auto;"><small><i class="fas fa-lightbulb"></i> Tip: Try using a whitelist of allowed characters (numbers and operators) or a safer way to evaluate math.</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="divider" style="margin: 4rem 0;">
+
+        <div id="challenge-3-wrapper">
+            <h2>Challenge 3: The File Explorer</h2>
+            <p class="subtext" id="mission-subtext-3">This mission is locked. Wait for the organizer to reveal the password.</p>
+
+            <div id="password-gate-3" class="password-section">
+                <i class="fas fa-lock-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
+                <br>
+                <button id="unlock-btn-3" class="btn-unlock">Reveal Challenge 3</button>
+            </div>
+
+            <div id="mission-3-area" style="display: none; animation: fadeIn 0.5s ease-out;">
+                <div class="mission-grid">
+                     <div class="role-card hack">
+                        <h3><i class="fas fa-user-secret"></i> Team Hack</h3>
+                        <div class="mission-objective">
+                            <strong>Goal:</strong> Read the <code>config.php</code> file located outside the <code>pages/</code> directory.
+                        </div>
+                        <p>The developer tried to block <code>../</code>. Is the filter strong enough? Think about how <code>str_replace</code> works.</p>
+                        <div class="vulnerable-code" id="code-3">
+                            <span class="copy-badge" onclick="copyCode('code-3')"><i class="fas fa-copy"></i> Copy</span>
+<pre><code>&lt;?php
+// --- SIMULATED INPUT ---
+$page = "bio"; 
+// -----------------------
+
+// --- SANDBOX SETUP ---
+$base = sys_get_temp_dir() . "/workshop_" . getmypid() . "/";
+@mkdir($base); @mkdir($base . "pages");
+file_put_contents($base . "pages/bio.php", "This is the bio page.");
+file_put_contents($base . "config.php", "&lt;?php \$flag = 'FLAG{NESTED_TRAVERSAL_BYPASS}'; echo \$flag;");
+
+// NAIVE FILTER: Removing ../
+$page = str_replace("../", "", $page);
+
+// VULNERABLE CODE
+$requestedPage = "pages/" . $page . ".php";
+echo "Loading: $requestedPage\n\n";
+
+if (file_exists($base . $requestedPage)) {
+    include($base . $requestedPage);
+} else {
+    echo "Page not found.";
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="role-card fix">
+                        <h3><i class="fas fa-shield-alt"></i> Team Fix</h3>
+                        <div class="fix-objective">
+                            <strong>Goal:</strong> Sanitize the file path to prevent traversal.
+                        </div>
+                        <p>Don't trust user input for file paths. Use functions like <code>basename()</code> or <code>realpath()</code> to ensure the file is where it should be.</p>
+                        <p style="margin-top: auto;"><small><i class="fas fa-lightbulb"></i> Tip: Use <code>basename($page)</code> to strip any directory information from the input.</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="divider" style="margin: 4rem 0;">
+
+        <div id="challenge-4-wrapper">
+            <h2>Challenge 4: The Magic Box</h2>
+            <p class="subtext" id="mission-subtext-4">This mission is locked. Wait for the organizer to reveal the password.</p>
+
+            <div id="password-gate-4" class="password-section">
+                <i class="fas fa-lock-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
+                <br>
+                <button id="unlock-btn-4" class="btn-unlock">Reveal Challenge 4</button>
+            </div>
+
+            <div id="mission-4-area" style="display: none; animation: fadeIn 0.5s ease-out;">
+                <div class="mission-grid">
+                     <div class="role-card hack">
+                        <h3><i class="fas fa-user-secret"></i> Team Hack</h3>
+                        <div class="mission-objective">
+                            <strong>Goal:</strong> Trigger the <code>AdminProfile</code> logic by providing a custom serialized string.
+                        </div>
+                        <p>The <code>User</code> class now uses a <code>profile</code> object. Can you craft a serialized string that swaps the <code>GuestProfile</code> with an <code>AdminProfile</code>?</p>
+                        <div class="vulnerable-code" id="code-4">
+                            <span class="copy-badge" onclick="copyCode('code-4')"><i class="fas fa-copy"></i> Copy</span>
+<pre><code>&lt;?php
+// --- SIMULATED INPUT ---
+// Serialized User with a GuestProfile
+$data = 'O:4:"User":1:{s:7:"profile";O:12:"GuestProfile":0:{}}'; 
+// -----------------------
+
+class User {
+    public $profile;
+    public function __wakeup() {
+        $this->profile->display();
+    }
+}
+
+class GuestProfile {
+    public function display() {
+        echo "Welcome, guest.";
+    }
+}
+
+class AdminProfile {
+    public function display() {
+        echo "Welcome Admin! FLAG{DESERIALIZATION_POP_CHAIN}";
+    }
+}
+
+// DANGEROUS: Unserializing user input
+unserialize($data);</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="role-card fix">
+                        <h3><i class="fas fa-shield-alt"></i> Team Fix</h3>
+                        <div class="fix-objective">
+                            <strong>Goal:</strong> Replace unserialize with a safer format.
+                        </div>
+                        <p>Never use <code>unserialize()</code> on user-provided data. Use <code>json_decode()</code> instead for data exchange.</p>
+                        <p style="margin-top: auto;"><small><i class="fas fa-lightbulb"></i> Tip: JSON doesn't support object instantiation or magic methods, making it much safer.</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div id="toast" class="toast">Copied to clipboard!</div>
+
+<script src="../../js/script.js"></script>
+<script>
+    // --- Challenge 1 Unlock ---
+    const unlockBtn1 = document.getElementById('unlock-btn-1');
+    const passwordGate1 = document.getElementById('password-gate-1');
+    const missionArea1 = document.getElementById('mission-1-area');
+    const missionSubtext1 = document.getElementById('mission-subtext-1');
+
+    unlockBtn1.addEventListener('click', () => {
+        passwordGate1.style.display = 'none';
+        missionArea1.style.display = 'block';
+        missionSubtext1.innerText = 'Good luck with Challenge 1!';
+    });
+
+    // --- Challenge 2 Unlock ---
+    const unlockBtn2 = document.getElementById('unlock-btn-2');
+    const passwordGate2 = document.getElementById('password-gate-2');
+    const missionArea2 = document.getElementById('mission-2-area');
+    const missionSubtext2 = document.getElementById('mission-subtext-2');
+
+    unlockBtn2.addEventListener('click', () => {
+        passwordGate2.style.display = 'none';
+        missionArea2.style.display = 'block';
+        missionSubtext2.innerText = 'Good luck with Challenge 2!';
+    });
+
+    // --- Challenge 3 Unlock ---
+    const unlockBtn3 = document.getElementById('unlock-btn-3');
+    const passwordGate3 = document.getElementById('password-gate-3');
+    const missionArea3 = document.getElementById('mission-3-area');
+    const missionSubtext3 = document.getElementById('mission-subtext-3');
+
+    unlockBtn3.addEventListener('click', () => {
+        passwordGate3.style.display = 'none';
+        missionArea3.style.display = 'block';
+        missionSubtext3.innerText = 'Good luck with Challenge 3!';
+    });
+
+    // --- Challenge 4 Unlock ---
+    const unlockBtn4 = document.getElementById('unlock-btn-4');
+    const passwordGate4 = document.getElementById('password-gate-4');
+    const missionArea4 = document.getElementById('mission-4-area');
+    const missionSubtext4 = document.getElementById('mission-subtext-4');
+
+    unlockBtn4.addEventListener('click', () => {
+        passwordGate4.style.display = 'none';
+        missionArea4.style.display = 'block';
+        missionSubtext4.innerText = 'Good luck with Challenge 4!';
+    });
+
+    function copyCode(id) {
+        const codeElement = document.getElementById(id).querySelector('code');
+        const text = codeElement.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const toast = document.getElementById('toast');
+            toast.className = "toast show";
+            
+            // Visual feedback on the badge
+            const badge = document.getElementById(id).querySelector('.copy-badge');
+            const originalHTML = badge.innerHTML;
+            badge.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            badge.style.background = '#1b8e2d';
+            
+            setTimeout(() => { 
+                toast.className = toast.className.replace("show", ""); 
+                badge.innerHTML = originalHTML;
+                badge.style.background = '';
+            }, 3000);
+        });
+    }
+</script>
+</body>
+</html>

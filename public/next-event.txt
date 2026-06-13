@@ -1,10 +1,16 @@
 # Date:
 July 2, 2026
 # Title
-PHP Meetup: Suprise from organizers.....
+Hack, Fix, Discuss! Security Workshop
 # Description
-👋 Welcome to our monthly Software Development Meetup!
-We meet .... knowledge, exchanging ideas, and getting to know other developers in a relaxed, fr...
+👋 Welcome to our interactive security workshop!
+We'll split into teams to attack and defend vulnerable PHP code.
+No server setup required — just your browser and a curious mind.
+
+💡 What to expect:
+🎲 Hands-on security challenges
+🛡️ Learning red vs blue team tactics
+💬 Deep dive into PHP security best practices
 # Location
 Youwe Groningen
 # Link
