@@ -1,10 +1,13 @@
 # Date:
 July 2, 2026
 # Title
-PHP Meetup: Suprise from organizers.....
+PHP Meetup: 🌞 😎 Hack, Fix, Discuss! Security Workshop
 # Description
-👋 Welcome to our monthly Software Development Meetup!
-We meet .... knowledge, exchanging ideas, and getting to know other developers in a relaxed, fr...
+☀️ 🌞
+Welcome to our Summer Software Development Meetup!
+☀️ 🌞 🏖️ ⛱️ 🌴 🏝️ 🌊
+Don't forget your laptop, this is hands-on.💻
+We meet .... knowledge,...
 # Location
 Youwe Groningen
 # Link
