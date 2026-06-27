@@ -751,3 +751,61 @@ details .code-block {
 
 .quiz-feedback.correct { color: #1b8e2d; }
 .quiz-feedback.wrong   { color: #c0392b; }
+
+/* ── Workshop Chat Banner ──────────────────────────────── */
+.chat-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: #e8f0fe;
+    border: 1px solid #c5d8fc;
+    border-left: 4px solid #0F47AF;
+    border-radius: 8px;
+    padding: 14px 20px;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.chat-banner__text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    color: #1a3a7a;
+}
+
+.chat-banner__icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.chat-banner__text strong { color: #0F47AF; }
+
+.chat-banner__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #0F47AF;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 12px 24px;
+    border-radius: 8px;
+    white-space: nowrap;
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(15,71,175,0.35);
+    letter-spacing: 0.01em;
+}
+
+.chat-banner__link:hover {
+    background: #0a3490;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(15,71,175,0.45);
+}
+
+@media (max-width: 500px) {
+    .chat-banner { flex-direction: column; align-items: flex-start; }
+}
