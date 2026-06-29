@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Workshop Chat — GroningenPHP</title>
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon" sizes="any"/>
+    <style>
+        :root {
+            --groningen-red:   #DA121A;
+            --groningen-blue:  #0F47AF;
+            --groningen-green: #078930;
+            --dark-gray:   #333333;
+            --light-gray:  #f8f9fa;
+            --medium-gray: #666666;
+            --border:      #e0e0e0;
+            --heading-font: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            --body-font:    'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--body-font);
+            background: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.7;
+        }
+
+        /* ── Header ── */
+        .site-header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .site-header .logo-area {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .site-header .logo {
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none; color: inherit;
+        }
+        .site-header .logo span {
+            font-weight: 700; font-size: 1.3rem; color: var(--groningen-green);
+        }
+        .site-header .logo-divider {
+            width: 1px; height: 22px; background: #d0d0d0; flex-shrink: 0;
+        }
+        .site-header .logo-sub {
+            font-weight: 600; font-size: 1rem; color: var(--groningen-blue);
+        }
+        .site-header nav { display: flex; align-items: center; gap: 4px; }
+        .site-header nav a {
+            color: var(--dark-gray); text-decoration: none; font-weight: 500;
+            font-size: 0.9rem; padding: 6px 12px; border-radius: 6px;
+            transition: background 0.15s, color 0.15s;
+        }
+        .site-header nav a:hover { background: var(--light-gray); color: var(--groningen-blue); }
+
+        /* ── Layout ── */
+        main {
+            max-width: 860px;
+            margin: 48px auto;
+            padding: 0 24px 80px;
+        }
+
+        /* ── Hero ── */
+        .page-hero {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+        .page-hero .badge {
+            display: inline-block;
+            background: #e8f0fe;
+            color: var(--groningen-blue);
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .page-hero h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--dark-gray);
+            margin-bottom: 14px;
+        }
+        .page-hero p {
+            font-size: 1.1rem;
+            color: var(--medium-gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ── Section headings ── */
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin-bottom: 16px;
+        }
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin-bottom: 8px;
+        }
+        p { margin-bottom: 14px; }
+        p:last-child { margin-bottom: 0; }
+
+        /* ── Cards / panels ── */
+        .card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px 32px;
+            margin-bottom: 24px;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 600px) { .card-grid { grid-template-columns: 1fr; } }
+
+        /* ── Roles ── */
+        .role-card {
+            background: #fff;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .role-card.controller { border-color: var(--groningen-blue); }
+        .role-card.participant { border-color: var(--groningen-green); }
+        .role-icon { font-size: 2.2rem; margin-bottom: 10px; }
+
+        /* ── Architecture diagram ── */
+        .diagram {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px 24px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+        .diagram-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            flex-wrap: nowrap;
+            min-width: 560px;
+        }
+        .node {
+            border-radius: 12px;
+            padding: 14px 18px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            min-width: 120px;
+        }
+        .node-controller {
+            background: #e8f0fe;
+            border: 2px solid var(--groningen-blue);
+            color: var(--groningen-blue);
+        }
+        .node-participant {
+            background: #e6f4ea;
+            border: 2px solid var(--groningen-green);
+            color: var(--groningen-green);
+        }
+        .node-signal {
+            background: #fff8e1;
+            border: 2px solid #f9a825;
+            color: #7a6200;
+        }
+        .node-turn {
+            background: #fce4ec;
+            border: 2px dashed #e91e63;
+            color: #880e4f;
+            font-style: italic;
+        }
+        .node-label {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: var(--medium-gray);
+            margin-top: 4px;
+        }
+        .arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 6px;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+        .arrow-line {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            white-space: nowrap;
+        }
+        .arrow-label {
+            font-size: 0.65rem;
+            color: var(--medium-gray);
+            text-align: center;
+            white-space: nowrap;
+        }
+        .h-line { width: 32px; height: 2px; background: #ccc; }
+        .arrow-head { font-size: 1rem; color: #999; line-height: 1; }
+
+        /* ── Phase steps ── */
+        .phase-list {
+            counter-reset: phase;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .phase-list li {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+        .phase-num {
+            counter-increment: phase;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--groningen-blue);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .phase-num.green { background: var(--groningen-green); }
+        .phase-body { flex: 1; padding-top: 4px; }
+        .phase-body strong { display: block; margin-bottom: 2px; }
+        .phase-body span { font-size: 0.9rem; color: var(--medium-gray); }
+
+        /* ── Security callout ── */
+        .callout {
+            border-left: 4px solid var(--groningen-blue);
+            background: #e8f0fe;
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        .callout.green {
+            border-color: var(--groningen-green);
+            background: #e6f4ea;
+        }
+        .callout.yellow {
+            border-color: #f9a825;
+            background: #fff8e1;
+        }
+        .callout strong { color: var(--dark-gray); }
+
+        /* ── Acknowledgements ── */
+        .ack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 8px;
+        }
+        .ack-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .ack-card a {
+            color: var(--groningen-blue);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .ack-card a:hover { text-decoration: underline; }
+        .ack-card .ack-role {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--medium-gray);
+            margin-bottom: 6px;
+        }
+        .ack-card p {
+            font-size: 0.875rem;
+            color: var(--medium-gray);
+            margin-top: 6px;
+        }
+        .ack-card .license {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.7rem;
+            background: var(--light-gray);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px 7px;
+            color: var(--medium-gray);
+        }
+
+        /* ── Privacy table ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { font-weight: 700; background: var(--light-gray); }
+        tr:last-child td { border-bottom: none; }
+        .yes { color: #1b5e20; font-weight: 700; }
+        .no  { color: #b71c1c; font-weight: 700; }
+        .partial { color: #7a6200; font-weight: 700; }
+
+        /* ── CTA ── */
+        .cta {
+            text-align: center;
+            margin-top: 48px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.85; }
+        .btn-primary { background: var(--groningen-blue); color: #fff; }
+        .btn-secondary {
+            background: #fff;
+            color: var(--groningen-blue);
+            border: 2px solid var(--groningen-blue);
+            margin-left: 12px;
+        }
+
+        section { margin-bottom: 48px; }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="logo-area">
+        <a class="logo" href="/">
+            <span>GroningenPHP</span>
+        </a>
+        <div class="logo-divider"></div>
+        <span class="logo-sub">💬 Workshop Chat</span>
+    </div>
+    <nav>
+        <a href="/chat/">Open Chat</a>
+        <a href="/workshops/">Workshops</a>
+    </nav>
+</header>
+
+<main>
+
+    <!-- Hero -->
+    <div class="page-hero">
+        <div class="badge">Workshop Chat</div>
+        <h1>About Workshop Chat</h1>
+        <p>A fully static, serverless peer-to-peer chat built for live PHP workshops — no sign-up, no database, nothing stored on a server.</p>
+    </div>
+
+    <!-- Roles -->
+    <section>
+        <h2>Two roles</h2>
+        <div class="card-grid">
+            <div class="role-card controller">
+                <div class="role-icon">🎛️</div>
+                <h3>Controller</h3>
+                <p>The workshop host opens the app and starts a room. A 5-digit PIN and QR code appear — these go on the beamer. The controller's view shows the full chat feed, a participant list, and lets the host assign team colours.</p>
+            </div>
+            <div class="role-card participant">
+                <div class="role-icon">💬</div>
+                <h3>Participant</h3>
+                <p>Attendees open <code>/chat/?room=&lt;name&gt;</code> (from the QR code or a link) and type the PIN. After choosing a display name they're live in the chat, able to send messages and share syntax-highlighted code snippets.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture diagram -->
+    <section>
+        <h2>Connection diagram</h2>
+        <div class="diagram">
+            <div class="diagram-inner">
+
+                <!-- Participant A -->
+                <div class="node node-participant">
+                    💬 Participant A
+                    <div class="node-label">browser</div>
+                </div>
+
+                <!-- arrow → signal -->
+                <div class="arrow">
+                    <div class="arrow-line">
+                        <div class="h-line"></div>
+                        <span class="arrow-head">→</span>
+                    </div>
+                    <div class="arrow-label">1. SDP / ICE<br>(signaling only)</div>
+                </div>
+
+                <!-- PeerJS signal server -->
+                <div class="node node-signal">
+                    ☁️ PeerJS<br>Cloud
+                    <div class="node-label">signaling server</div>
+                </div>
+
+                <!-- arrow → controller -->
+                <div class="arrow">
+                    <div class="arrow-line">
+                        <div class="h-line"></div>
+                        <span class="arrow-head">→</span>
+                    </div>
+                    <div class="arrow-label">1. SDP / ICE<br>(signaling only)</div>
+                </div>
+
+                <!-- Controller -->
+                <div class="node node-controller">
+                    🎛️ Controller
+                    <div class="node-label">browser / beamer</div>
+                </div>
+
+            </div>
+
+            <!-- Direct data channel row -->
+            <div style="display:flex; align-items:center; justify-content:center; margin-top:24px; gap:0;">
+                <div class="node node-participant" style="min-width:120px;">💬 Participant A</div>
+                <div class="arrow">
+                    <div class="arrow-line">
+                        <div class="h-line" style="width:80px;"></div>
+                        <span class="arrow-head">⟷</span>
+                    </div>
+                    <div class="arrow-label">2. Encrypted WebRTC<br>data channel (DTLS)<br><em>PeerJS server not involved</em></div>
+                </div>
+                <div class="node node-controller" style="min-width:120px;">🎛️ Controller</div>
+            </div>
+
+            <!-- Relay note -->
+            <p style="text-align:center; font-size:0.78rem; color:var(--medium-gray); margin-top:20px;">
+                ⚠️ If a direct path cannot be established (strict firewall / symmetric NAT), traffic may route via a TURN relay server — see Privacy below.
+            </p>
+        </div>
+    </section>
+
+    <!-- Phase-by-phase -->
+    <section>
+        <h2>Step-by-step connection flow</h2>
+        <div class="card">
+            <ol class="phase-list">
+                <li>
+                    <div class="phase-num">1</div>
+                    <div class="phase-body">
+                        <strong>Controller registers a Peer ID</strong>
+                        <span>On session start the controller generates a random 5-digit PIN and registers the Peer ID <code>phpgrn-{PIN}</code> on the PeerJS signaling server. The server hands back a confirmation — no message content is involved.</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="phase-num">2</div>
+                    <div class="phase-body">
+                        <strong>QR code &amp; join URL generated</strong>
+                        <span>The app builds a join URL (<code>/chat/?room=name</code>) and encodes it in a QR code entirely in the browser — no server call.</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="phase-num">3</div>
+                    <div class="phase-body">
+                        <strong>Participant scans / types the PIN</strong>
+                        <span>The participant's browser sends an SDP offer to <code>phpgrn-{PIN}</code> via the PeerJS signaling server. The controller receives it and replies with an SDP answer. ICE candidates (network addresses) are also exchanged through this channel.</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="phase-num green">4</div>
+                    <div class="phase-body">
+                        <strong>Direct WebRTC data channel opens</strong>
+                        <span>Once ICE negotiation succeeds the browsers connect directly, encrypted with DTLS. The PeerJS signaling server is no longer involved. All chat messages, code snippets, history packets, and colour assignments travel through this channel.</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="phase-num green">5</div>
+                    <div class="phase-body">
+                        <strong>Controller relays to all participants</strong>
+                        <span>The topology is a star: every participant connects to the controller, not to each other. When a participant sends a message the controller receives it and rebroadcasts it to all other connected participants. This keeps things simple and gives the controller full visibility.</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="phase-num green">6</div>
+                    <div class="phase-body">
+                        <strong>Session ends — everything is wiped</strong>
+                        <span>When the controller closes the tab a <code>session-end</code> message is broadcast. Each participant clears its feed, resets state, and returns to the start screen. Nothing is written to disk anywhere.</span>
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- Privacy & data -->
+    <section>
+        <h2>Privacy &amp; data</h2>
+
+        <div class="callout green">
+            <strong>No server-side storage.</strong> This app has no database, no backend, and no analytics. All message history lives in the controller's browser tab and is gone the moment the session ends.
+        </div>
+
+        <div class="callout">
+            <strong>Message content is end-to-end encrypted.</strong> WebRTC data channels are mandated to use DTLS encryption. Once the direct channel is established, the PeerJS signaling server cannot read your messages — it only sees who connected to whom.
+        </div>
+
+        <div class="callout yellow">
+            <strong>TURN relay caveat.</strong> If a direct peer-to-peer path cannot be established (e.g., strict corporate firewall or symmetric NAT) WebRTC falls back to a TURN relay server. Traffic is still DTLS-encrypted in transit, but the relay server operator sees the encrypted bytes. This app uses the default public TURN servers provided by PeerJS.
+        </div>
+
+        <div class="card" style="padding: 0; overflow: hidden;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Seen by PeerJS</th>
+                        <th>Stored anywhere</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Message content</td>
+                        <td class="no">No — DTLS encrypted</td>
+                        <td class="no">No</td>
+                    </tr>
+                    <tr>
+                        <td>Code snippets</td>
+                        <td class="no">No — DTLS encrypted</td>
+                        <td class="no">No</td>
+                    </tr>
+                    <tr>
+                        <td>Display names</td>
+                        <td class="no">No</td>
+                        <td class="partial">Browser localStorage only (token)</td>
+                    </tr>
+                    <tr>
+                        <td>Room name (in URL)</td>
+                        <td class="no">No</td>
+                        <td class="partial">Browser history / server access logs</td>
+                    </tr>
+                    <tr>
+                        <td>Peer IDs (who talks to whom)</td>
+                        <td class="yes">Yes — signaling metadata</td>
+                        <td class="no">Not by this app</td>
+                    </tr>
+                    <tr>
+                        <td>IP addresses</td>
+                        <td class="yes">Yes — ICE candidates</td>
+                        <td class="no">Not by this app</td>
+                    </tr>
+                    <tr>
+                        <td>Session history</td>
+                        <td class="no">No</td>
+                        <td class="no">Gone when tab closes</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Acknowledgements -->
+    <section>
+        <h2>Open-source libraries &amp; services</h2>
+        <p>This app is built entirely on open-source tools and free tiers. We gratefully acknowledge:</p>
+
+        <div class="ack-grid">
+
+            <div class="ack-card">
+                <div class="ack-role">P2P / WebRTC</div>
+                <a href="https://peerjs.com" target="_blank" rel="noopener">PeerJS</a>
+                <p>Simplifies WebRTC peer-to-peer connections with a clean JavaScript API. Provides the public signaling server and TURN relay infrastructure used to establish connections between browsers.</p>
+                <span class="license">MIT License</span>
+            </div>
+
+            <div class="ack-card">
+                <div class="ack-role">Syntax highlighting</div>
+                <a href="https://highlightjs.org" target="_blank" rel="noopener">Highlight.js</a>
+                <p>Automatic syntax detection and highlighting for code snippets. Used here with the GitHub light theme for clean, readable PHP and JavaScript code blocks.</p>
+                <span class="license">BSD 3-Clause License</span>
+            </div>
+
+            <div class="ack-card">
+                <div class="ack-role">QR code generation</div>
+                <a href="https://github.com/davidshimjs/qrcodejs" target="_blank" rel="noopener">QRCode.js</a>
+                <p>Generates QR codes entirely in the browser using HTML5 Canvas. Used to encode the join URL so participants can scan it from the beamer without typing a long URL.</p>
+                <span class="license">MIT License</span>
+            </div>
+
+            <div class="ack-card">
+                <div class="ack-role">CDN</div>
+                <a href="https://cdnjs.com" target="_blank" rel="noopener">cdnjs</a>
+                <p>Free CDN for open-source libraries, maintained by Cloudflare. Serves Highlight.js and QRCode.js. No tracking; files are delivered over HTTPS from global edge nodes.</p>
+                <span class="license">Free / Open</span>
+            </div>
+
+            <div class="ack-card">
+                <div class="ack-role">CDN (PeerJS)</div>
+                <a href="https://unpkg.com" target="_blank" rel="noopener">unpkg</a>
+                <p>A fast, global CDN for npm packages. Used to load the PeerJS client library directly from the npm registry.</p>
+                <span class="license">Free / Open</span>
+            </div>
+
+            <div class="ack-card">
+                <div class="ack-role">Hosting</div>
+                <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>
+                <p>Serves the entire GroningenPHP website as a static site directly from the GitHub repository — no web server to manage and free for open-source projects.</p>
+                <span class="license">Free for public repos</span>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta">
+        <a href="/chat/" class="btn btn-primary">Open Workshop Chat</a>
+        <a href="/workshops/" class="btn btn-secondary">Back to Workshops</a>
+    </div>
+
+</main>
+
+</body>
+</html>
