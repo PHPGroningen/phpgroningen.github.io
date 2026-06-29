@@ -1,134 +1,114 @@
-# Hack, Fix, Discuss! - Facilitator Guide
+# Hack, Fix, Discuss! - Facilitator Guide (AI Security Edition)
 
-This guide contains the solutions (attacks) and best practices (fixes) for the security challenges in the "Hack, Fix, Discuss!" workshop.
+This guide contains the solutions (attacks) and best practices (fixes) for the AI-themed security challenges in the workshop.
 
 ---
 
-## Challenge 1: The Gatekeeper (SQL Injection)
+## Challenge 1: The Copilot's Query (SQL Injection)
 
 ### The Vulnerability
-The code concatenates user input (`$userId`) directly into the SQL query string. This allows an attacker to manipulate the query structure.
+An AI assistant suggested a custom filter (`str_replace`) to "secure" the query. However, it only filtered single quotes, which are not used in this numeric-based query.
 
 ```php
+$userId = str_replace("'", "", $userId);
 $query = "SELECT username FROM users WHERE id = " . $userId;
 ```
 
 ### Attack (Team Hack)
-The goal is to extract the `admin_password` from the `system_config` table. Since the original query only selects one column (`username`), we can use a `UNION SELECT` to append results from another table.
+Since the input is concatenated without quotes, we don't need quotes to break out of the string. We can use a `UNION SELECT` directly. However, the "AI filter" removes single quotes, so we must avoid them in our subquery.
 
 **Possible Payload:**
 ```text
-0 UNION SELECT config_value FROM system_config WHERE config_name = 'admin_password'
+0 UNION SELECT config_value FROM system_config
 ```
-*Why it works:* The `0` (or any non-existent ID) makes the first part of the union return nothing, while the second part fetches the password.
+*Why it works:* Since the `system_config` table only has one row (the admin password), we don't even need a `WHERE` clause. This bypasses the quote filter entirely. If you needed a specific row, you could use `LIMIT 1 OFFSET 0`.
 
 ### Fix (Team Blue)
-Never concatenate variables into SQL strings. Use **Prepared Statements** with placeholders.
+AI often suggests "hand-rolled" filters. Always use **Prepared Statements**.
 
 **The Correct Fix:**
 ```php
 $stmt = $db->prepare("SELECT username FROM users WHERE id = :id");
 $stmt->execute(['id' => $userId]);
-$result = $stmt->fetchAll();
 ```
 
 ---
 
-## Challenge 2: The Calculator (Code Injection / Eval)
+## Challenge 2: The Insecure AI Agent (Prompt Injection / RCE)
 
 ### The Vulnerability
-The code uses `eval()` to execute a string as PHP code. While there is a naive filter for the word "flag", it is easily bypassed.
+The "AI Agent" uses `preg_match` to parse a command and then `eval()` to execute the result. It has a naive filter for the word "flag".
 
 ```php
 eval("echo " . $expression . ";");
 ```
 
 ### Attack (Team Hack)
-The goal is to read the `$flag` variable. Since "flag" is blocked by `preg_match('/flag/i', $expression)`, we must avoid using that literal string.
+This is a **Prompt Injection** attack. We need to escape the intended command and execute our own code, while bypassing the "flag" filter.
 
 **Possible Payloads:**
-1. **Variable Variables:** `include('php://filter/read=convert.base64-encode/resource=index.php')` (If it were a file, but here we want a variable).
-2. **Dynamic Name:** `$f = 'fla'.'g'; echo $$f`
-3. **Globals Array:** `$GLOBALS['fla'.'g']`
-4. **Hex/Octal Encoding:** `\x66\x6c\x61\x67` (The string "flag" in hex).
+1.  **Completion Bypass:** `Calculate 1; $f='fla'.'g'; echo $$f`
+2.  **Complex Expression:** `Calculate ${'fla'.'g'}`
+3.  **Globals Array:** `Calculate $GLOBALS['fla'.'g']`
+
+*Note:* Because the code is `eval("echo " . $expression . ";")`, your payload must either be a complete expression that `echo` can handle (like `${'fla'.'g'}`) or it must terminate the first `echo` with a semicolon and start a new statement.
 
 ### Fix (Team Blue)
-The best fix is to **avoid `eval()` entirely**. If mathematical evaluation is needed, use a dedicated math parser library or a very strict whitelist.
+Never pass AI-parsed strings to `eval()`.
 
-**The Minimal Fix (Whitelisting):**
+**The Correct Fix:**
+Avoid `eval()` entirely. If you must evaluate math, use a library like `math-parser` or a very strict regex whitelist:
 ```php
 if (!preg_match('/^[0-9+\\-*\/(). ]+$/', $expression)) {
-    die("Invalid characters in expression");
+    die("Invalid characters");
 }
-eval("echo " . $expression . ";");
 ```
 
 ---
 
-## Challenge 3: The File Explorer (Path Traversal)
+## Challenge 3: The AI's "Smart" Sanitizer (Path Traversal)
 
 ### The Vulnerability
-The code attempts to prevent path traversal by removing `../`, but it does so only once using `str_replace`.
+The AI suggested removing `../` once. This is a classic "recursive bypass" vulnerability.
 
 ```php
 $page = str_replace("../", "", $page);
 ```
 
 ### Attack (Team Hack)
-We can use **nested traversal strings**. When the inner `../` is removed, the remaining characters collapse into a new `../`.
+Use nested traversal strings.
 
 **Possible Payload:**
 ```text
 ....//config
 ```
-*Process:* `str_replace` finds `../` inside `....//` and removes it, leaving `../` behind. The resulting path becomes `pages/../config.php`, which points to the `config.php` in the base directory.
+*Process:* `str_replace` removes the middle `../`, leaving the outer `../` intact.
 
 ### Fix (Team Blue)
-Use `basename()` to strip all directory information, or validate the resulting path against a real path.
+AI-generated filters are often incomplete. Use `basename()`.
 
 **The Correct Fix:**
 ```php
 $page = basename($page); 
-// Or even better:
-$requestedPage = realpath($base . "pages/" . $page . ".php");
-if ($requestedPage && strpos($requestedPage, $base . "pages/") === 0) {
-    include($requestedPage);
-}
 ```
 
 ---
 
-## Challenge 4: The Magic Box (Insecure Deserialization)
+## Challenge 4: The AI-Recommended Library (Insecure Deserialization)
 
 ### The Vulnerability
-The code calls `unserialize()` on raw user input. This triggers the `__wakeup()` magic method of the resulting object, which in this case calls a method on a property.
-
-```php
-unserialize($data);
-```
+The AI recommended using `unserialize()` for "performance" over JSON.
 
 ### Attack (Team Hack)
-The goal is to swap the `GuestProfile` with an `AdminProfile`. We need to craft a serialized `User` object where the `profile` property is an instance of `AdminProfile`.
+Swap the `GuestProfile` object with an `AdminProfile` object in the serialized string.
 
-**Original (Guest):**
-`O:4:"User":1:{s:7:"profile";O:12:"GuestProfile":0:{}}`
-
-**Attack Payload (Admin):**
+**Attack Payload:**
 `O:4:"User":1:{s:7:"profile";O:12:"AdminProfile":0:{}}`
 
-*How to generate it:*
-```php
-echo serialize(new User(new AdminProfile()));
-```
-
 ### Fix (Team Blue)
-**Never use `unserialize()` on user-controlled data.** Use `json_decode()` instead. JSON is a data-only format and does not instantiate classes or trigger magic methods.
+Don't follow AI advice that prioritizes performance over security. Use JSON.
 
 **The Correct Fix:**
 ```php
 $userData = json_decode($data, true);
-// Then manually handle the logic based on the data
-if ($userData['role'] === 'admin') {
-    // ...
-}
 ```
