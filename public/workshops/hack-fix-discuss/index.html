@@ -7,118 +7,52 @@
     <link rel="stylesheet" href="../../css/styles.css">
     <link rel="stylesheet" href="../../css/ai-powered.css">
     <link rel="stylesheet" href="../../css/php-workshop.css">
+    <link rel="stylesheet" href="../../css/hack-fix.css">
     <link rel="icon" href="../../favicon.ico" type="image/x-icon" sizes="any"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="shortcut icon" href="../../favicon.ico"/>
     <style>
-        .password-section {
-            text-align: center;
-            padding: 3rem;
-            background: #f8fafc;
-            border: 2px dashed #cbd5e1;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
-        }
-        .password-section:hover {
-            border-color: #1b8e2d;
-            background: #f1f9f1;
-        }
-        .btn-unlock {
-            background-color: #1b8e2d;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            font-size: 1.1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-weight: 600;
-        }
-        .btn-unlock:hover {
-            background-color: #166124;
-        }
-        #missions-area {
-            display: none;
-            animation: fadeIn 0.5s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .mission-grid {
+        .challenge-list {
+            list-style: none;
+            padding: 0;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            gap: 1.5rem;
             margin-top: 2rem;
         }
-        @media (max-width: 768px) {
-            .mission-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        .role-card {
+        .challenge-item {
             background: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 8px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border-top: 5px solid #ccc;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid #1b8e2d;
+            transition: transform 0.2s;
         }
-        .role-card.hack { border-top-color: #e53e3e; }
-        .role-card.fix { border-top-color: #3182ce; }
-        .role-card h3 { 
-            margin-bottom: 1rem; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px;
-            font-size: 1.4rem;
+        .challenge-item:hover {
+            transform: translateX(5px);
         }
-        .role-card.hack h3 { color: #e53e3e; }
-        .role-card.fix h3 { color: #3182ce; }
-        
-        .vulnerable-code {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 1.5rem;
-            border-radius: 6px;
-            font-family: 'Fira Code', 'Courier New', Courier, monospace;
-            overflow-x: auto;
-            margin-top: 1rem;
-            position: relative;
+        .challenge-info h3 {
+            margin: 0;
+            color: #2d3748;
+        }
+        .challenge-info p {
+            margin: 0.5rem 0 0 0;
+            color: #718096;
             font-size: 0.9rem;
-            line-height: 1.4;
         }
-        .copy-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 0.75rem;
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.2s;
+        .btn-start {
+            background-color: #1b8e2d;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
         }
-        .copy-badge:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        .mission-objective {
-            background: #fff5f5;
-            border-left: 4px solid #e53e3e;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 0 4px 4px 0;
-        }
-        .fix-objective {
-            background: #ebf8ff;
-            border-left: 4px solid #3182ce;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 0 4px 4px 0;
+        .btn-start:hover {
+            background-color: #166124;
         }
     </style>
 </head>
@@ -180,12 +114,34 @@
             <p class="lead">Welcome to the AI security edition of GroningenPHP workshops! Today, we're auditing code generated by AI. While LLMs are great for productivity, they often "hallucinate" security measures or suggest outdated, vulnerable patterns.</p>
             
             <div class="rules-box">
-                <strong>Workshop Structure:</strong>
-                <ul style="margin-left: 1.5rem; margin-top: 0.5rem; list-style-type: none;">
-                    <li><i class="fas fa-user-secret" style="color:#e53e3e; width: 25px;"></i> <strong>Hack:</strong> Team Red exploits flaws in AI-generated code.</li>
-                    <li><i class="fas fa-shield-alt" style="color:#3182ce; width: 25px;"></i> <strong>Fix:</strong> Team Blue audits and patches the code for production.</li>
-                    <li><i class="fas fa-comments" style="color:#1b8e2d; width: 25px;"></i> <strong>Discuss:</strong> We discuss why the AI failed and how to prevent it.</li>
-                </ul>
+                <strong>Workshop Structure (The "Duel" Cycle):</strong>
+                <div style="margin-top: 1rem;">
+                    <div style="display: flex; align-items: flex-start; margin-bottom: 1.2rem;">
+                        <div style="background: #1b8e2d; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 12px; font-weight: bold; font-size: 0.9rem;">1</div>
+                        <div>
+                            <strong>Hack & Fix (In Parallel)</strong>
+                            <div style="font-size: 0.9rem; color: #2d3748; margin-top: 0.4rem; line-height: 1.5;">
+                                <span style="display: flex; align-items: center; margin-bottom: 4px;"><i class="fas fa-user-secret" style="color:#e53e3e; width: 20px; margin-right: 8px;"></i> <strong>Team Red:</strong> Find and exploit vulnerabilities in the code.</span>
+                                <span style="display: flex; align-items: center;"><i class="fas fa-shield-alt" style="color:#3182ce; width: 20px; margin-right: 8px;"></i> <strong>Team Blue:</strong> Audit and patch the same code to secure it.</span>
+                                <em style="display: block; margin-top: 4px; color: #555; font-size: 0.85rem;">Both teams work simultaneously on the same challenge!</em>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: flex-start; margin-bottom: 1.2rem;">
+                        <div style="background: #1b8e2d; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 12px; font-weight: bold; font-size: 0.9rem;">2</div>
+                        <div>
+                            <strong>The "Showdown" & Discuss</strong>
+                            <p style="font-size: 0.9rem; color: #2d3748; margin-top: 0.4rem; line-height: 1.5;">We test Team Red's payloads against Team Blue's fixed code. Then we discuss why the AI failed and how the fix works.</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: flex-start;">
+                        <div style="background: #1b8e2d; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 12px; font-weight: bold; font-size: 0.9rem;">3</div>
+                        <div>
+                            <strong>Repeat & Switch</strong>
+                            <p style="font-size: 0.9rem; color: #2d3748; margin-top: 0.4rem; line-height: 1.5;">Move to the next challenge, switch roles between Team Red and Team Blue, and start the next round!</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -205,328 +161,44 @@
     <hr class="divider">
 
     <section class="prompts-section">
-        <div id="challenge-1-wrapper">
-            <h2>Challenge 1: The Copilot's Query</h2>
-            <p class="subtext" id="mission-subtext-1">This mission is locked. Wait for the organizer to reveal the password.</p>
-            
-            <div id="password-gate-1" class="password-section">
-                <i class="fas fa-lock-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
-                <br>
-                <button id="unlock-btn-1" class="btn-unlock">Reveal Challenge 1</button>
-            </div>
+        <h2>Workshop Challenges</h2>
+        <p class="subtext">Work through these challenges with your team. Good luck!</p>
 
-            <div id="mission-1-area" style="display: none; animation: fadeIn 0.5s ease-out;">
-                <div class="mission-grid">
-                    <div class="role-card hack">
-                        <h3><i class="fas fa-user-secret"></i> Team Hack</h3>
-                        <div class="mission-objective">
-                            <strong>Goal:</strong> Extract the <code>admin_password</code> from the <code>system_config</code> table.
-                        </div>
-                        <p>The AI assistant generated this "secure" query by trying to filter single quotes. Can you bypass its naive protection using <code>UNION</code>?</p>
-                        <div class="vulnerable-code" id="code-1">
-                            <span class="copy-badge" onclick="copyCode('code-1')"><i class="fas fa-copy"></i> Copy</span>
-<pre><code>&lt;?php
-// --- SIMULATED INPUT ---
-$userId = "1"; 
-// -----------------------
-
-$db = new PDO('sqlite::memory:');
-$db->exec("CREATE TABLE users (id INT, username TEXT, role TEXT)");
-$db->exec("CREATE TABLE system_config (config_name TEXT, config_value TEXT)");
-
-$db->exec("INSERT INTO users VALUES (1, 'alice', 'user')");
-$db->exec("INSERT INTO system_config VALUES ('admin_password', 'FLAG{AI_HALLUCINATED_SECURITY}')");
-
-// AI SUGGESTION: "I'll remove quotes to prevent SQL injection!"
-$userId = str_replace("'", "", $userId);
-
-// VULNERABLE CODE
-$query = "SELECT username FROM users WHERE id = " . $userId;
-echo "Executing: $query\n\n";
-
-$result = $db->query($query);
-
-if ($result) {
-    foreach ($result as $row) {
-        echo "Result: " . $row['username'] . "\n";
-    }
-}</code></pre>
-                        </div>
-                    </div>
-
-                    <div class="role-card fix">
-                        <h3><i class="fas fa-shield-alt"></i> Team Fix</h3>
-                        <div class="fix-objective">
-                            <strong>Goal:</strong> Replace the AI's "hand-rolled" filter with a professional solution.
-                        </div>
-                        <p>The AI's <code>str_replace</code> attempt is useless against numeric-based SQL injection. Use real Prepared Statements.</p>
-                        <p style="margin-top: auto;"><small><i class="fas fa-lightbulb"></i> Tip: Use <code>$db->prepare()</code> and bind parameters correctly.</small></p>
-                    </div>
+        <ul class="challenge-list">
+            <li class="challenge-item">
+                <div class="challenge-info">
+                    <h3>Challenge 1: The Copilot's Query</h3>
+                    <p>Bypass an AI-suggested SQL filter using UNION injection.</p>
                 </div>
-            </div>
-        </div>
-        
-        <hr class="divider" style="margin: 4rem 0;">
-
-        <div id="challenge-2-wrapper">
-            <h2>Challenge 2: The Insecure AI Agent</h2>
-            <p class="subtext" id="mission-subtext-2">This mission is locked. Wait for the organizer to reveal the password.</p>
-
-            <div id="password-gate-2" class="password-section">
-                <i class="fas fa-lock-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
-                <br>
-                <button id="unlock-btn-2" class="btn-unlock">Reveal Challenge 2</button>
-            </div>
-
-            <div id="mission-2-area" style="display: none; animation: fadeIn 0.5s ease-out;">
-                <div class="mission-grid">
-                     <div class="role-card hack">
-                        <h3><i class="fas fa-user-secret"></i> Team Hack</h3>
-                        <div class="mission-objective">
-                            <strong>Goal:</strong> Extract the value of the <code>$flag</code> variable via Prompt Injection.
-                        </div>
-                        <p>This script simulates an AI agent that takes a natural language command, "parses" it, and executes it. Can you trick the AI into revealing the flag? Think about how the <code>eval()</code> context might require you to terminate the current statement.</p>
-                        <div class="vulnerable-code" id="code-2">
-                            <span class="copy-badge" onclick="copyCode('code-2')"><i class="fas fa-copy"></i> Copy</span>
-<pre><code>&lt;?php
-// --- SIMULATED INPUT ---
-// Try: "Calculate 1 + 1"
-// Or trick it: "1; echo $flag;"
-$prompt = "Calculate 1 + 1"; 
-// -----------------------
-
-$flag = "FLAG{PROMPT_INJECTION_TO_RCE}";
-
-echo "AI Agent is thinking...\n";
-
-// SIMULATED AI PARSING LOGIC:
-// It looks for "Calculate" and takes the rest as an expression.
-if (preg_match('/Calculate (.*)/i', $prompt, $matches)) {
-    $expression = $matches[1];
-    
-    // AI SECURITY FILTER: "I'll block the word 'flag' for safety!"
-    if (preg_match('/flag/i', $expression)) {
-        die("AI Security: I cannot perform operations involving sensitive data.");
-    }
-
-    echo "AI Result: ";
-    eval("echo " . $expression . ";");
-} else {
-    echo "AI: I only know how to 'Calculate' things.";
-}</code></pre>
-                        </div>
-                    </div>
-
-                    <div class="role-card fix">
-                        <h3><i class="fas fa-shield-alt"></i> Team Fix</h3>
-                        <div class="fix-objective">
-                            <strong>Goal:</strong> Prevent Remote Code Execution (RCE).
-                        </div>
-                        <p>The AI's "parser" just passes strings directly to <code>eval()</code>. This is extremely dangerous. Patch the logic to only allow mathematical results.</p>
-                        <p style="margin-top: auto;"><small><i class="fas fa-lightbulb"></i> Tip: Use a whitelist of characters or a dedicated math evaluation library instead of <code>eval()</code>.</small></p>
-                    </div>
+                <a href="challenge-1.html" class="btn-start">Start Challenge</a>
+            </li>
+            <li class="challenge-item">
+                <div class="challenge-info">
+                    <h3>Challenge 2: The Insecure AI Agent</h3>
+                    <p>Exploit an eval() vulnerability via prompt injection.</p>
                 </div>
-            </div>
-        </div>
-
-        <hr class="divider" style="margin: 4rem 0;">
-
-        <div id="challenge-3-wrapper">
-            <h2>Challenge 3: The AI's "Smart" Sanitizer</h2>
-            <p class="subtext" id="mission-subtext-3">This mission is locked. Wait for the organizer to reveal the password.</p>
-
-            <div id="password-gate-3" class="password-section">
-                <i class="fas fa-lock-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
-                <br>
-                <button id="unlock-btn-3" class="btn-unlock">Reveal Challenge 3</button>
-            </div>
-
-            <div id="mission-3-area" style="display: none; animation: fadeIn 0.5s ease-out;">
-                <div class="mission-grid">
-                     <div class="role-card hack">
-                        <h3><i class="fas fa-user-secret"></i> Team Hack</h3>
-                        <div class="mission-objective">
-                            <strong>Goal:</strong> Read the <code>config.php</code> file using nested traversal.
-                        </div>
-                        <p>The developer asked an AI to "write a function that blocks path traversal attacks". The AI suggested a simple <code>str_replace</code>. Can you fool it?</p>
-                        <div class="vulnerable-code" id="code-3">
-                            <span class="copy-badge" onclick="copyCode('code-3')"><i class="fas fa-copy"></i> Copy</span>
-<pre><code>&lt;?php
-// --- SIMULATED INPUT ---
-$page = "bio"; 
-// -----------------------
-
-// --- SANDBOX SETUP ---
-$base = sys_get_temp_dir() . "/workshop_" . getmypid() . "/";
-@mkdir($base); @mkdir($base . "pages");
-file_put_contents($base . "pages/bio.php", "This is the bio page.");
-file_put_contents($base . "config.php", "&lt;?php \$flag = 'FLAG{AI_GENERATED_FILTER_BYPASS}'; echo \$flag;");
-
-// AI SUGGESTION: "I'll remove ../ to make it secure!"
-$page = str_replace("../", "", $page);
-
-// VULNERABLE CODE
-$requestedPage = "pages/" . $page . ".php";
-echo "Loading: $requestedPage\n\n";
-
-if (file_exists($base . $requestedPage)) {
-    include($base . $requestedPage);
-} else {
-    echo "Page not found.";
-}</code></pre>
-                        </div>
-                    </div>
-
-                    <div class="role-card fix">
-                        <h3><i class="fas fa-shield-alt"></i> Team Fix</h3>
-                        <div class="fix-objective">
-                            <strong>Goal:</strong> Don't trust the AI's "hand-rolled" sanitizer.
-                        </div>
-                        <p>AI often forgets that filters can be bypassed by "re-forming" the blacklisted string. Use robust native functions like <code>basename()</code>.</p>
-                        <p style="margin-top: auto;"><small><i class="fas fa-lightbulb"></i> Tip: <code>basename($page)</code> is much safer than trying to filter paths yourself.</small></p>
-                    </div>
+                <a href="challenge-2.html" class="btn-start">Start Challenge</a>
+            </li>
+            <li class="challenge-item">
+                <div class="challenge-info">
+                    <h3>Challenge 3: The AI's "Smart" Sanitizer</h3>
+                    <p>Bypass a weak path traversal filter using nested sequences.</p>
                 </div>
-            </div>
-        </div>
-
-        <hr class="divider" style="margin: 4rem 0;">
-
-        <div id="challenge-4-wrapper">
-            <h2>Challenge 4: The AI-Recommended Library</h2>
-            <p class="subtext" id="mission-subtext-4">This mission is locked. Wait for the organizer to reveal the password.</p>
-
-            <div id="password-gate-4" class="password-section">
-                <i class="fas fa-lock-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
-                <br>
-                <button id="unlock-btn-4" class="btn-unlock">Reveal Challenge 4</button>
-            </div>
-
-            <div id="mission-4-area" style="display: none; animation: fadeIn 0.5s ease-out;">
-                <div class="mission-grid">
-                     <div class="role-card hack">
-                        <h3><i class="fas fa-user-secret"></i> Team Hack</h3>
-                        <div class="mission-objective">
-                            <strong>Goal:</strong> Trigger the <code>AdminProfile</code> logic.
-                        </div>
-                        <p>An AI recommended using "PHP native serialization" for a custom caching library because it's "faster than JSON". Can you exploit this advice?</p>
-                        <div class="vulnerable-code" id="code-4">
-                            <span class="copy-badge" onclick="copyCode('code-4')"><i class="fas fa-copy"></i> Copy</span>
-<pre><code>&lt;?php
-// --- SIMULATED INPUT ---
-// AI says: "Just pass the serialized string from the cookie"
-$data = 'O:4:"User":1:{s:7:"profile";O:12:"GuestProfile":0:{}}'; 
-// -----------------------
-
-class User {
-    public $profile;
-    public function __wakeup() {
-        $this->profile->display();
-    }
-}
-
-class GuestProfile {
-    public function display() {
-        echo "Welcome, guest.";
-    }
-}
-
-class AdminProfile {
-    public function display() {
-        echo "Welcome Admin! FLAG{AI_RECOMMENDED_DESERIALIZATION}";
-    }
-}
-
-// VULNERABLE CODE
-unserialize($data);</code></pre>
-                        </div>
-                    </div>
-
-                    <div class="role-card fix">
-                        <h3><i class="fas fa-shield-alt"></i> Team Fix</h3>
-                        <div class="fix-objective">
-                            <strong>Goal:</strong> Ignore the AI's bad performance advice.
-                        </div>
-                        <p>AI often prioritizes "clever" or "fast" solutions over secure ones. Replace <code>unserialize()</code> with a safe format like JSON.</p>
-                        <p style="margin-top: auto;"><small><i class="fas fa-lightbulb"></i> Tip: JSON is a data-only format and doesn't trigger magic methods like <code>__wakeup()</code>.</small></p>
-                    </div>
+                <a href="challenge-3.html" class="btn-start">Start Challenge</a>
+            </li>
+            <li class="challenge-item">
+                <div class="challenge-info">
+                    <h3>Challenge 4: The AI-Recommended Library</h3>
+                    <p>Exploit insecure deserialization in AI-recommended code.</p>
                 </div>
-            </div>
-        </div>
+                <a href="challenge-4.html" class="btn-start">Start Challenge</a>
+            </li>
+        </ul>
     </section>
 </main>
 
 <div id="toast" class="toast">Copied to clipboard!</div>
 
 <script src="../../js/script.js"></script>
-<script>
-    // --- Challenge 1 Unlock ---
-    const unlockBtn1 = document.getElementById('unlock-btn-1');
-    const passwordGate1 = document.getElementById('password-gate-1');
-    const missionArea1 = document.getElementById('mission-1-area');
-    const missionSubtext1 = document.getElementById('mission-subtext-1');
-
-    unlockBtn1.addEventListener('click', () => {
-        passwordGate1.style.display = 'none';
-        missionArea1.style.display = 'block';
-        missionSubtext1.innerText = 'Good luck with Challenge 1!';
-    });
-
-    // --- Challenge 2 Unlock ---
-    const unlockBtn2 = document.getElementById('unlock-btn-2');
-    const passwordGate2 = document.getElementById('password-gate-2');
-    const missionArea2 = document.getElementById('mission-2-area');
-    const missionSubtext2 = document.getElementById('mission-subtext-2');
-
-    unlockBtn2.addEventListener('click', () => {
-        passwordGate2.style.display = 'none';
-        missionArea2.style.display = 'block';
-        missionSubtext2.innerText = 'Good luck with Challenge 2!';
-    });
-
-    // --- Challenge 3 Unlock ---
-    const unlockBtn3 = document.getElementById('unlock-btn-3');
-    const passwordGate3 = document.getElementById('password-gate-3');
-    const missionArea3 = document.getElementById('mission-3-area');
-    const missionSubtext3 = document.getElementById('mission-subtext-3');
-
-    unlockBtn3.addEventListener('click', () => {
-        passwordGate3.style.display = 'none';
-        missionArea3.style.display = 'block';
-        missionSubtext3.innerText = 'Good luck with Challenge 3!';
-    });
-
-    // --- Challenge 4 Unlock ---
-    const unlockBtn4 = document.getElementById('unlock-btn-4');
-    const passwordGate4 = document.getElementById('password-gate-4');
-    const missionArea4 = document.getElementById('mission-4-area');
-    const missionSubtext4 = document.getElementById('mission-subtext-4');
-
-    unlockBtn4.addEventListener('click', () => {
-        passwordGate4.style.display = 'none';
-        missionArea4.style.display = 'block';
-        missionSubtext4.innerText = 'Good luck with Challenge 4!';
-    });
-
-    function copyCode(id) {
-        const codeElement = document.getElementById(id).querySelector('code');
-        const text = codeElement.innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            const toast = document.getElementById('toast');
-            toast.className = "toast show";
-            
-            // Visual feedback on the badge
-            const badge = document.getElementById(id).querySelector('.copy-badge');
-            const originalHTML = badge.innerHTML;
-            badge.innerHTML = '<i class="fas fa-check"></i> Copied!';
-            badge.style.background = '#1b8e2d';
-            
-            setTimeout(() => { 
-                toast.className = toast.className.replace("show", ""); 
-                badge.innerHTML = originalHTML;
-                badge.style.background = '';
-            }, 3000);
-        });
-    }
-</script>
 </body>
 </html>

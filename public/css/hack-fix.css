@@ -1,0 +1,143 @@
+.mission-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+@media (max-width: 768px) {
+    .mission-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.role-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #ccc;
+    display: flex;
+    flex-direction: column;
+}
+.role-card.hack { border-top-color: #e53e3e; }
+.role-card.fix { border-top-color: #3182ce; }
+.role-card h3 { 
+    margin-bottom: 1rem; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+    font-size: 1.4rem;
+}
+.role-card.hack h3 { color: #e53e3e; }
+.role-card.fix h3 { color: #3182ce; }
+
+.vulnerable-code {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 6px;
+    font-family: 'Fira Code', 'Courier New', Courier, monospace;
+    overflow-x: auto;
+    margin-top: 1rem;
+    position: relative;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    width: 100%;
+    box-sizing: border-box;
+}
+.vulnerable-code pre {
+    margin: 0;
+    white-space: pre;
+}
+.vulnerable-code code {
+    display: block;
+    width: max-content;
+    min-width: 100%;
+}
+.copy-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.75rem;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.2s;
+}
+.copy-badge:hover {
+    background: rgba(255,255,255,0.2);
+}
+.mission-objective {
+    background: #fff5f5;
+    border-left: 4px solid #e53e3e;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0 4px 4px 0;
+}
+.fix-objective {
+    background: #ebf8ff;
+    border-left: 4px solid #3182ce;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0 4px 4px 0;
+}
+
+/* Sandbox Banner */
+.sandbox-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: #f0fff4;
+    border: 1px solid #c6f6d5;
+    border-left: 4px solid #38a169;
+    border-radius: 8px;
+    padding: 12px 20px;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    margin-top: -1rem;
+}
+
+.sandbox-banner__text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    color: #22543d;
+}
+
+.sandbox-banner__icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.sandbox-banner__text strong { color: #2f855a; }
+
+.sandbox-banner__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #38a169;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 10px 20px;
+    border-radius: 8px;
+    white-space: nowrap;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(56,161,105,0.2);
+}
+
+.sandbox-banner__link:hover {
+    background: #2f855a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(56,161,105,0.3);
+}
+
+@media (max-width: 500px) {
+    .sandbox-banner { flex-direction: column; align-items: flex-start; }
+}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroningenPHP - Challenge 2: The Insecure AI Agent</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/ai-powered.css">
+    <link rel="stylesheet" href="../../css/php-workshop.css">
+    <link rel="stylesheet" href="../../css/hack-fix.css">
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon" sizes="any"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="shortcut icon" href="../../favicon.ico"/>
+</head>
+<body>
+<header class="header">
+    <nav class="nav">
+        <div class="nav-container">
+            <a class="logo" href="/index.html">
+                <img src="../../images/GroningenPHP-LOGO.png" alt="GroningenPHP Logo" class="logo-image">
+                <h1>GroningenPHP</h1>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="/index.html#home">Home</a></li>
+                <li><a href="/index.html#about">About</a></li>
+                <li><a href="/index.html#events">Events</a></li>
+                <li><a href="/index.html#sponsors">Sponsors</a></li>
+                <li><a href="/index.html#contact">Contact</a></li>
+                <li><a href="/workshops/" class="active">Workshops</a></li>
+            </ul>
+            <div class="social-links">
+                <a href="https://www.youtube.com/@GroningenPHP/videos" target="_blank" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://x.com/groningenphp/" target="_blank" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/groups/13836983/" target="_blank" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+    <nav class="exercise-nav" style="margin-bottom:1.5rem;">
+        <a href="./" class="exercise-nav-link"><i class="fas fa-arrow-left"></i> Back to overview</a>
+        <span class="exercise-nav-position">Challenge 2 of 4</span>
+        <a href="challenge-3.html" class="exercise-nav-link">Challenge 3 <i class="fas fa-arrow-right"></i></a>
+    </nav>
+
+    <div class="chat-banner">
+        <div class="chat-banner__text">
+            <span class="chat-banner__icon">💬</span>
+            <span><strong>Workshop Chat</strong> — share messages and code snippets live. Ask the host for the PIN or scan the QR code on the beamer.</span>
+        </div>
+        <a href="/chat/" class="chat-banner__link">
+            <i class="fas fa-comments"></i> Join Chat
+        </a>
+    </div>
+    
+    <div class="sandbox-banner">
+        <div class="sandbox-banner__text">
+            <span class="sandbox-banner__icon">🚀</span>
+            <span><strong>Ready to test?</strong> Open the PHP sandbox to run your code without any local setup.</span>
+        </div>
+        <a href="https://3v4l.org/" target="_blank" class="sandbox-banner__link">
+            <i class="fas fa-terminal"></i> Open 3v4l.org
+        </a>
+    </div>
+
+    <section class="prompts-section">
+        <h2>Challenge 2: The Insecure AI Agent</h2>
+        <div class="mission-grid">
+             <div class="role-card hack">
+                <h3><i class="fas fa-user-secret"></i> Team Hack</h3>
+                <div class="mission-objective">
+                    <strong>Goal:</strong> Extract the value of the <code>$flag</code> variable via Prompt Injection.
+                </div>
+                <p>This script simulates an AI agent that takes a natural language command, "parses" it, and executes it. Can you trick the AI into revealing the flag? Think about how the <code>eval()</code> context might require you to terminate the current statement.</p>
+                <div class="vulnerable-code" id="code-2">
+                    <span class="copy-badge" onclick="copyCode('code-2')"><i class="fas fa-copy"></i> Copy</span>
+<pre><code>&lt;?php
+// --- SIMULATED INPUT ---
+// Try: "Calculate 1 + 1"
+// Or trick it: "1; echo $flag;"
+$prompt = "Calculate 1 + 1"; 
+// -----------------------
+
+$flag = "FLAG{PROMPT_INJECTION_TO_RCE}";
+
+echo "AI Agent is thinking...\n";
+
+// SIMULATED AI PARSING LOGIC:
+// It looks for "Calculate" and takes the rest as an expression.
+if (preg_match('/Calculate (.*)/i', $prompt, $matches)) {
+    $expression = $matches[1];
+    
+    // AI SECURITY FILTER: "I'll block the word 'flag' for safety!"
+    if (preg_match('/flag/i', $expression)) {
+        die("AI Security: I cannot perform operations involving sensitive data.");
+    }
+
+    echo "AI Result: ";
+    eval("echo " . $expression . ";");
+} else {
+    echo "AI: I only know how to 'Calculate' things.";
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="role-card fix">
+                <h3><i class="fas fa-shield-alt"></i> Team Fix</h3>
+                <div class="fix-objective">
+                    <strong>Goal:</strong> Prevent Remote Code Execution (RCE).
+                </div>
+                <p>The AI's "parser" just passes strings directly to <code>eval()</code>. This is extremely dangerous. Patch the logic to only allow mathematical results.</p>
+                <p style="margin-top: auto;"><small><i class="fas fa-lightbulb"></i> Tip: Use a whitelist of characters or a dedicated math evaluation library instead of <code>eval()</code>.</small></p>
+            </div>
+        </div>
+    </section>
+
+    <nav class="exercise-nav exercise-nav--bottom">
+        <a href="./" class="exercise-nav-link"><i class="fas fa-arrow-left"></i> Back to overview</a>
+        <a href="challenge-3.html" class="exercise-nav-link exercise-nav-link--next">Challenge 3 — The AI's "Smart" Sanitizer <i class="fas fa-arrow-right"></i></a>
+    </nav>
+</main>
+
+<div id="toast" class="toast">Copied to clipboard!</div>
+
+<script src="../../js/script.js"></script>
+<script src="../../js/hack-fix.js"></script>
+</body>
+</html>
