@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workshop Chat — GroningenPHP</title>
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon" sizes="any"/>
+    <!-- Highlight.js theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <link rel="stylesheet" href="chat.css">
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────────────── -->
+<header class="site-header">
+    <div class="logo-area">
+        <a class="logo" href="/">
+            <span>GroningenPHP</span>
+        </a>
+        <div class="logo-divider"></div>
+        <span class="logo-sub">💬 Workshop Chat</span>
+    </div>
+    <nav>
+        <a href="/chat/about.html">About this chat</a>
+        <a href="/workshops/">Workshops</a>
+    </nav>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════
+     Screen 1: Role Selection
+═══════════════════════════════════════════════════════ -->
+<section id="screen-role" class="screen active">
+    <div class="role-wrapper">
+        <h2>Workshop Chat</h2>
+        <p>Real-time P2P chat for workshops — no accounts, no server.</p>
+        <div class="role-cards">
+            <div class="role-card role-controller" id="btn-start-room">
+                <div class="role-icon">🎯</div>
+                <h3>Start a Room</h3>
+                <p>Controller — host the session on the beamer</p>
+            </div>
+            <div class="role-card role-participant" id="btn-join-room">
+                <div class="role-icon">💬</div>
+                <h3>Join a Room</h3>
+                <p>Participant — enter the PIN shown on screen</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     Screen 2: Session Setup (controller)
+═══════════════════════════════════════════════════════ -->
+<section id="screen-setup" class="screen">
+    <div class="setup-box">
+        <h2>🎯 Start a Room</h2>
+        <p>Give your session a name so participants know they're in the right place.</p>
+        <form id="form-setup">
+            <div class="form-group">
+                <label for="setup-session-name">Session name</label>
+                <input type="text" id="setup-session-name" required
+                    placeholder="e.g. PHP Workshop June 2026" autocomplete="off">
+            </div>
+            <button type="submit" class="btn-primary">Start Session</button>
+        </form>
+        <button class="btn-ghost" id="btn-back-setup">← Back</button>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     Screen 3: Controller View
+═══════════════════════════════════════════════════════ -->
+<section id="screen-controller" class="screen">
+    <div class="controller-layout">
+        <!-- Left: message feed -->
+        <div class="ctrl-main">
+            <div class="ctrl-status-row">
+                <h1 id="ctrl-session-name">Session</h1>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div class="status-bar" id="ctrl-status">
+                        <span class="status-dot" id="ctrl-dot"></span>
+                        <span id="ctrl-status-text">Connecting…</span>
+                    </div>
+                    <button class="btn-fullscreen" id="ctrl-btn-fullscreen" title="Enter fullscreen">⛶</button>
+                </div>
+            </div>
+            <div class="feed" id="ctrl-feed" aria-live="polite" aria-label="Chat messages"></div>
+            <div class="session-ended-notice" id="ctrl-session-ended">Session ended.</div>
+            <div class="autoscroll-row">
+                <input type="checkbox" id="ctrl-autoscroll" checked>
+                <label for="ctrl-autoscroll">Auto-scroll</label>
+            </div>
+            <div class="input-bar" id="ctrl-input-bar">
+                <input type="text" id="ctrl-msg-input" placeholder="Type a message…" autocomplete="off">
+                <button class="btn-code" id="ctrl-btn-code">🖥 Share Code</button>
+                <button class="btn-send" id="ctrl-btn-send">Send</button>
+            </div>
+        </div>
+
+        <!-- Right: sidebar with PIN, QR, participants -->
+        <aside class="ctrl-sidebar">
+            <div class="pin-display">
+                <div class="pin-label">Room PIN</div>
+                <div class="pin-value" id="ctrl-pin">—</div>
+            </div>
+            <div class="qr-section">
+                <button class="qr-toggle" id="qr-toggle-btn">
+                    QR Code <i class="qr-chevron">▾</i>
+                </button>
+                <div id="qrcode"></div>
+            </div>
+            <div class="pin-url-row">
+                <div class="url-shortening" id="ctrl-url-status">Join URL:</div>
+                <div class="url-display" id="ctrl-join-url"></div>
+                <button class="btn-copy btn-copy-full" id="ctrl-btn-copy-url">Copy URL</button>
+            </div>
+            <div class="participant-count">
+                <strong id="ctrl-participant-count">0</strong>
+                participants connected
+            </div>
+            <div class="participant-list" id="ctrl-participant-list"></div>
+        </aside>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     Screen 4: Participant PIN Entry
+═══════════════════════════════════════════════════════ -->
+<section id="screen-join" class="screen">
+    <div class="join-box">
+        <h2>💬 Join a Room</h2>
+        <p>Enter the session name and 5-digit PIN shown on the projector screen.</p>
+        <form id="form-join">
+            <div class="form-group">
+                <label for="input-session-name">Session name</label>
+                <input type="text" id="input-session-name" required
+                    placeholder="e.g. PHP Workshop June 2026" autocomplete="off" maxlength="80">
+            </div>
+            <div class="form-group">
+                <label for="input-pin">Room PIN</label>
+                <input type="number" id="input-pin" required
+                    min="10000" max="99999" placeholder="00000" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="input-name">Your name <span style="font-weight:400;color:var(--medium-gray)">(optional)</span></label>
+                <input type="text" id="input-name" placeholder="Guest-XXXX" autocomplete="nickname" maxlength="30">
+            </div>
+            <button type="submit" class="btn-primary" id="btn-join-submit">Join</button>
+        </form>
+        <div class="error-msg" id="join-error"></div>
+        <button class="btn-ghost" id="btn-back-join">← Back</button>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     Screen 5: Participant Chat
+═══════════════════════════════════════════════════════ -->
+<section id="screen-participant" class="screen">
+    <div class="participant-layout">
+        <div class="participant-status-row">
+            <h1 id="part-session-name">Chat</h1>
+            <div class="status-bar" id="part-status">
+                <span class="status-dot" id="part-dot"></span>
+                <span id="part-status-text">Connecting…</span>
+            </div>
+        </div>
+        <div class="feed" id="part-feed" aria-live="polite" aria-label="Chat messages"></div>
+        <div class="session-ended-notice" id="part-session-ended"></div>
+        <div class="autoscroll-row">
+            <input type="checkbox" id="part-autoscroll" checked>
+            <label for="part-autoscroll">Auto-scroll</label>
+        </div>
+        <div class="input-bar" id="part-input-bar">
+            <input type="text" id="part-msg-input" placeholder="Type a message…" autocomplete="off" disabled>
+            <button class="btn-code" id="part-btn-code" disabled>🖥 Share Code</button>
+            <button class="btn-send" id="part-btn-send" disabled>Send</button>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     Code Snippet Modal (shared)
+═══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="snippet-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-box">
+        <h3 id="modal-title">🖥 Share a Code Snippet</h3>
+        <div class="form-group">
+            <label for="snippet-lang">Language</label>
+            <select id="snippet-lang">
+                <option value="php">PHP</option>
+                <option value="javascript">JavaScript</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="snippet-code">Code</label>
+            <textarea id="snippet-code" rows="10" placeholder="Paste your code here…" spellcheck="false"></textarea>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel" id="btn-modal-cancel">Cancel</button>
+            <button class="btn-primary" id="btn-modal-send" style="width:auto">Send Snippet</button>
+        </div>
+    </div>
+</div>
+
+<!-- CDN scripts -->
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

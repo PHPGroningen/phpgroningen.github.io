@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroningenPHP - Challenge 3: The AI's "Smart" Sanitizer</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/ai-powered.css">
+    <link rel="stylesheet" href="../../css/php-workshop.css">
+    <link rel="stylesheet" href="../../css/hack-fix.css">
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon" sizes="any"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="shortcut icon" href="../../favicon.ico"/>
+</head>
+<body>
+<header class="header">
+    <nav class="nav">
+        <div class="nav-container">
+            <a class="logo" href="/index.html">
+                <img src="../../images/GroningenPHP-LOGO.png" alt="GroningenPHP Logo" class="logo-image">
+                <h1>GroningenPHP</h1>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="/index.html#home">Home</a></li>
+                <li><a href="/index.html#about">About</a></li>
+                <li><a href="/index.html#events">Events</a></li>
+                <li><a href="/index.html#sponsors">Sponsors</a></li>
+                <li><a href="/index.html#contact">Contact</a></li>
+                <li><a href="/workshops/" class="active">Workshops</a></li>
+            </ul>
+            <div class="social-links">
+                <a href="https://www.youtube.com/@GroningenPHP/videos" target="_blank" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://x.com/groningenphp/" target="_blank" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/groups/13836983/" target="_blank" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+    <nav class="exercise-nav" style="margin-bottom:1.5rem;">
+        <a href="./" class="exercise-nav-link"><i class="fas fa-arrow-left"></i> Back to overview</a>
+        <span class="exercise-nav-position">Challenge 3 of 4</span>
+        <a href="challenge-4.html" class="exercise-nav-link">Challenge 4 <i class="fas fa-arrow-right"></i></a>
+    </nav>
+
+    <div class="chat-banner">
+        <div class="chat-banner__text">
+            <span class="chat-banner__icon">💬</span>
+            <span><strong>Workshop Chat</strong> — share messages and code snippets live. Ask the host for the PIN or scan the QR code on the beamer.</span>
+        </div>
+        <a href="/chat/" class="chat-banner__link">
+            <i class="fas fa-comments"></i> Join Chat
+        </a>
+    </div>
+    
+    <div class="sandbox-banner">
+        <div class="sandbox-banner__text">
+            <span class="sandbox-banner__icon">🚀</span>
+            <span><strong>Ready to test?</strong> Open the PHP sandbox to run your code without any local setup.</span>
+        </div>
+        <a href="https://onecompiler.com/php" target="_blank" class="sandbox-banner__link">
+            <i class="fas fa-terminal"></i> Open OneCompiler
+        </a>
+    </div>
+
+    <section class="prompts-section">
+        <h2>Challenge 3: The AI's "Smart" Sanitizer</h2>
+        <div class="mission-grid">
+             <div class="role-card hack">
+                <h3><i class="fas fa-user-secret"></i> Team Hack</h3>
+                <div class="mission-objective">
+                    <strong>Goal:</strong> Read the <code>config.php</code> file using nested traversal.
+                </div>
+                <p>The developer asked an AI to "write a function that blocks path traversal attacks". The AI suggested a simple <code>str_replace</code>. Can you fool it?</p>
+                <div class="vulnerable-code" id="code-3">
+                    <span class="copy-badge" onclick="copyCode('code-3')"><i class="fas fa-copy"></i> Copy</span>
+<pre><code>&lt;?php
+// --- SIMULATED INPUT ---
+$page = "bio"; 
+// -----------------------
+
+// --- SANDBOX SETUP ---
+$base = sys_get_temp_dir() . "/workshop_" . getmypid() . "/";
+@mkdir($base); @mkdir($base . "pages");
+file_put_contents($base . "pages/bio.php", "This is the bio page.");
+file_put_contents($base . "config.php", "&lt;?php \$flag = 'FLAG{AI_GENERATED_FILTER_BYPASS}'; echo \$flag;");
+
+// AI SUGGESTION: "I'll remove ../ to make it secure!"
+$page = str_replace("../", "", $page);
+
+// VULNERABLE CODE
+$requestedPage = "pages/" . $page . ".php";
+echo "Loading: $requestedPage\n\n";
+
+if (file_exists($base . $requestedPage)) {
+    include($base . $requestedPage);
+} else {
+    echo "Page not found.";
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="role-card fix">
+                <h3><i class="fas fa-shield-alt"></i> Team Fix</h3>
+                <div class="fix-objective">
+                    <strong>Goal:</strong> Don't trust the AI's "hand-rolled" sanitizer.
+                </div>
+                <p>AI often forgets that filters can be bypassed by "re-forming" the blacklisted string. Use robust native functions like <code>basename()</code>.</p>
+                <p style="margin-top: auto;"><small><i class="fas fa-lightbulb"></i> Tip: <code>basename($page)</code> is much safer than trying to filter paths yourself.</small></p>
+            </div>
+        </div>
+    </section>
+
+    <nav class="exercise-nav exercise-nav--bottom">
+        <a href="./" class="exercise-nav-link"><i class="fas fa-arrow-left"></i> Back to overview</a>
+        <a href="challenge-4.html" class="exercise-nav-link exercise-nav-link--next">Challenge 4 — The AI-Recommended Library <i class="fas fa-arrow-right"></i></a>
+    </nav>
+</main>
+
+<div id="toast" class="toast">Copied to clipboard!</div>
+
+<script src="../../js/script.js"></script>
+<script src="../../js/hack-fix.js"></script>
+</body>
+</html>
