@@ -1,5 +1,5 @@
 import { state, TEAM_COLORS, UNSAFE_KEYS } from './state.js';
-import { generatePin, generateToken, updateStatus, showScreen } from './utils.js';
+import { generatePin, generateToken, updateStatus, showScreen, getPeerConfig } from './utils.js';
 import { applyColorToMessages } from './colors.js';
 import { renderMessage } from './renderer.js';
 
@@ -234,7 +234,7 @@ export function startController(name, pin, retries = 0) {
 
     let peerInstance;
     try {
-        peerInstance = new Peer(peerId);
+        peerInstance = new Peer(peerId, getPeerConfig(state.useRelay));
     } catch {
         alert('PeerJS failed to initialise. Please check your internet connection.');
         showScreen('screen-setup');
@@ -248,8 +248,9 @@ export function startController(name, pin, retries = 0) {
         document.getElementById('ctrl-session-name').textContent = name;
         document.getElementById('ctrl-pin').textContent = pin;
 
-        const joinUrl  = window.location.origin + window.location.pathname + '?room=' + encodeURIComponent(name.toLowerCase());
-        const joinPath = window.location.pathname + '?room=' + encodeURIComponent(name.toLowerCase());
+        const relayParam = state.useRelay ? '&relay=1' : '';
+        const joinUrl  = window.location.origin + window.location.pathname + '?room=' + encodeURIComponent(name.toLowerCase()) + relayParam;
+        const joinPath = window.location.pathname + '?room=' + encodeURIComponent(name.toLowerCase()) + relayParam;
 
         const urlDisplay = document.getElementById('ctrl-join-url');
         const urlStatus  = document.getElementById('ctrl-url-status');

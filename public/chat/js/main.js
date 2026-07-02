@@ -27,6 +27,7 @@ document.getElementById('form-setup').addEventListener('submit', e => {
     e.preventDefault();
     const name = document.getElementById('setup-session-name').value.trim();
     if (!name) return;
+    state.useRelay = document.getElementById('setup-relay').checked;
     startController(name, generatePin(), 0);
 });
 
@@ -154,6 +155,7 @@ window.addEventListener('pagehide', () => {
     const roomParam = params.get('room');
     if (roomParam?.trim()) {
         state.role = 'participant';
+        state.useRelay = params.get('relay') === '1';
         showScreen('screen-join');
         document.getElementById('input-session-name').value = roomParam.trim();
         document.getElementById('input-pin').focus();

@@ -32,7 +32,8 @@ export function renderMessage(msg, feedEl) {
         const safeLanguage = ALLOWED_LANGUAGES.includes((msg.language || '').toLowerCase())
             ? msg.language.toLowerCase() : 'javascript';
         const langClass = 'lang-' + safeLanguage;
-        const langLabel = safeLanguage === 'php' ? 'PHP' : 'JavaScript';
+        const langLabels = { php: 'PHP', javascript: 'JavaScript', python: 'Python', html: 'HTML', css: 'CSS', plaintext: 'Plain text' };
+        const langLabel = langLabels[safeLanguage] || safeLanguage;
 
         el.innerHTML =
             '<div class="snippet-header">' +

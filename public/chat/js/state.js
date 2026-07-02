@@ -1,5 +1,5 @@
 // Shared constants
-export const ALLOWED_LANGUAGES = ['php', 'javascript'];
+export const ALLOWED_LANGUAGES = ['php', 'javascript', 'python', 'html', 'css', 'plaintext'];
 export const UNSAFE_KEYS = ['__proto__', 'constructor', 'prototype'];
 
 export const TEAM_COLORS = [
@@ -39,4 +39,5 @@ export const state = {
     isControllerSession: false,
     snippetTarget: null,     // 'controller' | 'participant'
     nameColors: {},          // name.toLowerCase() → colorId
+    useRelay: false,         // whether to use TURN relay servers
 };
