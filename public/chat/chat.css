@@ -191,6 +191,27 @@
 
         .form-group { margin-bottom: 20px; }
 
+        .form-group-inline {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group-inline input[type=checkbox] {
+            width: auto;
+            padding: 0;
+            border: none;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .form-group-inline label {
+            display: inline;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
         .form-group label {
             display: block;
             font-weight: 600;
@@ -608,7 +629,7 @@
             font-size: 0.9rem;
         }
 
-        #screen-controller .snippet-code-block code {
+        #screen-controller .snippet-code-block {
             font-size: 1.15rem;
             line-height: 1.65;
         }
@@ -689,6 +710,10 @@
 
         .snippet-lang-badge.lang-php { background: #6366f1; }
         .snippet-lang-badge.lang-javascript { background: #d4a017; color: #1a1a1a; }
+        .snippet-lang-badge.lang-python { background: #3776ab; }
+        .snippet-lang-badge.lang-html { background: #e44d26; }
+        .snippet-lang-badge.lang-css { background: #264de4; }
+        .snippet-lang-badge.lang-plaintext { background: #6b7280; }
 
         .snippet-copy-btn {
             background: #fff;
@@ -708,14 +733,18 @@
         .snippet-code-block {
             margin: 0;
             overflow-x: auto;
-        }
-
-        .snippet-code-block code {
-            display: block;
             padding: 16px;
             font-size: 0.9rem;
             line-height: 1.6;
             font-family: 'Courier New', 'Fira Code', monospace;
+        }
+
+        .snippet-code-block code {
+            display: inline;
+            padding: 0;
+            font-size: inherit;
+            line-height: inherit;
+            font-family: inherit;
         }
 
         /* ── Input bar ──────────────────────────────────── */

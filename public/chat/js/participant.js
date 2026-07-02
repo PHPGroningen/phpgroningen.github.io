@@ -1,5 +1,5 @@
 import { state, UNSAFE_KEYS } from './state.js';
-import { updateStatus, showScreen } from './utils.js';
+import { updateStatus, showScreen, getPeerConfig } from './utils.js';
 import { applyColorToMessages } from './colors.js';
 import { renderMessage, renderHistory } from './renderer.js';
 
@@ -111,7 +111,7 @@ export function joinRoom(pin, name, enteredSessionName) {
 
     let peerInstance;
     try {
-        peerInstance = new Peer();
+        peerInstance = new Peer(getPeerConfig(state.useRelay));
     } catch {
         errorEl.textContent = 'PeerJS failed to initialise. Check your internet connection.';
         errorEl.classList.add('visible');

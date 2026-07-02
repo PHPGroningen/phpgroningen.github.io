@@ -61,6 +61,10 @@
                 <input type="text" id="setup-session-name" required
                     placeholder="e.g. PHP Workshop June 2026" autocomplete="off">
             </div>
+            <div class="form-group form-group-inline">
+                <input type="checkbox" id="setup-relay">
+                <label for="setup-relay">Network relay mode <span style="font-weight:400;color:var(--medium-gray)">(use on guest/isolated networks)</span></label>
+            </div>
             <button type="submit" class="btn-primary">Start Session</button>
         </form>
         <button class="btn-ghost" id="btn-back-setup">← Back</button>
@@ -189,6 +193,10 @@
             <select id="snippet-lang">
                 <option value="php">PHP</option>
                 <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="plaintext">Plain text</option>
             </select>
         </div>
         <div class="form-group">
@@ -207,6 +215,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/css.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script type="module" src="js/main.js"></script>

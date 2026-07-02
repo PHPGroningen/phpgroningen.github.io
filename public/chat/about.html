@@ -390,7 +390,7 @@
             <div class="role-card participant">
                 <div class="role-icon">💬</div>
                 <h3>Participant</h3>
-                <p>Attendees open <code>/chat/?room=&lt;name&gt;</code> (from the QR code or a link) and type the PIN. After choosing a display name they're live in the chat, able to send messages and share syntax-highlighted code snippets.</p>
+                <p>Attendees open <code>/chat/?room=&lt;name&gt;</code> (from the QR code or a link) and type the PIN. After choosing a display name they're live in the chat, able to send messages and share syntax-highlighted code snippets in PHP, JavaScript, Python, HTML, CSS, or plain text.</p>
             </div>
         </div>
     </section>
@@ -475,7 +475,7 @@
                     <div class="phase-num">2</div>
                     <div class="phase-body">
                         <strong>QR code &amp; join URL generated</strong>
-                        <span>The app builds a join URL (<code>/chat/?room=name</code>) and encodes it in a QR code entirely in the browser — no server call.</span>
+                        <span>The app builds a join URL (<code>/chat/?room=name</code>) and encodes it in a QR code entirely in the browser — no server call. If <em>Network relay mode</em> is enabled, <code>&amp;relay=1</code> is appended so participants automatically inherit the relay setting.</span>
                     </div>
                 </li>
                 <li>
@@ -523,7 +523,7 @@
         </div>
 
         <div class="callout yellow">
-            <strong>TURN relay caveat.</strong> If a direct peer-to-peer path cannot be established (e.g., strict corporate firewall or symmetric NAT) WebRTC falls back to a TURN relay server. Traffic is still DTLS-encrypted in transit, but the relay server operator sees the encrypted bytes. This app uses the default public TURN servers provided by PeerJS.
+            <strong>TURN relay caveat.</strong> If a direct peer-to-peer path cannot be established (e.g., on a guest Wi-Fi network with client isolation) WebRTC falls back to a TURN relay server. Traffic is still DTLS-encrypted in transit, but the relay server operator sees the encrypted bytes. Enable <em>Network relay mode</em> on the Start a Room screen to force TURN relay — the setting is automatically propagated to participants via the join URL. When relay mode is active, this app uses the community-maintained <a href="https://openrelay.metered.ca" target="_blank" rel="noopener">Open Relay</a> TURN servers.
         </div>
 
         <div class="card" style="padding: 0; overflow: hidden;">
@@ -593,8 +593,15 @@
             <div class="ack-card">
                 <div class="ack-role">Syntax highlighting</div>
                 <a href="https://highlightjs.org" target="_blank" rel="noopener">Highlight.js</a>
-                <p>Automatic syntax detection and highlighting for code snippets. Used here with the GitHub light theme for clean, readable PHP and JavaScript code blocks.</p>
+                <p>Automatic syntax detection and highlighting for code snippets. Used here with the GitHub light theme for clean, readable code blocks in PHP, JavaScript, Python, HTML, CSS, and plain text.</p>
                 <span class="license">BSD 3-Clause License</span>
+            </div>
+
+            <div class="ack-card">
+                <div class="ack-role">TURN relay (optional)</div>
+                <a href="https://openrelay.metered.ca" target="_blank" rel="noopener">Open Relay</a>
+                <p>Community-maintained free TURN relay servers used when Network relay mode is enabled. Allows WebRTC connections to work on guest or client-isolated networks where direct peer-to-peer paths are blocked.</p>
+                <span class="license">Free / Community</span>
             </div>
 
             <div class="ack-card">
