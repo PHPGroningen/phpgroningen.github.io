@@ -40,4 +40,7 @@ export const state = {
     snippetTarget: null,     // 'controller' | 'participant'
     nameColors: {},          // name.toLowerCase() → colorId
     useRelay: false,         // whether to use TURN relay servers
+    turnUrl:  '',            // TURN server URL
+    turnUser: '',            // TURN username
+    turnCred: '',            // TURN credential
 };

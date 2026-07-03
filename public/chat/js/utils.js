@@ -1,3 +1,5 @@
+import { state } from './state.js';
+
 export function escapeHtml(str) {
     return String(str)
         .replace(/&/g, '&amp;')
@@ -45,22 +47,15 @@ export function applyHighlight(codeEl) {
     if (window.hljs && !codeEl.classList.contains('language-plaintext')) hljs.highlightElement(codeEl);
 }
 
-// Free community TURN relay servers — sufficient for workshop use.
-// For higher reliability, replace with credentials from https://www.metered.ca/tools/openrelay/
-const RELAY_ICE_SERVERS = [
-    { urls: 'stun:stun.l.google.com:19302' },
-    {
-        urls: [
-            'turn:openrelay.metered.ca:80',
-            'turn:openrelay.metered.ca:443',
-            'turns:openrelay.metered.ca:443',
-        ],
-        username: 'openrelayproject',
-        credential: 'openrelayproject',
-    },
-];
-
 export function getPeerConfig(useRelay) {
     if (!useRelay) return {};
-    return { config: { iceServers: RELAY_ICE_SERVERS } };
+    const iceServers = [{ urls: 'stun:stun.l.google.com:19302' }];
+    if (state.turnUrl) {
+        iceServers.push({
+            urls: state.turnUrl,
+            username: state.turnUser,
+            credential: state.turnCred,
+        });
+    }
+    return { config: { iceServers } };
 }

@@ -523,7 +523,7 @@
         </div>
 
         <div class="callout yellow">
-            <strong>TURN relay caveat.</strong> If a direct peer-to-peer path cannot be established (e.g., on a guest Wi-Fi network with client isolation) WebRTC falls back to a TURN relay server. Traffic is still DTLS-encrypted in transit, but the relay server operator sees the encrypted bytes. Enable <em>Network relay mode</em> on the Start a Room screen to force TURN relay — the setting is automatically propagated to participants via the join URL. When relay mode is active, this app uses the community-maintained <a href="https://openrelay.metered.ca" target="_blank" rel="noopener">Open Relay</a> TURN servers.
+            <strong>TURN relay caveat.</strong> If a direct peer-to-peer path cannot be established (e.g., on a guest Wi-Fi network with client isolation) WebRTC falls back to a TURN relay server. Traffic is still DTLS-encrypted in transit, but the relay server operator sees the encrypted bytes. Enable <em>Network relay mode</em> on the Start a Room screen and enter TURN credentials (e.g. from <a href="https://www.metered.ca/stun-turn" target="_blank" rel="noopener">metered.ca</a> free tier) — the setting is automatically propagated to participants via the join URL. Credentials stay in the browser and are never sent to any server other than the TURN server you configure.
         </div>
 
         <div class="card" style="padding: 0; overflow: hidden;">
@@ -599,9 +599,9 @@
 
             <div class="ack-card">
                 <div class="ack-role">TURN relay (optional)</div>
-                <a href="https://openrelay.metered.ca" target="_blank" rel="noopener">Open Relay</a>
-                <p>Community-maintained free TURN relay servers used when Network relay mode is enabled. Allows WebRTC connections to work on guest or client-isolated networks where direct peer-to-peer paths are blocked.</p>
-                <span class="license">Free / Community</span>
+                <a href="https://www.metered.ca/stun-turn" target="_blank" rel="noopener">Metered.ca</a>
+                <p>Provides free TURN relay servers (50 GB/month) for when Network relay mode is needed. The host registers once and pastes credentials into the Start a Room form — no credentials are stored server-side by this app.</p>
+                <span class="license">Free tier available</span>
             </div>
 
             <div class="ack-card">
