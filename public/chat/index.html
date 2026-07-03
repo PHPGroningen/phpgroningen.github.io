@@ -65,6 +65,23 @@
                 <input type="checkbox" id="setup-relay">
                 <label for="setup-relay">Network relay mode <span style="font-weight:400;color:var(--medium-gray)">(use on guest/isolated networks)</span></label>
             </div>
+            <div id="relay-fields" style="display:none;">
+                <div class="form-group">
+                    <label for="setup-turn-url">TURN server URL</label>
+                    <input type="text" id="setup-turn-url" placeholder="turn:your-server.metered.ca:80" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="setup-turn-user">TURN username</label>
+                    <input type="text" id="setup-turn-user" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="setup-turn-cred">TURN credential</label>
+                    <input type="password" id="setup-turn-cred" autocomplete="off">
+                </div>
+                <p style="font-size:0.82rem;color:var(--medium-gray);margin-top:-10px;margin-bottom:16px;">
+                    Get free credentials at <a href="https://www.metered.ca/stun-turn" target="_blank" rel="noopener">metered.ca</a>. Credentials stay in your browser and are never sent to any server.
+                </p>
+            </div>
             <button type="submit" class="btn-primary">Start Session</button>
         </form>
         <button class="btn-ghost" id="btn-back-setup">← Back</button>

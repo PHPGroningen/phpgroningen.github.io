@@ -23,11 +23,20 @@ document.getElementById('btn-back-setup').addEventListener('click', () => showSc
 document.getElementById('btn-back-join').addEventListener('click', () => showScreen('screen-role'));
 
 // ── Session setup form ────────────────────────────────────────────────────────
+document.getElementById('setup-relay').addEventListener('change', e => {
+    document.getElementById('relay-fields').style.display = e.target.checked ? 'block' : 'none';
+});
+
 document.getElementById('form-setup').addEventListener('submit', e => {
     e.preventDefault();
     const name = document.getElementById('setup-session-name').value.trim();
     if (!name) return;
     state.useRelay = document.getElementById('setup-relay').checked;
+    if (state.useRelay) {
+        state.turnUrl  = document.getElementById('setup-turn-url').value.trim();
+        state.turnUser = document.getElementById('setup-turn-user').value.trim();
+        state.turnCred = document.getElementById('setup-turn-cred').value.trim();
+    }
     startController(name, generatePin(), 0);
 });
 
