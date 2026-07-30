@@ -323,9 +323,40 @@
         th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
         th { font-weight: 700; background: var(--light-gray); }
         tr:last-child td { border-bottom: none; }
-        .yes { color: #1b5e20; font-weight: 700; }
-        .no  { color: #b71c1c; font-weight: 700; }
-        .partial { color: #7a6200; font-weight: 700; }
+        .yes     { color: #b71c1c; font-weight: 700; }   /* bad: data exposed */
+        .no      { color: #1b5e20; font-weight: 700; }   /* good: data not exposed/stored */
+        .partial { color: #7a6200; font-weight: 700; }   /* neutral */
+
+        /* ── Technology grid ── */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .tech-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px 24px;
+        }
+        .tech-icon { font-size: 1.8rem; margin-bottom: 10px; }
+        .tech-card h3 { font-size: 1rem; margin-bottom: 8px; }
+        .tech-card p { font-size: 0.875rem; color: var(--medium-gray); margin-bottom: 8px; }
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+            margin-top: 4px;
+        }
+        .tech-table td {
+            padding: 4px 6px;
+            border-bottom: 1px solid var(--border);
+            color: var(--medium-gray);
+            vertical-align: top;
+        }
+        .tech-table td:first-child { white-space: nowrap; padding-right: 10px; }
+        .tech-table tr:last-child td { border-bottom: none; }
 
         /* ── CTA ── */
         .cta {
@@ -392,6 +423,61 @@
                 <h3>Participant</h3>
                 <p>Attendees open <code>/chat/?room=&lt;name&gt;</code> (from the QR code or a link) and type the PIN. After choosing a display name they're live in the chat, able to send messages and share syntax-highlighted code snippets in PHP, JavaScript, Python, HTML, CSS, or plain text.</p>
             </div>
+        </div>
+    </section>
+
+    <!-- Technology -->
+    <section>
+        <h2>Technology</h2>
+        <p>Workshop Chat is a fully static single-page application. There is no server-side code, no database, and no build step — just HTML, CSS and vanilla JavaScript modules served from GitHub Pages.</p>
+
+        <div class="tech-grid">
+
+            <div class="tech-card">
+                <div class="tech-icon">📡</div>
+                <h3>MQTT over WebSockets</h3>
+                <p><strong>MQTT</strong> (Message Queuing Telemetry Transport) is a lightweight publish/subscribe messaging protocol originally designed for IoT devices. Every browser connects to a shared MQTT broker over an encrypted WebSocket (<code>wss://</code>). Messages are published to named <em>topics</em>; subscribers receive everything published to topics they're watching.</p>
+                <p>We use it here because it works through any firewall or guest Wi-Fi — unlike peer-to-peer WebRTC, no direct browser-to-browser path is needed.</p>
+            </div>
+
+            <div class="tech-card">
+                <div class="tech-icon">🗂️</div>
+                <h3>Topic scheme</h3>
+                <p>All topics are scoped to the session PIN to avoid collisions between parallel workshops:</p>
+                <table class="tech-table">
+                    <tr><td><code>phpgrn/{PIN}/join</code></td><td>Participant → Controller</td></tr>
+                    <tr><td><code>phpgrn/{PIN}/msg</code></td><td>Participant → Controller</td></tr>
+                    <tr><td><code>phpgrn/{PIN}/leave</code></td><td>Participant LWT / explicit leave</td></tr>
+                    <tr><td><code>phpgrn/{PIN}/broadcast</code></td><td>Controller → all participants</td></tr>
+                    <tr><td><code>phpgrn/{PIN}/dm/{id}</code></td><td>Controller → one participant</td></tr>
+                </table>
+                <p style="margin-top:10px;">The controller's Last Will is a <code>session-end</code> broadcast, so participants are notified even if the host's browser crashes.</p>
+            </div>
+
+            <div class="tech-card">
+                <div class="tech-icon">⭐</div>
+                <h3>Star topology</h3>
+                <p>Participants never talk directly to each other — all messages go through the controller. When a participant sends a message, the controller receives it, stores it in memory (for history), and re-publishes it to the broadcast topic. This gives the controller full visibility and makes late-join history sync straightforward.</p>
+            </div>
+
+            <div class="tech-card">
+                <div class="tech-icon">🔄</div>
+                <h3>Reconnect &amp; identity</h3>
+                <p>MQTT.js handles automatic reconnection with exponential back-off. Each participant gets a random UUID stored only in memory. A <em>reconnect token</em> (stored in <code>localStorage</code> keyed by PIN) lets participants re-join after a page refresh and keep their display name without being treated as a new user.</p>
+            </div>
+
+            <div class="tech-card">
+                <div class="tech-icon">🎨</div>
+                <h3>Syntax highlighting</h3>
+                <p>Code snippets are highlighted client-side using <strong>Highlight.js</strong> with the GitHub light theme. Supported languages: PHP, JavaScript, Python, HTML, CSS, and plain text. The language grammar files are loaded from cdnjs — only the grammars actually used are included.</p>
+            </div>
+
+            <div class="tech-card">
+                <div class="tech-icon">📦</div>
+                <h3>No framework, no bundler</h3>
+                <p>The app is written in plain ES modules (<code>import</code>/<code>export</code>) loaded natively by the browser. No React, Vue, or bundler required. All state lives in a single shared <code>state.js</code> object, keeping the code easy to follow and debug.</p>
+            </div>
+
         </div>
     </section>
 
@@ -506,13 +592,14 @@
         </div>
 
         <div class="callout">
-            <strong>Transport is encrypted in transit.</strong> All MQTT traffic uses TLS over WebSockets (<code>wss://</code>), so messages are encrypted between your browser and the broker. The broker itself can read message payloads — see the note below.
+            <strong>Transport is encrypted in transit.</strong> All MQTT traffic uses TLS over WebSockets (<code>wss://</code>), so messages are protected against eavesdropping on the network between your browser and the broker. Shared or guest Wi-Fi is safe from local sniffing.
         </div>
 
         <div class="callout yellow">
-            <strong>Public broker notice.</strong> The default broker (<code>broker.emqx.io</code>) is a public free-tier service. Anyone who knows your PIN could subscribe to <code>phpgrn/{PIN}/#</code> and read messages. For sensitive sessions, run your own MQTT broker and enter its WebSocket URL in the <em>Custom MQTT broker</em> field on the Start a Room screen — the URL is automatically included in the join link.
+            <strong>Public broker notice.</strong> The default broker (<code>broker.emqx.io</code>) is a shared free-tier service operated by EMQX. The broker operator <em>can</em> read message payloads in transit. Additionally, anyone who guesses or knows your 5-digit PIN could subscribe to <code>phpgrn/{PIN}/#</code> and silently receive all messages. For a typical PHP workshop this is acceptable — nothing sensitive is shared. For sessions involving confidential code or personal data, use a private MQTT broker (enter its WSS URL in the <em>Custom MQTT broker</em> field).
         </div>
 
+        <h3 style="margin-top:8px; margin-bottom:12px;">What data leaves your browser, and where does it go?</h3>
         <div class="card" style="padding: 0; overflow: hidden;">
             <table>
                 <thead>
@@ -526,7 +613,7 @@
                     <tr>
                         <td>Message content</td>
                         <td class="partial">Yes — routed through broker</td>
-                        <td class="no">No (retain: false)</td>
+                        <td class="no">No (<code>retain: false</code>)</td>
                     </tr>
                     <tr>
                         <td>Code snippets</td>
@@ -536,30 +623,54 @@
                     <tr>
                         <td>Display names</td>
                         <td class="partial">Yes — in join payload</td>
-                        <td class="partial">Browser localStorage only (token)</td>
+                        <td class="partial">Browser <code>localStorage</code> only (reconnect token)</td>
                     </tr>
                     <tr>
-                        <td>Room name (in URL)</td>
-                        <td class="no">No</td>
-                        <td class="partial">Browser history / server access logs</td>
+                        <td>Room name</td>
+                        <td class="no">No (PIN only, not name)</td>
+                        <td class="partial">Browser history &amp; GitHub Pages access logs (via URL)</td>
                     </tr>
                     <tr>
-                        <td>MQTT client IDs (who is connected)</td>
+                        <td>MQTT client IDs</td>
                         <td class="yes">Yes — connection metadata</td>
                         <td class="no">Not by this app</td>
                     </tr>
                     <tr>
                         <td>IP addresses</td>
-                        <td class="yes">Yes — TCP connection</td>
+                        <td class="yes">Yes — TCP connection origin</td>
                         <td class="no">Not by this app</td>
                     </tr>
                     <tr>
                         <td>Session history</td>
                         <td class="no">No</td>
-                        <td class="no">Gone when tab closes</td>
+                        <td class="no">Gone when controller tab closes</td>
+                    </tr>
+                    <tr>
+                        <td>Team colour assignments</td>
+                        <td class="partial">Yes — broadcast to all participants</td>
+                        <td class="no">No</td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <h3 style="margin-top:28px; margin-bottom:12px;">What stays only in the browser?</h3>
+        <div class="card">
+            <ul style="padding-left:20px; font-size:0.9rem; color:var(--medium-gray); display:flex; flex-direction:column; gap:8px;">
+                <li><strong>Message history</strong> — held in the controller tab's memory only; never written to disk by this app.</li>
+                <li><strong>Reconnect token</strong> — a random hex string saved in <code>localStorage</code> under <code>phpgrn-token-{PIN}</code>. Used only to let a participant reclaim their display name after a page refresh. Cleared when the host ends the session.</li>
+                <li><strong>Participant ID</strong> — a random UUID generated at join time, kept in memory for the session lifetime. Never persisted.</li>
+            </ul>
+        </div>
+
+        <h3 style="margin-top:28px; margin-bottom:12px;">Recommendations for sensitive workshops</h3>
+        <div class="card">
+            <ul style="padding-left:20px; font-size:0.9rem; color:var(--medium-gray); display:flex; flex-direction:column; gap:8px;">
+                <li>Self-host a Mosquitto or EMQX broker behind authentication and use the <em>Custom MQTT broker</em> option.</li>
+                <li>Restrict broker access to the workshop venue's IP range.</li>
+                <li>Choose a long, random session name — the PIN is only 5 digits, but the topic also includes the room name in the join URL.</li>
+                <li>End the session (close the controller tab) promptly; this broadcasts a <code>session-end</code> to all clients and clears their state.</li>
+            </ul>
         </div>
     </section>
 
