@@ -24,23 +24,21 @@ export const TEAM_COLORS = [
 // Mutable application state — mutate properties directly, never replace the object.
 export const state = {
     role: null,              // 'controller' | 'participant'
-    peer: null,
-    controllerConn: null,    // participant's connection to controller
-    peers: {},               // controller: peerId → DataConnection
-    participantNames: {},    // controller: peerId → display name
+    mqttClient: null,        // mqtt.MqttClient instance
+    participantId: '',       // participant's unique ID (generated on join)
+    peers: {},               // controller: participantId → { name }
+    participantNames: {},    // controller: participantId → display name
     nameRegistry: {},        // lowercase name → { token, displayName, retired }
-    tokenRegistry: {},       // token → { displayName, peerId, previousNames }
+    tokenRegistry: {},       // token → { displayName, participantId, previousNames }
     messages: [],            // controller: in-memory history
     sessionName: '',
-    joinedSessionName: '',   // session name entered by participant on join form
+    joinedSessionName: '',
     displayName: '',
     currentPin: '',
     sessionEnded: false,
     isControllerSession: false,
     snippetTarget: null,     // 'controller' | 'participant'
     nameColors: {},          // name.toLowerCase() → colorId
-    useRelay: false,         // whether to use TURN relay servers
-    turnUrl:  '',            // TURN server URL
-    turnUser: '',            // TURN username
-    turnCred: '',            // TURN credential
+    useCustomBroker: false,
+    mqttBrokerUrl: '',       // custom MQTT broker WSS URL
 };

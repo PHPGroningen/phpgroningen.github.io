@@ -1,12 +1,20 @@
 import { state, TEAM_COLORS, UNSAFE_KEYS } from './state.js';
-import { generatePin, generateToken, updateStatus, showScreen, getPeerConfig } from './utils.js';
+import { generatePin, generateToken, updateStatus, showScreen, getMqttBrokerUrl } from './utils.js';
 import { applyColorToMessages } from './colors.js';
 import { renderMessage } from './renderer.js';
 
+const TOPIC = pin => `phpgrn/${pin}`;
+
 export function broadcastToAll(msg) {
-    Object.values(state.peers).forEach(conn => {
-        if (conn.open) conn.send(msg);
-    });
+    if (state.mqttClient?.connected) {
+        state.mqttClient.publish(TOPIC(state.currentPin) + '/broadcast', JSON.stringify(msg), { qos: 0, retain: false });
+    }
+}
+
+function sendToParticipant(participantId, msg) {
+    if (state.mqttClient?.connected) {
+        state.mqttClient.publish(TOPIC(state.currentPin) + '/dm/' + participantId, JSON.stringify(msg), { qos: 1, retain: false });
+    }
 }
 
 export function assignColor(name, colorId) {
@@ -25,7 +33,7 @@ export function assignColor(name, colorId) {
 }
 
 export function updateParticipantCount() {
-    const count = Object.values(state.peers).filter(c => c.open).length;
+    const count = Object.keys(state.peers).length;
     const countEl = document.getElementById('ctrl-participant-count');
     if (countEl) countEl.textContent = count;
 
@@ -34,8 +42,8 @@ export function updateParticipantCount() {
     listEl.innerHTML = '';
     document.querySelectorAll('.color-popover').forEach(p => p.remove());
 
-    Object.entries(state.participantNames).forEach(([peerId, name]) => {
-        if (!state.peers[peerId]?.open) return;
+    Object.entries(state.participantNames).forEach(([participantId, name]) => {
+        if (!state.peers[participantId]) return;
 
         const item = document.createElement('div');
         item.className = 'participant-list-item';
@@ -106,11 +114,9 @@ export function updateParticipantCount() {
     });
 }
 
-function onParticipantMessage(conn, data) {
+function onParticipantMessage(data) {
     // Relay to all other participants
-    Object.values(state.peers).forEach(c => {
-        if (c !== conn && c.open) c.send(data);
-    });
+    broadcastToAll(data);
 
     if (data.type === 'chat' || data.type === 'snippet') {
         state.messages.push(data);
@@ -118,108 +124,90 @@ function onParticipantMessage(conn, data) {
     }
 }
 
-export function onParticipantConnected(conn) {
-    state.peers[conn.peer] = conn;
-    const meta = conn.metadata || {};
-    const requestedName = (meta.displayName || '').trim() || ('Guest-' + conn.peer.slice(-4));
-    const suppliedToken = meta.token || null;
+function onJoinMessage(data) {
+    const { participantId, displayName: requestedName, token: suppliedToken } = data;
+    if (!participantId) return;
 
-    conn.on('open', () => {
-        let resolvedName, assignedToken, rejectionReason;
-        const nameLower = requestedName.toLowerCase();
+    const nameLower = (requestedName || '').trim().toLowerCase() || 'guest';
+    const resolvedRequestedName = (requestedName || '').trim() || ('Guest-' + participantId.slice(-4));
 
-        if (suppliedToken && state.tokenRegistry[suppliedToken]) {
-            const reg = state.tokenRegistry[suppliedToken];
+    let resolvedName, assignedToken, rejectionReason;
 
-            if (nameLower === reg.displayName.toLowerCase()) {
-                // Seamless reconnect
-                resolvedName = reg.displayName;
-                assignedToken = suppliedToken;
-                reg.peerId = conn.peer;
-            } else {
-                // Token valid but participant chose a different name
-                if (state.nameRegistry[nameLower]) {
-                    rejectionReason = `The name "${requestedName}" is already taken in this session. Please choose a different name.`;
-                } else {
-                    const oldLower = reg.displayName.toLowerCase();
-                    const MAX_PREVIOUS = 5;
-                    if (!reg.previousNames) reg.previousNames = [];
-                    reg.previousNames.push(oldLower);
-                    if (reg.previousNames.length > MAX_PREVIOUS) {
-                        const evicted = reg.previousNames.shift();
-                        delete state.nameRegistry[evicted];
-                    }
-                    state.nameRegistry[oldLower].retired = true;
+    if (suppliedToken && state.tokenRegistry[suppliedToken]) {
+        const reg = state.tokenRegistry[suppliedToken];
 
-                    resolvedName = requestedName;
-                    assignedToken = suppliedToken;
-                    state.nameRegistry[nameLower] = { token: assignedToken, displayName: resolvedName, retired: false };
-                    reg.displayName = resolvedName;
-                    reg.peerId = conn.peer;
-                }
-            }
-        } else if (state.nameRegistry[nameLower]) {
-            rejectionReason = `The name "${requestedName}" is already taken in this session. Please choose a different name.`;
+        if (nameLower === reg.displayName.toLowerCase()) {
+            resolvedName = reg.displayName;
+            assignedToken = suppliedToken;
+            reg.participantId = participantId;
         } else {
-            assignedToken = generateToken();
-            resolvedName = requestedName;
-            state.nameRegistry[nameLower] = { token: assignedToken, displayName: resolvedName, retired: false };
-            state.tokenRegistry[assignedToken] = { displayName: resolvedName, peerId: conn.peer, previousNames: [] };
+            if (state.nameRegistry[nameLower] && !state.nameRegistry[nameLower].retired) {
+                rejectionReason = `The name "${resolvedRequestedName}" is already taken in this session. Please choose a different name.`;
+            } else {
+                const oldLower = reg.displayName.toLowerCase();
+                const MAX_PREVIOUS = 5;
+                if (!reg.previousNames) reg.previousNames = [];
+                reg.previousNames.push(oldLower);
+                if (reg.previousNames.length > MAX_PREVIOUS) {
+                    const evicted = reg.previousNames.shift();
+                    delete state.nameRegistry[evicted];
+                }
+                if (state.nameRegistry[oldLower]) state.nameRegistry[oldLower].retired = true;
+
+                resolvedName = resolvedRequestedName;
+                assignedToken = suppliedToken;
+                state.nameRegistry[nameLower] = { token: assignedToken, displayName: resolvedName, retired: false };
+                reg.displayName = resolvedName;
+                reg.participantId = participantId;
+            }
         }
+    } else if (state.nameRegistry[nameLower] && !state.nameRegistry[nameLower].retired) {
+        rejectionReason = `The name "${resolvedRequestedName}" is already taken in this session. Please choose a different name.`;
+    } else {
+        assignedToken = generateToken();
+        resolvedName = resolvedRequestedName;
+        state.nameRegistry[nameLower] = { token: assignedToken, displayName: resolvedName, retired: false };
+        state.tokenRegistry[assignedToken] = { displayName: resolvedName, participantId, previousNames: [] };
+    }
 
-        if (rejectionReason) {
-            conn.send({ type: 'name-taken', reason: rejectionReason });
-            setTimeout(() => conn.close(), 300);
-            delete state.peers[conn.peer];
-            return;
-        }
-
-        state.participantNames[conn.peer] = resolvedName;
-        updateParticipantCount();
-
-        conn.send({
-            type: 'history',
-            messages: state.messages,
-            sessionName: state.sessionName,
-            yourToken: assignedToken,
-            yourName: resolvedName,
-            colors: state.nameColors,
-        });
-
-        renderMessage(
-            { type: 'system', text: `${resolvedName} joined.` },
-            document.getElementById('ctrl-feed'),
-        );
-    });
-
-    conn.on('data', data => onParticipantMessage(conn, data));
-
-    conn.on('close', () => {
-        const leftName = state.participantNames[conn.peer] || 'A participant';
-        delete state.peers[conn.peer];
-        delete state.participantNames[conn.peer];
-        updateParticipantCount();
-        renderMessage(
-            { type: 'system', text: `${leftName} left.` },
-            document.getElementById('ctrl-feed'),
-        );
-    });
-
-    conn.on('error', err => {
-        console.warn('Participant connection error', err);
-        delete state.peers[conn.peer];
-        delete state.participantNames[conn.peer];
-        updateParticipantCount();
-    });
-}
-
-export function startController(name, pin, retries = 0) {
-    if (retries > 10) {
-        alert('Could not find a free PIN after several attempts. Please try again.');
-        showScreen('screen-setup');
+    if (rejectionReason) {
+        sendToParticipant(participantId, { type: 'name-taken', reason: rejectionReason });
         return;
     }
 
+    state.peers[participantId] = { name: resolvedName };
+    state.participantNames[participantId] = resolvedName;
+    updateParticipantCount();
+
+    sendToParticipant(participantId, {
+        type: 'history',
+        messages: state.messages,
+        sessionName: state.sessionName,
+        yourToken: assignedToken,
+        yourName: resolvedName,
+        colors: state.nameColors,
+    });
+
+    renderMessage(
+        { type: 'system', text: `${resolvedName} joined.` },
+        document.getElementById('ctrl-feed'),
+    );
+}
+
+function onLeaveMessage(data) {
+    const { participantId } = data;
+    if (!participantId || !state.peers[participantId]) return;
+    const leftName = state.participantNames[participantId] || 'A participant';
+    delete state.peers[participantId];
+    delete state.participantNames[participantId];
+    updateParticipantCount();
+    renderMessage(
+        { type: 'system', text: `${leftName} left.` },
+        document.getElementById('ctrl-feed'),
+    );
+}
+
+export function startController(name, pin) {
     state.sessionName = name;
     state.currentPin = pin;
     state.messages = [];
@@ -229,34 +217,53 @@ export function startController(name, pin, retries = 0) {
     state.tokenRegistry = {};
     state.nameColors = {};
 
-    const peerId = 'phpgrn-' + pin;
     updateStatus('ctrl-dot', 'ctrl-status-text', 'Connecting…', 'connecting');
 
-    let peerInstance;
-    try {
-        peerInstance = new Peer(peerId, getPeerConfig(state.useRelay));
-    } catch {
-        alert('PeerJS failed to initialise. Please check your internet connection.');
-        showScreen('screen-setup');
-        return;
-    }
+    const client = window.mqtt.connect(getMqttBrokerUrl(), {
+        clientId: 'phpgrn-ctrl-' + pin + '-' + Math.random().toString(36).slice(2, 6),
+        clean: true,
+        reconnectPeriod: 3000,
+        will: {
+            topic: TOPIC(pin) + '/broadcast',
+            payload: JSON.stringify({ type: 'session-end', reason: 'host-closed' }),
+            qos: 1,
+            retain: false,
+        },
+    });
+    state.mqttClient = client;
 
-    state.peer = peerInstance;
-
-    state.peer.on('open', () => {
+    client.on('connect', () => {
         updateStatus('ctrl-dot', 'ctrl-status-text', 'Connected', 'connected');
+
+        client.subscribe([
+            TOPIC(pin) + '/join',
+            TOPIC(pin) + '/msg',
+            TOPIC(pin) + '/leave',
+        ], { qos: 1 });
+
         document.getElementById('ctrl-session-name').textContent = name;
         document.getElementById('ctrl-pin').textContent = pin;
 
-        const relayParam = state.useRelay ? '&relay=1' : '';
-        const joinUrl  = window.location.origin + window.location.pathname + '?room=' + encodeURIComponent(name.toLowerCase()) + relayParam;
-        const joinPath = window.location.pathname + '?room=' + encodeURIComponent(name.toLowerCase()) + relayParam;
+        const brokerParam = state.useCustomBroker && state.mqttBrokerUrl
+            ? '&broker=' + encodeURIComponent(state.mqttBrokerUrl) : '';
+        const joinUrl  = window.location.origin + window.location.pathname + '?room=' + encodeURIComponent(name.toLowerCase()) + brokerParam;
+        const joinPath = window.location.pathname + '?room=' + encodeURIComponent(name.toLowerCase()) + brokerParam;
 
         const urlDisplay = document.getElementById('ctrl-join-url');
         const urlStatus  = document.getElementById('ctrl-url-status');
         urlDisplay.textContent = joinPath;
         urlDisplay.dataset.fullUrl = joinUrl;
         urlStatus.textContent = 'Join URL (scan QR or type + enter PIN):';
+
+        const brokerInfoEl = document.getElementById('ctrl-broker-info');
+        if (brokerInfoEl) {
+            if (state.useCustomBroker && state.mqttBrokerUrl) {
+                document.getElementById('ctrl-broker-url').textContent = state.mqttBrokerUrl;
+                brokerInfoEl.style.display = 'block';
+            } else {
+                brokerInfoEl.style.display = 'none';
+            }
+        }
 
         const qrEl = document.getElementById('qrcode');
         qrEl.innerHTML = '';
@@ -267,24 +274,25 @@ export function startController(name, pin, retries = 0) {
         document.getElementById('ctrl-msg-input').focus();
     });
 
-    state.peer.on('connection', conn => onParticipantConnected(conn));
-
-    state.peer.on('error', e => {
-        if (e.type === 'unavailable-id') {
-            state.peer.destroy();
-            startController(name, generatePin(), retries + 1);
-        } else if (e.type === 'network' || e.type === 'socket-error' || e.type === 'socket-closed') {
-            console.warn('PeerJS signaling hiccup (' + e.type + '), reconnecting…');
-        } else {
-            updateStatus('ctrl-dot', 'ctrl-status-text', 'Error: ' + e.type, 'disconnected');
-            console.error('PeerJS error', e);
-        }
+    client.on('message', (topic, payload) => {
+        let data;
+        try { data = JSON.parse(payload.toString()); } catch { return; }
+        const pin = state.currentPin;
+        if (topic === TOPIC(pin) + '/join')  return onJoinMessage(data);
+        if (topic === TOPIC(pin) + '/leave') return onLeaveMessage(data);
+        if (topic === TOPIC(pin) + '/msg')   return onParticipantMessage(data);
     });
 
-    state.peer.on('disconnected', () => {
-        if (!state.peer.destroyed) {
-            updateStatus('ctrl-dot', 'ctrl-status-text', 'Reconnecting…', 'connecting');
-            state.peer.reconnect();
-        }
+    client.on('reconnect', () => {
+        updateStatus('ctrl-dot', 'ctrl-status-text', 'Reconnecting…', 'connecting');
+    });
+
+    client.on('error', err => {
+        updateStatus('ctrl-dot', 'ctrl-status-text', 'Connection error', 'disconnected');
+        console.error('MQTT controller error', err);
+    });
+
+    client.on('offline', () => {
+        updateStatus('ctrl-dot', 'ctrl-status-text', 'Offline — reconnecting…', 'connecting');
     });
 }
