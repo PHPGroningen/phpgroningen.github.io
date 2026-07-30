@@ -1,14 +1,12 @@
 # Date:
-July 2, 2026
+August 6, 2026
 # Title
-PHP Meetup: 🌞 😎 Hack, Fix, Discuss! Security Workshop
+PHP Meetup, Building Better Software with AI: Spec-Driven Development
 # Description
-☀️ 🌞
-Welcome to our Summer Software Development Meetup!
-☀️ 🌞 🏖️ ⛱️ 🌴 🏝️ 🌊
-Don't forget your laptop, this is hands-on.💻
-We meet .... knowledge,...
+👋 Welcome to our monthly Software Development Meetup!
+
+We meet .... knowledge, exchanging ideas, and getting to know other developers in a relaxed, f...
 # Location
 Youwe Groningen
 # Link
-https://www.meetup.com/groningenphp/events/314953128/
+https://www.meetup.com/groningenphp/events/315082420/
