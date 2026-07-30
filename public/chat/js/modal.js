@@ -34,7 +34,7 @@ export function sendSnippet() {
         if (state.mqttClient?.connected) {
             state.mqttClient.publish(`phpgrn/${state.currentPin}/msg`, JSON.stringify(msg), { qos: 0, retain: false });
         }
-        renderMessage(msg, document.getElementById('part-feed'));
+        // Don't render locally — the controller will echo it back via /broadcast
     }
 
     closeSnippetModal();

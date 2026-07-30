@@ -73,7 +73,7 @@ function partSendMessage() {
     if (!text || !state.mqttClient?.connected) return;
     const msg = { type: 'chat', sender: state.displayName, text, timestamp: Date.now() };
     state.mqttClient.publish(`phpgrn/${state.currentPin}/msg`, JSON.stringify(msg), { qos: 0, retain: false });
-    renderMessage(msg, document.getElementById('part-feed'));
+    // Don't render locally — the controller will echo it back via /broadcast
     input.value = '';
     input.focus();
 }
