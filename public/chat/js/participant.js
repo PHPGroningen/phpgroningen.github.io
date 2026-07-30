@@ -171,6 +171,12 @@ export function joinRoom(pin, name, enteredSessionName) {
         }
     });
 
+    client.on('offline', () => {
+        if (!state.sessionEnded) {
+            updateStatus('part-dot', 'part-status-text', 'Offline — reconnecting…', 'connecting');
+        }
+    });
+
     client.on('error', err => {
         clearTimeout(joinTimeout);
         joinBtn.disabled = false;
@@ -178,11 +184,5 @@ export function joinRoom(pin, name, enteredSessionName) {
         errorEl.textContent = 'Connection failed: ' + (err.message || 'Unknown error');
         errorEl.classList.add('visible');
         console.error('MQTT participant error', err);
-    });
-
-    client.on('offline', () => {
-        if (!state.sessionEnded) {
-            updateStatus('part-dot', 'part-status-text', 'Offline — reconnecting…', 'connecting');
-        }
     });
 }

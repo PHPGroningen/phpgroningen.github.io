@@ -222,6 +222,7 @@ export function startController(name, pin) {
     const client = window.mqtt.connect(getMqttBrokerUrl(), {
         clientId: 'phpgrn-ctrl-' + pin + '-' + Math.random().toString(36).slice(2, 6),
         clean: true,
+        keepalive: 10,        // broker detects unexpected drop within ~15 s and fires LWT
         reconnectPeriod: 3000,
         will: {
             topic: TOPIC(pin) + '/broadcast',
