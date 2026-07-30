@@ -22,6 +22,15 @@ export function generateToken() {
     return Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
 }
 
+export function generateParticipantId() {
+    if (typeof crypto.randomUUID === 'function') return crypto.randomUUID();
+    return generateToken();
+}
+
+export function getMqttBrokerUrl() {
+    return state.mqttBrokerUrl || 'wss://broker.emqx.io:8084/mqtt';
+}
+
 export function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => {
         s.classList.toggle('active', s.id === id);
@@ -45,17 +54,4 @@ export function scrollFeedToBottom(feedEl) {
 
 export function applyHighlight(codeEl) {
     if (window.hljs && !codeEl.classList.contains('language-plaintext')) hljs.highlightElement(codeEl);
-}
-
-export function getPeerConfig(useRelay) {
-    if (!useRelay) return {};
-    const iceServers = [{ urls: 'stun:stun.l.google.com:19302' }];
-    if (state.turnUrl) {
-        iceServers.push({
-            urls: state.turnUrl,
-            username: state.turnUser,
-            credential: state.turnCred,
-        });
-    }
-    return { config: { iceServers } };
 }

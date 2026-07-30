@@ -31,7 +31,9 @@ export function sendSnippet() {
         broadcastToAll(msg);
         renderMessage(msg, document.getElementById('ctrl-feed'));
     } else {
-        if (state.controllerConn?.open) state.controllerConn.send(msg);
+        if (state.mqttClient?.connected) {
+            state.mqttClient.publish(`phpgrn/${state.currentPin}/msg`, JSON.stringify(msg), { qos: 0, retain: false });
+        }
         renderMessage(msg, document.getElementById('part-feed'));
     }
 

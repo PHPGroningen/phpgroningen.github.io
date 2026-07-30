@@ -375,7 +375,7 @@
     <div class="page-hero">
         <div class="badge">Workshop Chat</div>
         <h1>About Workshop Chat</h1>
-        <p>A fully static, serverless peer-to-peer chat built for live PHP workshops — no sign-up, no database, nothing stored on a server.</p>
+        <p>A fully static, serverless chat built for live PHP workshops — no sign-up, no database, nothing stored on a server. Messages are routed through a public MQTT broker over WebSockets.</p>
     </div>
 
     <!-- Roles -->
@@ -407,28 +407,28 @@
                     <div class="node-label">browser</div>
                 </div>
 
-                <!-- arrow → signal -->
+                <!-- arrow → broker -->
                 <div class="arrow">
                     <div class="arrow-line">
                         <div class="h-line"></div>
-                        <span class="arrow-head">→</span>
+                        <span class="arrow-head">⟷</span>
                     </div>
-                    <div class="arrow-label">1. SDP / ICE<br>(signaling only)</div>
+                    <div class="arrow-label">MQTT over WSS<br>(publish / subscribe)</div>
                 </div>
 
-                <!-- PeerJS signal server -->
+                <!-- MQTT broker -->
                 <div class="node node-signal">
-                    ☁️ PeerJS<br>Cloud
-                    <div class="node-label">signaling server</div>
+                    ☁️ MQTT<br>Broker
+                    <div class="node-label">broker.emqx.io</div>
                 </div>
 
                 <!-- arrow → controller -->
                 <div class="arrow">
                     <div class="arrow-line">
                         <div class="h-line"></div>
-                        <span class="arrow-head">→</span>
+                        <span class="arrow-head">⟷</span>
                     </div>
-                    <div class="arrow-label">1. SDP / ICE<br>(signaling only)</div>
+                    <div class="arrow-label">MQTT over WSS<br>(publish / subscribe)</div>
                 </div>
 
                 <!-- Controller -->
@@ -439,22 +439,9 @@
 
             </div>
 
-            <!-- Direct data channel row -->
-            <div style="display:flex; align-items:center; justify-content:center; margin-top:24px; gap:0;">
-                <div class="node node-participant" style="min-width:120px;">💬 Participant A</div>
-                <div class="arrow">
-                    <div class="arrow-line">
-                        <div class="h-line" style="width:80px;"></div>
-                        <span class="arrow-head">⟷</span>
-                    </div>
-                    <div class="arrow-label">2. Encrypted WebRTC<br>data channel (DTLS)<br><em>PeerJS server not involved</em></div>
-                </div>
-                <div class="node node-controller" style="min-width:120px;">🎛️ Controller</div>
-            </div>
-
-            <!-- Relay note -->
+            <!-- Broker note -->
             <p style="text-align:center; font-size:0.78rem; color:var(--medium-gray); margin-top:20px;">
-                ⚠️ If a direct path cannot be established (strict firewall / symmetric NAT), traffic may route via a TURN relay server — see Privacy below.
+                All traffic passes through the MQTT broker over an encrypted TLS/WebSocket connection. No direct browser-to-browser path is needed, so the app works on guest Wi-Fi with client isolation.
             </p>
         </div>
     </section>
@@ -467,43 +454,43 @@
                 <li>
                     <div class="phase-num">1</div>
                     <div class="phase-body">
-                        <strong>Controller registers a Peer ID</strong>
-                        <span>On session start the controller generates a random 5-digit PIN and registers the Peer ID <code>phpgrn-{PIN}</code> on the PeerJS signaling server. The server hands back a confirmation — no message content is involved.</span>
+                        <strong>Controller connects to the MQTT broker</strong>
+                        <span>On session start the controller generates a random 5-digit PIN and connects to the MQTT broker (<code>broker.emqx.io</code> by default, or a custom broker). It subscribes to the topics <code>phpgrn/{PIN}/join</code>, <code>phpgrn/{PIN}/msg</code>, and <code>phpgrn/{PIN}/leave</code>. A Last Will message is registered so participants are notified if the controller disconnects unexpectedly.</span>
                     </div>
                 </li>
                 <li>
                     <div class="phase-num">2</div>
                     <div class="phase-body">
                         <strong>QR code &amp; join URL generated</strong>
-                        <span>The app builds a join URL (<code>/chat/?room=name</code>) and encodes it in a QR code entirely in the browser — no server call. If <em>Network relay mode</em> is enabled, <code>&amp;relay=1</code> is appended so participants automatically inherit the relay setting.</span>
+                        <span>The app builds a join URL (<code>/chat/?room=name</code>) and encodes it in a QR code entirely in the browser — no server call. If a custom broker is configured its URL is included as <code>&amp;broker=…</code> so participants connect to the same broker automatically.</span>
                     </div>
                 </li>
                 <li>
                     <div class="phase-num">3</div>
                     <div class="phase-body">
-                        <strong>Participant scans / types the PIN</strong>
-                        <span>The participant's browser sends an SDP offer to <code>phpgrn-{PIN}</code> via the PeerJS signaling server. The controller receives it and replies with an SDP answer. ICE candidates (network addresses) are also exchanged through this channel.</span>
+                        <strong>Participant scans the QR code / types the PIN</strong>
+                        <span>The participant's browser connects to the MQTT broker, subscribes to <code>phpgrn/{PIN}/broadcast</code> and a personal DM topic <code>phpgrn/{PIN}/dm/{participantId}</code>, then publishes a <code>join</code> message with their display name and reconnect token.</span>
                     </div>
                 </li>
                 <li>
                     <div class="phase-num green">4</div>
                     <div class="phase-body">
-                        <strong>Direct WebRTC data channel opens</strong>
-                        <span>Once ICE negotiation succeeds the browsers connect directly, encrypted with DTLS. The PeerJS signaling server is no longer involved. All chat messages, code snippets, history packets, and colour assignments travel through this channel.</span>
+                        <strong>Controller admits the participant</strong>
+                        <span>The controller validates the name/token, registers the participant, then publishes the full session history and a colour map to the participant's personal DM topic. The participant's UI unlocks and shows the chat.</span>
                     </div>
                 </li>
                 <li>
                     <div class="phase-num green">5</div>
                     <div class="phase-body">
-                        <strong>Controller relays to all participants</strong>
-                        <span>The topology is a star: every participant connects to the controller, not to each other. When a participant sends a message the controller receives it and rebroadcasts it to all other connected participants. This keeps things simple and gives the controller full visibility.</span>
+                        <strong>Controller relays messages to all participants</strong>
+                        <span>The topology is a star: participants publish messages to <code>phpgrn/{PIN}/msg</code>; the controller receives them, stores them in memory, and republishes to <code>phpgrn/{PIN}/broadcast</code> so all participants see them. This keeps the controller in full control and simplifies history sync for late joiners.</span>
                     </div>
                 </li>
                 <li>
                     <div class="phase-num green">6</div>
                     <div class="phase-body">
                         <strong>Session ends — everything is wiped</strong>
-                        <span>When the controller closes the tab a <code>session-end</code> message is broadcast. Each participant clears its feed, resets state, and returns to the start screen. Nothing is written to disk anywhere.</span>
+                        <span>When the controller closes the tab a <code>session-end</code> message is published to the broadcast topic. Each participant clears its feed, resets state, and returns to the start screen. Nothing is written to disk anywhere.</span>
                     </div>
                 </li>
             </ol>
@@ -519,11 +506,11 @@
         </div>
 
         <div class="callout">
-            <strong>Message content is end-to-end encrypted.</strong> WebRTC data channels are mandated to use DTLS encryption. Once the direct channel is established, the PeerJS signaling server cannot read your messages — it only sees who connected to whom.
+            <strong>Transport is encrypted in transit.</strong> All MQTT traffic uses TLS over WebSockets (<code>wss://</code>), so messages are encrypted between your browser and the broker. The broker itself can read message payloads — see the note below.
         </div>
 
         <div class="callout yellow">
-            <strong>TURN relay caveat.</strong> If a direct peer-to-peer path cannot be established (e.g., on a guest Wi-Fi network with client isolation) WebRTC falls back to a TURN relay server. Traffic is still DTLS-encrypted in transit, but the relay server operator sees the encrypted bytes. Enable <em>Network relay mode</em> on the Start a Room screen and enter TURN credentials (e.g. from <a href="https://www.metered.ca/stun-turn" target="_blank" rel="noopener">metered.ca</a> free tier) — the setting is automatically propagated to participants via the join URL. Credentials stay in the browser and are never sent to any server other than the TURN server you configure.
+            <strong>Public broker notice.</strong> The default broker (<code>broker.emqx.io</code>) is a public free-tier service. Anyone who knows your PIN could subscribe to <code>phpgrn/{PIN}/#</code> and read messages. For sensitive sessions, run your own MQTT broker and enter its WebSocket URL in the <em>Custom MQTT broker</em> field on the Start a Room screen — the URL is automatically included in the join link.
         </div>
 
         <div class="card" style="padding: 0; overflow: hidden;">
@@ -531,24 +518,24 @@
                 <thead>
                     <tr>
                         <th>Data</th>
-                        <th>Seen by PeerJS</th>
+                        <th>Seen by MQTT broker</th>
                         <th>Stored anywhere</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>Message content</td>
-                        <td class="no">No — DTLS encrypted</td>
-                        <td class="no">No</td>
+                        <td class="partial">Yes — routed through broker</td>
+                        <td class="no">No (retain: false)</td>
                     </tr>
                     <tr>
                         <td>Code snippets</td>
-                        <td class="no">No — DTLS encrypted</td>
+                        <td class="partial">Yes — routed through broker</td>
                         <td class="no">No</td>
                     </tr>
                     <tr>
                         <td>Display names</td>
-                        <td class="no">No</td>
+                        <td class="partial">Yes — in join payload</td>
                         <td class="partial">Browser localStorage only (token)</td>
                     </tr>
                     <tr>
@@ -557,13 +544,13 @@
                         <td class="partial">Browser history / server access logs</td>
                     </tr>
                     <tr>
-                        <td>Peer IDs (who talks to whom)</td>
-                        <td class="yes">Yes — signaling metadata</td>
+                        <td>MQTT client IDs (who is connected)</td>
+                        <td class="yes">Yes — connection metadata</td>
                         <td class="no">Not by this app</td>
                     </tr>
                     <tr>
                         <td>IP addresses</td>
-                        <td class="yes">Yes — ICE candidates</td>
+                        <td class="yes">Yes — TCP connection</td>
                         <td class="no">Not by this app</td>
                     </tr>
                     <tr>
@@ -584,10 +571,17 @@
         <div class="ack-grid">
 
             <div class="ack-card">
-                <div class="ack-role">P2P / WebRTC</div>
-                <a href="https://peerjs.com" target="_blank" rel="noopener">PeerJS</a>
-                <p>Simplifies WebRTC peer-to-peer connections with a clean JavaScript API. Provides the public signaling server and TURN relay infrastructure used to establish connections between browsers.</p>
+                <div class="ack-role">MQTT messaging</div>
+                <a href="https://github.com/mqttjs/MQTT.js" target="_blank" rel="noopener">MQTT.js</a>
+                <p>The de-facto JavaScript MQTT client. Used here in browser mode over WebSockets to connect to the MQTT broker. Handles reconnection, QoS, and Last Will messages automatically.</p>
                 <span class="license">MIT License</span>
+            </div>
+
+            <div class="ack-card">
+                <div class="ack-role">Default MQTT broker</div>
+                <a href="https://www.emqx.io" target="_blank" rel="noopener">EMQX</a>
+                <p>Provides a free public MQTT broker (<code>broker.emqx.io</code>) suitable for testing and workshop use. For production use, configure a private broker via the Custom MQTT broker option.</p>
+                <span class="license">Free public tier</span>
             </div>
 
             <div class="ack-card">
@@ -595,13 +589,6 @@
                 <a href="https://highlightjs.org" target="_blank" rel="noopener">Highlight.js</a>
                 <p>Automatic syntax detection and highlighting for code snippets. Used here with the GitHub light theme for clean, readable code blocks in PHP, JavaScript, Python, HTML, CSS, and plain text.</p>
                 <span class="license">BSD 3-Clause License</span>
-            </div>
-
-            <div class="ack-card">
-                <div class="ack-role">TURN relay (optional)</div>
-                <a href="https://www.metered.ca/stun-turn" target="_blank" rel="noopener">Metered.ca</a>
-                <p>Provides free TURN relay servers (50 GB/month) for when Network relay mode is needed. The host registers once and pastes credentials into the Start a Room form — no credentials are stored server-side by this app.</p>
-                <span class="license">Free tier available</span>
             </div>
 
             <div class="ack-card">
@@ -619,9 +606,9 @@
             </div>
 
             <div class="ack-card">
-                <div class="ack-role">CDN (PeerJS)</div>
+                <div class="ack-role">CDN (MQTT.js)</div>
                 <a href="https://unpkg.com" target="_blank" rel="noopener">unpkg</a>
-                <p>A fast, global CDN for npm packages. Used to load the PeerJS client library directly from the npm registry.</p>
+                <p>A fast, global CDN for npm packages. Used to load the MQTT.js browser bundle directly from the npm registry.</p>
                 <span class="license">Free / Open</span>
             </div>
 

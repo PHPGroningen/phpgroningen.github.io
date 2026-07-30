@@ -23,21 +23,19 @@ document.getElementById('btn-back-setup').addEventListener('click', () => showSc
 document.getElementById('btn-back-join').addEventListener('click', () => showScreen('screen-role'));
 
 // ── Session setup form ────────────────────────────────────────────────────────
-document.getElementById('setup-relay').addEventListener('change', e => {
-    document.getElementById('relay-fields').style.display = e.target.checked ? 'block' : 'none';
+document.getElementById('setup-custom-broker').addEventListener('change', e => {
+    document.getElementById('broker-fields').style.display = e.target.checked ? 'block' : 'none';
 });
 
 document.getElementById('form-setup').addEventListener('submit', e => {
     e.preventDefault();
     const name = document.getElementById('setup-session-name').value.trim();
     if (!name) return;
-    state.useRelay = document.getElementById('setup-relay').checked;
-    if (state.useRelay) {
-        state.turnUrl  = document.getElementById('setup-turn-url').value.trim();
-        state.turnUser = document.getElementById('setup-turn-user').value.trim();
-        state.turnCred = document.getElementById('setup-turn-cred').value.trim();
-    }
-    startController(name, generatePin(), 0);
+    state.useCustomBroker = document.getElementById('setup-custom-broker').checked;
+    state.mqttBrokerUrl = state.useCustomBroker
+        ? document.getElementById('setup-broker-url').value.trim()
+        : '';
+    startController(name, generatePin());
 });
 
 // ── Join form ─────────────────────────────────────────────────────────────────
@@ -72,9 +70,9 @@ document.getElementById('ctrl-msg-input').addEventListener('keydown', e => {
 function partSendMessage() {
     const input = document.getElementById('part-msg-input');
     const text = input.value.trim();
-    if (!text || !state.controllerConn?.open) return;
+    if (!text || !state.mqttClient?.connected) return;
     const msg = { type: 'chat', sender: state.displayName, text, timestamp: Date.now() };
-    state.controllerConn.send(msg);
+    state.mqttClient.publish(`phpgrn/${state.currentPin}/msg`, JSON.stringify(msg), { qos: 0, retain: false });
     renderMessage(msg, document.getElementById('part-feed'));
     input.value = '';
     input.focus();
@@ -153,18 +151,29 @@ window.addEventListener('beforeunload', e => {
 window.addEventListener('pagehide', () => {
     if (state.role === 'controller') {
         state.isControllerSession = false;
-        broadcastToAll({ type: 'session-end', reason: 'host-closed' });
+        // Publish session-end synchronously (QoS 0 completes before freeze)
+        if (state.mqttClient?.connected) {
+            state.mqttClient.publish(
+                `phpgrn/${state.currentPin}/broadcast`,
+                JSON.stringify({ type: 'session-end', reason: 'host-closed' }),
+                { qos: 0, retain: false }
+            );
+        }
     }
-    if (state.peer) state.peer.destroy();
+    state.mqttClient?.end(true);
 });
 
-// ── Init: pre-fill join form from ?room= URL param ────────────────────────────
+// ── Init: pre-fill join form from ?room= / ?broker= URL params ────────────────
 (function init() {
     const params = new URLSearchParams(window.location.search);
     const roomParam = params.get('room');
     if (roomParam?.trim()) {
         state.role = 'participant';
-        state.useRelay = params.get('relay') === '1';
+        const brokerParam = params.get('broker');
+        if (brokerParam) {
+            state.useCustomBroker = true;
+            state.mqttBrokerUrl = brokerParam;
+        }
         showScreen('screen-join');
         document.getElementById('input-session-name').value = roomParam.trim();
         document.getElementById('input-pin').focus();

@@ -482,6 +482,53 @@
             display: block;
         }
 
+        .relay-info {
+            margin-top: 12px;
+            background: #fff8e1;
+            border: 1px solid #f9a825;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.8rem;
+        }
+
+        .relay-info-label {
+            font-weight: 700;
+            color: #7a6200;
+            margin-bottom: 6px;
+        }
+
+        .relay-info-row {
+            display: flex;
+            gap: 8px;
+            align-items: baseline;
+            margin-bottom: 3px;
+            word-break: break-all;
+        }
+
+        .relay-info-row span {
+            color: var(--medium-gray);
+            min-width: 32px;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .relay-info-row code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.78rem;
+            color: var(--dark-gray);
+        }
+
+        .relay-notice {
+            background: #fff8e1;
+            border: 1px solid #f9a825;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.88rem;
+            color: #7a6200;
+            margin-bottom: 16px;
+        }
+
         .participant-list {
             margin-top: 10px;
             display: flex;
